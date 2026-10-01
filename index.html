@@ -1,0 +1,1888 @@
+```html
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Sorteador dos guri</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+
+            margin: 0;
+
+            font-family:
+                Arial,
+                Helvetica,
+                sans-serif;
+
+            background:
+                radial-gradient(circle at top,
+                    #172d46 0%,
+                    #0b1420 45%,
+                    #050a10 100%);
+
+            color: #f5f5f5;
+
+            min-height: 100vh;
+        }
+
+        button,
+        input {
+            font-family: inherit;
+        }
+
+        .container {
+
+            width: 100%;
+
+            max-width: 1100px;
+
+            margin: 0 auto;
+
+            padding: 30px 20px 60px;
+        }
+
+        header {
+
+            text-align: center;
+
+            margin-bottom: 30px;
+        }
+
+        header h1 {
+
+            margin: 0;
+
+            font-size: 36px;
+
+            color: #c8aa6e;
+
+            text-transform: uppercase;
+
+            letter-spacing: 2px;
+        }
+
+        header p {
+
+            color: #9ba7b5;
+
+            margin-top: 8px;
+        }
+
+        .card {
+
+            background:
+                rgba(13, 24, 36, 0.95);
+
+            border:
+                1px solid #27384b;
+
+            border-radius: 12px;
+
+            padding: 22px;
+
+            margin-bottom: 20px;
+
+            box-shadow:
+                0 10px 30px rgba(0, 0, 0, 0.3);
+        }
+
+        .card h2 {
+
+            margin-top: 0;
+
+            color: #c8aa6e;
+
+            font-size: 20px;
+        }
+
+        /* =========================
+           JOGADORES
+        ========================= */
+
+        .players {
+
+            display: grid;
+
+            grid-template-columns:
+                repeat(5, 1fr);
+
+            gap: 10px;
+        }
+
+        .player-input {
+
+            background: #09111a;
+
+            border:
+                1px solid #304255;
+
+            color: white;
+
+            padding: 13px;
+
+            border-radius: 6px;
+
+            outline: none;
+
+            width: 100%;
+        }
+
+        .player-input:focus {
+
+            border-color: #c8aa6e;
+        }
+
+        /* =========================
+           LANES
+        ========================= */
+
+        .lanes {
+
+            display: grid;
+
+            grid-template-columns:
+                repeat(5, 1fr);
+
+            gap: 10px;
+        }
+
+        .lane {
+
+            position: relative;
+        }
+
+        .lane input {
+
+            display: none;
+        }
+
+        .lane label {
+
+            display: block;
+
+            text-align: center;
+
+            padding: 13px 5px;
+
+            border:
+                1px solid #304255;
+
+            background: #09111a;
+
+            border-radius: 6px;
+
+            cursor: pointer;
+
+            transition: 0.2s;
+        }
+
+        .lane input:checked+label {
+
+            background: #173b55;
+
+            border-color: #c8aa6e;
+
+            color: #c8aa6e;
+        }
+
+        /* =========================
+           CONFIGURAÇÕES
+        ========================= */
+
+        .setting {
+
+            display: flex;
+
+            align-items: center;
+
+            gap: 10px;
+
+            margin-bottom: 10px;
+        }
+
+        .setting input {
+
+            width: 18px;
+
+            height: 18px;
+
+            accent-color: #c8aa6e;
+        }
+
+        .setting label {
+
+            cursor: pointer;
+        }
+
+        /* =========================
+           CAMPEÕES
+        ========================= */
+
+        .champion-controls {
+
+            display: flex;
+
+            gap: 10px;
+
+            margin-bottom: 15px;
+        }
+
+        .champion-controls input {
+
+            flex: 1;
+
+            background: #09111a;
+
+            border:
+                1px solid #304255;
+
+            color: white;
+
+            padding: 12px;
+
+            border-radius: 6px;
+        }
+
+        .champion-list {
+
+            display: grid;
+
+            grid-template-columns:
+                repeat(auto-fill, minmax(130px, 1fr));
+
+            gap: 8px;
+
+            max-height: 350px;
+
+            overflow-y: auto;
+
+            padding-right: 5px;
+        }
+
+        .champion-option {
+
+            display: flex;
+
+            align-items: center;
+
+            gap: 8px;
+
+            padding: 7px;
+
+            background: #09111a;
+
+            border:
+                1px solid #253648;
+
+            border-radius: 5px;
+
+            cursor: pointer;
+        }
+
+        .champion-option:hover {
+
+            border-color: #c8aa6e;
+        }
+
+        .champion-option input {
+
+            accent-color: #c8aa6e;
+        }
+
+        .champion-option img {
+
+            width: 32px;
+
+            height: 32px;
+
+            border-radius: 4px;
+        }
+
+        /* =========================
+           BOTÃO
+        ========================= */
+
+        .sortear {
+
+            width: 100%;
+
+            padding: 16px;
+
+            background:
+                linear-gradient(135deg,
+                    #c8aa6e,
+                    #8f6f35);
+
+            border: none;
+
+            border-radius: 7px;
+
+            color: #111;
+
+            font-size: 18px;
+
+            font-weight: bold;
+
+            cursor: pointer;
+
+            text-transform: uppercase;
+
+            letter-spacing: 1px;
+
+            transition: 0.2s;
+        }
+
+        .sortear:hover {
+
+            filter: brightness(1.15);
+
+            transform: translateY(-1px);
+        }
+
+        .sortear:disabled {
+
+            opacity: 0.5;
+
+            cursor: not-allowed;
+
+            transform: none;
+        }
+
+        /* =========================
+           RESULTADOS
+        ========================= */
+
+        .results {
+
+            display: grid;
+
+            grid-template-columns:
+                repeat(5, 1fr);
+
+            gap: 15px;
+        }
+
+        .result {
+
+            background: #09111a;
+
+            border:
+                1px solid #304255;
+
+            border-radius: 10px;
+
+            padding: 15px;
+
+            text-align: center;
+
+            min-height: 220px;
+
+            animation:
+                aparecer 0.5s ease;
+        }
+
+        .result img {
+
+            width: 100px;
+
+            height: 100px;
+
+            object-fit: cover;
+
+            border-radius: 8px;
+
+            border:
+                2px solid #c8aa6e;
+        }
+
+        .result .lane-name {
+
+            color: #8e9aaa;
+
+            font-size: 13px;
+
+            text-transform: uppercase;
+
+            letter-spacing: 1px;
+
+            margin-bottom: 8px;
+        }
+
+        .result .player {
+
+            margin-top: 10px;
+
+            font-weight: bold;
+
+            font-size: 18px;
+        }
+
+        .result .champion {
+
+            color: #c8aa6e;
+
+            font-size: 20px;
+
+            font-weight: bold;
+
+            margin-top: 5px;
+        }
+
+        /* =========================
+           ANIMAÇÃO SHUFFLE
+        ========================= */
+
+        .shuffle-container {
+
+            min-height: 220px;
+
+            display: flex;
+
+            flex-direction: column;
+
+            align-items: center;
+
+            justify-content: center;
+        }
+
+        .shuffle-image {
+
+            width: 100px;
+
+            height: 100px;
+
+            object-fit: cover;
+
+            border-radius: 8px;
+
+            border:
+                2px solid #7c8b9b;
+
+            animation:
+                shufflePulse 0.15s infinite;
+        }
+
+        .shuffle-text {
+
+            margin-top: 15px;
+
+            color: #9ba7b5;
+
+            font-size: 14px;
+
+            text-transform: uppercase;
+
+            letter-spacing: 1px;
+        }
+
+        .dice {
+
+            font-size: 40px;
+
+            margin-bottom: 10px;
+
+            animation:
+                diceRoll 0.4s infinite;
+        }
+
+        @keyframes shufflePulse {
+
+            0% {
+                transform:
+                    scale(0.95) rotate(-3deg);
+
+                opacity: 0.7;
+            }
+
+            50% {
+                transform:
+                    scale(1.05) rotate(3deg);
+
+                opacity: 1;
+            }
+
+            100% {
+                transform:
+                    scale(0.95) rotate(-3deg);
+
+                opacity: 0.7;
+            }
+        }
+
+        @keyframes diceRoll {
+
+            0% {
+                transform:
+                    rotate(0deg) scale(1);
+            }
+
+            25% {
+                transform:
+                    rotate(90deg) scale(1.1);
+            }
+
+            50% {
+                transform:
+                    rotate(180deg) scale(0.9);
+            }
+
+            75% {
+                transform:
+                    rotate(270deg) scale(1.1);
+            }
+
+            100% {
+                transform:
+                    rotate(360deg) scale(1);
+            }
+        }
+
+        @keyframes aparecer {
+
+            from {
+
+                opacity: 0;
+
+                transform:
+                    translateY(15px) scale(0.95);
+            }
+
+            to {
+
+                opacity: 1;
+
+                transform:
+                    translateY(0) scale(1);
+            }
+        }
+
+        .empty {
+
+            text-align: center;
+
+            color: #687789;
+
+            padding: 30px;
+        }
+
+        .info {
+
+            color: #8291a2;
+
+            font-size: 13px;
+
+            margin-top: 10px;
+        }
+
+        @media (max-width: 900px) {
+
+            .results {
+
+                grid-template-columns:
+                    repeat(3, 1fr);
+            }
+
+            .players {
+
+                grid-template-columns:
+                    repeat(3, 1fr);
+            }
+
+            .lanes {
+
+                grid-template-columns:
+                    repeat(3, 1fr);
+            }
+        }
+
+        @media (max-width: 600px) {
+
+            header h1 {
+
+                font-size: 27px;
+            }
+
+            .players {
+
+                grid-template-columns:
+                    1fr;
+            }
+
+            .lanes {
+
+                grid-template-columns:
+                    repeat(2, 1fr);
+            }
+
+            .results {
+
+                grid-template-columns:
+                    repeat(2, 1fr);
+            }
+        }
+    </style>
+
+</head>
+
+<body>
+
+    <div class="container">
+
+        <header>
+
+            <h1>
+                LoL Randomizer
+            </h1>
+
+            <p>
+                Sorteie jogadores, lanes e campeões
+            </p>
+
+        </header>
+
+        <!-- =========================
+         JOGADORES
+    ========================== -->
+
+        <div class="card">
+
+            <h2>
+                👥 Jogadores
+            </h2>
+
+            <div class="players">
+
+                <input class="player-input" id="player1" placeholder="Jogador 1">
+
+                <input class="player-input" id="player2" placeholder="Jogador 2">
+
+                <input class="player-input" id="player3" placeholder="Jogador 3">
+
+                <input class="player-input" id="player4" placeholder="Jogador 4">
+
+                <input class="player-input" id="player5" placeholder="Jogador 5">
+
+            </div>
+
+            <div class="info">
+
+                Informe de 1 a 5 jogadores.
+
+            </div>
+
+        </div>
+
+        <!-- =========================
+         LANES
+    ========================== -->
+
+        <div class="card">
+
+            <h2>
+                ⚔️ Lanes
+            </h2>
+
+            <div class="setting">
+
+                <input type="checkbox" id="fullRandom" onchange="toggleLanes()">
+
+                <label for="fullRandom">
+
+                    Full Aleatório —
+                    sortear lanes automaticamente
+
+                </label>
+
+            </div>
+
+            <div class="lanes" id="laneContainer">
+
+                <div class="lane">
+
+                    <input type="checkbox" id="lane-top" value="Top">
+
+                    <label for="lane-top">
+                        TOP
+                    </label>
+
+                </div>
+
+                <div class="lane">
+
+                    <input type="checkbox" id="lane-jungle" value="Jungle">
+
+                    <label for="lane-jungle">
+                        JUNGLE
+                    </label>
+
+                </div>
+
+                <div class="lane">
+
+                    <input type="checkbox" id="lane-mid" value="Mid">
+
+                    <label for="lane-mid">
+                        MID
+                    </label>
+
+                </div>
+
+                <div class="lane">
+
+                    <input type="checkbox" id="lane-adc" value="ADC">
+
+                    <label for="lane-adc">
+                        ADC
+                    </label>
+
+                </div>
+
+                <div class="lane">
+
+                    <input type="checkbox" id="lane-support" value="Support">
+
+                    <label for="lane-support">
+                        SUPPORT
+                    </label>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <!-- =========================
+         CONFIGURAÇÕES
+    ========================== -->
+
+        <div class="card">
+
+            <h2>
+                ⚙️ Configurações
+            </h2>
+
+            <div class="setting">
+
+                <input type="checkbox" id="noRepeat" onchange="saveSettings()">
+
+                <label for="noRepeat">
+
+                    Não repetir campeões no mesmo sorteio
+
+                </label>
+
+            </div>
+
+            <div class="setting">
+
+                <input type="checkbox" id="rememberNoRepeat" onchange="saveSettings()">
+
+                <label for="rememberNoRepeat">
+
+                    Salvar esta configuração no navegador
+
+                </label>
+
+            </div>
+
+            <div class="info">
+
+                A configuração é armazenada no navegador.
+
+            </div>
+
+        </div>
+
+        <!-- =========================
+         CAMPEÕES
+    ========================== -->
+
+        <div class="card">
+
+            <h2>
+                🚫 Campeões excluídos
+            </h2>
+
+            <div class="champion-controls">
+
+                <input type="text" id="championSearch" placeholder="Pesquisar campeão..." oninput="filterChampions()">
+
+            </div>
+
+            <div class="champion-list" id="championList"></div>
+
+            <div class="info">
+
+                Marque os campeões que não devem
+                participar do sorteio.
+
+            </div>
+
+        </div>
+
+        <!-- =========================
+         BOTÃO
+    ========================== -->
+
+        <div class="card">
+
+            <button class="sortear" id="sortButton" onclick="sortear()">
+
+                🎲 Sortear
+
+            </button>
+
+        </div>
+
+        <!-- =========================
+         RESULTADO
+    ========================== -->
+
+        <div class="card">
+
+            <h2>
+                🎯 Resultado
+            </h2>
+
+            <div id="results" class="results">
+
+                <div class="empty">
+
+                    O resultado aparecerá aqui.
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <script>
+
+        /* =====================================================
+           DATA DRAGON
+        ===================================================== */
+
+        const DATA_DRAGON_VERSION = "15.19.1";
+
+        const IMAGE_URL =
+            "https://ddragon.leagueoflegends.com/cdn/"
+            + DATA_DRAGON_VERSION
+            + "/img/champion/";
+
+        /* =====================================================
+           CAMPEÕES
+        ===================================================== */
+
+        const champions = [
+
+            "Aatrox",
+            "Ahri",
+            "Akali",
+            "Akshan",
+            "Alistar",
+            "Ambessa",
+            "Amumu",
+            "Anivia",
+            "Annie",
+            "Aphelios",
+            "Ashe",
+            "AurelionSol",
+            "Aurora",
+            "Azir",
+
+            "Bard",
+            "Belveth",
+            "Blitzcrank",
+            "Brand",
+            "Braum",
+            "Briar",
+
+            "Caitlyn",
+            "Camille",
+            "Corki",
+
+            "Darius",
+            "Diana",
+            "DrMundo",
+            "Draven",
+
+            "Ekko",
+            "Elise",
+            "Evelynn",
+            "Ezreal",
+
+            "Fiddlesticks",
+            "Fiora",
+            "Fizz",
+
+            "Galio",
+            "Gangplank",
+            "Garen",
+            "Gnar",
+            "Gragas",
+            "Graves",
+            "Gwen",
+
+            "Hecarim",
+            "Heimerdinger",
+            "Hwei",
+
+            "Illaoi",
+            "Irelia",
+            "Ivern",
+
+            "Janna",
+            "JarvanIV",
+            "Jax",
+            "Jayce",
+            "Jhin",
+            "Jinx",
+
+            "Kaisa",
+            "Kalista",
+            "Karma",
+            "Karthus",
+            "Kassadin",
+            "Katarina",
+            "Kayle",
+            "Kayn",
+            "Kennen",
+            "Khazix",
+            "Kindred",
+            "Kled",
+            "KogMaw",
+
+            "Leblanc",
+            "LeeSin",
+            "Leona",
+            "Lillia",
+            "Lissandra",
+            "Lucian",
+            "Lulu",
+            "Lux",
+
+            "Malphite",
+            "Malzahar",
+            "Maokai",
+            "Mel",
+            "MasterYi",
+            "Milio",
+            "MissFortune",
+            "Mordekaiser",
+            "Morgana",
+
+            "Naafiri",
+            "Nami",
+            "Nasus",
+            "Nautilus",
+            "Neeko",
+            "Nidalee",
+            "Nilah",
+            "Nocturne",
+            "Nunu",
+
+            "Olaf",
+            "Orianna",
+            "Ornn",
+
+            "Pantheon",
+            "Poppy",
+            "Pyke",
+
+            "Qiyana",
+            "Quinn",
+
+            "Rakan",
+            "Rammus",
+            "RekSai",
+            "Rell",
+            "RenataGlasc",
+            "Renekton",
+            "Rengar",
+            "Riven",
+            "Rumble",
+            "Ryze",
+
+            "Samira",
+            "Sejuani",
+            "Senna",
+            "Seraphine",
+            "Sett",
+            "Shaco",
+            "Shen",
+            "Shyvana",
+            "Singed",
+            "Sion",
+            "Sivir",
+            "Skarner",
+            "Smolder",
+            "Sona",
+            "Soraka",
+            "Swain",
+            "Sylas",
+            "Syndra",
+
+            "TahmKench",
+            "Taliyah",
+            "Talon",
+            "Taric",
+            "Teemo",
+            "Thresh",
+            "Tristana",
+            "Trundle",
+            "Tryndamere",
+            "TwistedFate",
+            "Twitch",
+
+            "Udyr",
+            "Urgot",
+
+            "Varus",
+            "Vayne",
+            "Veigar",
+            "Velkoz",
+            "Vex",
+            "Vi",
+            "Viego",
+            "Viktor",
+            "Vladimir",
+            "Volibear",
+
+            "Warwick",
+            "MonkeyKing",
+            "Xayah",
+            "Xerath",
+            "XinZhao",
+
+            "Yasuo",
+            "Yone",
+            "Yorick",
+            "Yunara",
+            "Yuumi",
+
+            "Zac",
+            "Zed",
+            "Zeri",
+            "Ziggs",
+            "Zilean",
+            "Zoe",
+            "Zyra"
+
+        ];
+
+        /* =====================================================
+           NOMES
+        ===================================================== */
+
+        const championNames = {
+
+            AurelionSol: "Aurelion Sol",
+            Belveth: "Bel'Veth",
+            DrMundo: "Dr. Mundo",
+            JarvanIV: "Jarvan IV",
+            Kaisa: "Kai'Sa",
+            Khazix: "Kha'Zix",
+            KogMaw: "Kog'Maw",
+            Leblanc: "LeBlanc",
+            LeeSin: "Lee Sin",
+            MasterYi: "Master Yi",
+            MissFortune: "Miss Fortune",
+            MonkeyKing: "Wukong",
+            RekSai: "Rek'Sai",
+            RenataGlasc: "Renata Glasc",
+            TahmKench: "Tahm Kench",
+            TwistedFate: "Twisted Fate",
+            XinZhao: "Xin Zhao",
+            Velkoz: "Vel'Koz"
+
+        };
+
+        /* =====================================================
+           ORDEM DAS LANES
+        ===================================================== */
+
+        const laneOrder = [
+
+            "Top",
+            "Jungle",
+            "Mid",
+            "ADC",
+            "Support"
+
+        ];
+
+        /* =====================================================
+           INICIALIZAÇÃO
+        ===================================================== */
+
+        document.addEventListener(
+            "DOMContentLoaded",
+            () => {
+
+                loadSettings();
+
+                renderChampions();
+
+            }
+        );
+
+        /* =====================================================
+           CAMPEÕES
+        ===================================================== */
+
+        function renderChampions() {
+
+            const container =
+                document.getElementById(
+                    "championList"
+                );
+
+            container.innerHTML = "";
+
+            const excluded =
+                JSON.parse(
+                    localStorage.getItem(
+                        "excludedChampions"
+                    ) || "[]"
+                );
+
+            champions.forEach(champion => {
+
+                const wrapper =
+                    document.createElement(
+                        "label"
+                    );
+
+                wrapper.className =
+                    "champion-option";
+
+                const checkbox =
+                    document.createElement(
+                        "input"
+                    );
+
+                checkbox.type = "checkbox";
+
+                checkbox.value = champion;
+
+                checkbox.checked =
+                    excluded.includes(
+                        champion
+                    );
+
+                checkbox.onchange =
+                    saveExcludedChampions;
+
+                const image =
+                    document.createElement(
+                        "img"
+                    );
+
+                image.src =
+                    IMAGE_URL +
+                    champion +
+                    ".png";
+
+                image.onerror = () => {
+
+                    image.style.display =
+                        "none";
+
+                };
+
+                const name =
+                    document.createElement(
+                        "span"
+                    );
+
+                name.textContent =
+                    championNames[champion]
+                    || champion;
+
+                wrapper.appendChild(
+                    checkbox
+                );
+
+                wrapper.appendChild(
+                    image
+                );
+
+                wrapper.appendChild(
+                    name
+                );
+
+                container.appendChild(
+                    wrapper
+                );
+
+            });
+
+        }
+
+        /* =====================================================
+           EXCLUSÕES
+        ===================================================== */
+
+        function saveExcludedChampions() {
+
+            const checked =
+                [
+                    ...document.querySelectorAll(
+                        "#championList input:checked"
+                    )
+                ].map(
+                    input => input.value
+                );
+
+            localStorage.setItem(
+                "excludedChampions",
+                JSON.stringify(checked)
+            );
+
+        }
+
+        /* =====================================================
+           PESQUISA
+        ===================================================== */
+
+        function filterChampions() {
+
+            const search =
+                document
+                    .getElementById(
+                        "championSearch"
+                    )
+                    .value
+                    .toLowerCase();
+
+            document
+                .querySelectorAll(
+                    ".champion-option"
+                )
+                .forEach(element => {
+
+                    const text =
+                        element.textContent
+                            .toLowerCase();
+
+                    element.style.display =
+                        text.includes(search)
+                            ? "flex"
+                            : "none";
+
+                });
+
+        }
+
+        /* =====================================================
+           FULL RANDOM
+        ===================================================== */
+
+        function toggleLanes() {
+
+            const fullRandom =
+                document.getElementById(
+                    "fullRandom"
+                ).checked;
+
+            document
+                .querySelectorAll(
+                    "#laneContainer input"
+                )
+                .forEach(input => {
+
+                    input.disabled =
+                        fullRandom;
+
+                });
+
+        }
+
+        /* =====================================================
+           CONFIGURAÇÕES
+        ===================================================== */
+
+        function saveSettings() {
+
+            const remember =
+                document.getElementById(
+                    "rememberNoRepeat"
+                ).checked;
+
+            if (!remember) {
+
+                localStorage.removeItem(
+                    "noRepeat"
+                );
+
+                return;
+
+            }
+
+            localStorage.setItem(
+                "noRepeat",
+                document.getElementById(
+                    "noRepeat"
+                ).checked
+            );
+
+        }
+
+        function loadSettings() {
+
+            const saved =
+                localStorage.getItem(
+                    "noRepeat"
+                );
+
+            if (saved !== null) {
+
+                document.getElementById(
+                    "rememberNoRepeat"
+                ).checked = true;
+
+                document.getElementById(
+                    "noRepeat"
+                ).checked =
+                    saved === "true";
+
+            }
+
+        }
+
+        /* =====================================================
+           UTILITÁRIOS
+        ===================================================== */
+
+        function randomItem(array) {
+
+            return array[
+                Math.floor(
+                    Math.random() *
+                    array.length
+                )
+            ];
+
+        }
+
+        function shuffle(array) {
+
+            const result =
+                [...array];
+
+            for (
+                let i = result.length - 1;
+                i > 0;
+                i--
+            ) {
+
+                const j =
+                    Math.floor(
+                        Math.random() *
+                        (i + 1)
+                    );
+
+                [
+                    result[i],
+                    result[j]
+                ] = [
+                        result[j],
+                        result[i]
+                    ];
+
+            }
+
+            return result;
+
+        }
+
+        /* =====================================================
+           SORTEIO PRINCIPAL
+        ===================================================== */
+
+        async function sortear() {
+
+            const button =
+                document.getElementById(
+                    "sortButton"
+                );
+
+            /*
+             * Evita clicar duas vezes
+             */
+
+            button.disabled = true;
+
+            try {
+
+                /*
+                ---------------------------------------------
+                JOGADORES
+                ---------------------------------------------
+                */
+
+                const players =
+                    [
+                        ...document.querySelectorAll(
+                            ".player-input"
+                        )
+                    ]
+                        .map(
+                            input =>
+                                input.value.trim()
+                        )
+                        .filter(
+                            name =>
+                                name.length > 0
+                        );
+
+                if (players.length === 0) {
+
+                    alert(
+                        "Informe pelo menos um jogador."
+                    );
+
+                    return;
+
+                }
+
+                /*
+                ---------------------------------------------
+                LANES
+                ---------------------------------------------
+                */
+
+                const fullRandom =
+                    document.getElementById(
+                        "fullRandom"
+                    ).checked;
+
+                let selectedLanes = [];
+
+                if (fullRandom) {
+
+                    selectedLanes =
+                        shuffle(
+                            laneOrder
+                        ).slice(
+                            0,
+                            players.length
+                        );
+
+                } else {
+
+                    selectedLanes =
+                        [
+                            ...document.querySelectorAll(
+                                "#laneContainer input:checked"
+                            )
+                        ]
+                            .map(
+                                input =>
+                                    input.value
+                            );
+
+                    if (
+                        selectedLanes.length
+                        !== players.length
+                    ) {
+
+                        alert(
+                            `Você informou ${players.length} jogador(es), ` +
+                            `então deve selecionar exatamente ` +
+                            `${players.length} lane(s).`
+                        );
+
+                        return;
+
+                    }
+
+                }
+
+                /*
+                ---------------------------------------------
+                ORGANIZA AS LANES
+                SEMPRE TOP → JUNGLE → MID → ADC → SUPPORT
+                ---------------------------------------------
+                */
+
+                selectedLanes.sort(
+                    (a, b) =>
+                        laneOrder.indexOf(a)
+                        -
+                        laneOrder.indexOf(b)
+                );
+
+                /*
+                ---------------------------------------------
+                CAMPEÕES EXCLUÍDOS
+                ---------------------------------------------
+                */
+
+                const excluded =
+                    JSON.parse(
+                        localStorage.getItem(
+                            "excludedChampions"
+                        ) || "[]"
+                    );
+
+                /*
+                ---------------------------------------------
+                CAMPEÕES DISPONÍVEIS
+                ---------------------------------------------
+                */
+
+                let available =
+                    champions.filter(
+                        champion =>
+                            !excluded.includes(
+                                champion
+                            )
+                    );
+
+                /*
+                ---------------------------------------------
+                NÃO REPETIR
+                ---------------------------------------------
+                */
+
+                const noRepeat =
+                    document.getElementById(
+                        "noRepeat"
+                    ).checked;
+
+                if (
+                    noRepeat &&
+                    available.length < players.length
+                ) {
+
+                    alert(
+                        "Não existem campeões suficientes disponíveis para esse sorteio."
+                    );
+
+                    return;
+
+                }
+
+                /*
+                ---------------------------------------------
+                CRIA RESULTADOS
+                ---------------------------------------------
+                */
+
+                const results = [];
+
+                /*
+                ---------------------------------------------
+                ASSOCIA PLAYER + LANE
+                ---------------------------------------------
+                */
+
+                selectedLanes.forEach(
+                    (lane, index) => {
+
+                        let champion;
+
+                        if (noRepeat) {
+
+                            const randomIndex =
+                                Math.floor(
+                                    Math.random()
+                                    *
+                                    available.length
+                                );
+
+                            champion =
+                                available[
+                                randomIndex
+                                ];
+
+                            available.splice(
+                                randomIndex,
+                                1
+                            );
+
+                        } else {
+
+                            champion =
+                                randomItem(
+                                    available
+                                );
+
+                        }
+
+                        results.push({
+
+                            player:
+                                players[index],
+
+                            lane:
+                                lane,
+
+                            champion:
+                                champion
+
+                        });
+
+                    }
+                );
+
+                /*
+                ---------------------------------------------
+                ORDENA RESULTADOS
+                ---------------------------------------------
+                */
+
+                results.sort(
+                    (a, b) =>
+                        laneOrder.indexOf(
+                            a.lane
+                        )
+                        -
+                        laneOrder.indexOf(
+                            b.lane
+                        )
+                );
+
+                /*
+                ---------------------------------------------
+                ANIMAÇÃO
+                ---------------------------------------------
+                */
+
+                await animateResults(
+                    results
+                );
+
+            } finally {
+
+                button.disabled = false;
+
+            }
+
+        }
+
+        /* =====================================================
+           ANIMAÇÃO DOS RESULTADOS
+        ===================================================== */
+
+        async function animateResults(
+            results
+        ) {
+
+            const container =
+                document.getElementById(
+                    "results"
+                );
+
+            container.innerHTML = "";
+
+            /*
+             * Cria os cards inicialmente
+             */
+
+            results.forEach(result => {
+
+                const card =
+                    document.createElement(
+                        "div"
+                    );
+
+                card.className =
+                    "result";
+
+                card.dataset.lane =
+                    result.lane;
+
+                card.innerHTML = `
+
+            <div class="lane-name">
+                ${result.lane}
+            </div>
+
+            <div class="shuffle-container">
+
+                <div class="dice">
+                    🎲
+                </div>
+
+                <img
+                    class="shuffle-image"
+                    src="${IMAGE_URL}${randomItem(champions)}.png"
+                >
+
+                <div class="shuffle-text">
+                    Sorteando...
+                </div>
+
+            </div>
+
+        `;
+
+                container.appendChild(
+                    card
+                );
+
+            });
+
+            /*
+             * Revela um por um
+             */
+
+            for (
+                let i = 0;
+                i < results.length;
+                i++
+            ) {
+
+                await shuffleAnimation(
+                    container.children[i],
+                    results[i]
+                );
+
+            }
+
+        }
+
+        /* =====================================================
+           ANIMAÇÃO INDIVIDUAL
+        ===================================================== */
+
+        function shuffleAnimation(
+            card,
+            result
+        ) {
+
+            return new Promise(
+                resolve => {
+
+                    const image =
+                        card.querySelector(
+                            ".shuffle-image"
+                        );
+
+                    const text =
+                        card.querySelector(
+                            ".shuffle-text"
+                        );
+
+                    const dice =
+                        card.querySelector(
+                            ".dice"
+                        );
+
+                    /*
+                     * Duração do shuffle
+                     */
+
+                    const duration = 1400;
+
+                    const intervalTime = 100;
+
+                    /*
+                     * Troca as imagens rapidamente
+                     */
+
+                    const interval =
+                        setInterval(
+                            () => {
+
+                                const randomChampion =
+                                    randomItem(
+                                        champions
+                                    );
+
+                                image.src =
+                                    IMAGE_URL +
+                                    randomChampion +
+                                    ".png";
+
+                            },
+                            intervalTime
+                        );
+
+                    /*
+                     * Depois revela o campeão
+                     */
+
+                    setTimeout(
+                        () => {
+
+                            clearInterval(
+                                interval
+                            );
+
+                            image.src =
+                                IMAGE_URL +
+                                result.champion +
+                                ".png";
+
+                            image.classList.remove(
+                                "shuffle-image"
+                            );
+
+                            dice.style.display =
+                                "none";
+
+                            text.innerHTML = `
+                        <strong>
+                            ${result.player}
+                        </strong>
+                    `;
+
+                            /*
+                             * Adiciona nome do campeão
+                             */
+
+                            const championName =
+                                document.createElement(
+                                    "div"
+                                );
+
+                            championName.className =
+                                "champion";
+
+                            championName.textContent =
+                                championNames[
+                                result.champion
+                                ]
+                                ||
+                                result.champion;
+
+                            card
+                                .querySelector(
+                                    ".shuffle-container"
+                                )
+                                .appendChild(
+                                    championName
+                                );
+
+                            resolve();
+
+                        },
+                        duration
+                    );
+
+                }
+            );
+
+        }
+
+    </script>
+
+</body>
+
+</html>
+```
