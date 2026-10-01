@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="pt-BR">
 
@@ -1123,6 +1124,29 @@
         ];
 
         /* =====================================================
+           SOM DO SORTEIO
+        ===================================================== */
+
+        const championSound = new Audio("som bom.mp3");
+
+        championSound.preload = "auto";
+
+        function playChampionSound() {
+
+            championSound.currentTime = 0;
+
+            championSound.play().catch(error => {
+
+                console.log(
+                    "Não foi possível reproduzir o som:",
+                    error
+                );
+
+            });
+
+        }
+
+        /* =====================================================
            INICIALIZAÇÃO
         ===================================================== */
 
@@ -1827,6 +1851,8 @@
                                 IMAGE_URL +
                                 result.champion +
                                 ".png";
+
+                            playChampionSound();
 
                             image.classList.remove(
                                 "shuffle-image"
