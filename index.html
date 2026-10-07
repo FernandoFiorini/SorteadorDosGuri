@@ -242,6 +242,61 @@
 
         .info { color: #8291a2; font-size: 13px; margin-top: 10px; }
 
+        /* HISTÓRICO DE PARTIDAS */
+        .history-header { display: flex; justify-content: space-between; align-items: center; gap: 10px; margin-bottom: 12px; }
+
+        .history-header h2 { margin: 0; }
+
+        .history-header .mini-btn { margin-left: 0; }
+
+        .history-list { max-height: 300px; overflow-y: auto; padding-right: 5px; }
+
+        .history-item {
+            background: #09111a;
+            border: 1px solid #253648;
+            border-radius: 8px;
+            padding: 10px 12px;
+            margin-bottom: 8px;
+            font-size: 14px;
+        }
+
+        .history-item .when { color: #687789; font-size: 12px; margin-bottom: 6px; }
+
+        .history-item .entry { display: inline-block; margin: 2px 12px 2px 0; }
+
+        .history-item .entry .l { color: #8e9aaa; text-transform: uppercase; font-size: 12px; }
+
+        .history-item .entry .c { color: #c8aa6e; }
+
+        /* ROTAÇÃO DE LANES */
+        .rotation-status { color: #c8aa6e; font-size: 13px; margin: 2px 0 10px 28px; }
+
+        .mini-btn {
+            background: #09111a;
+            border: 1px solid #304255;
+            color: #9ba7b5;
+            padding: 7px 12px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 13px;
+            margin-left: 28px;
+            transition: 0.2s;
+        }
+
+        .mini-btn:hover { border-color: #c8aa6e; color: #c8aa6e; }
+
+        .notice {
+            display: none;
+            background: rgba(200, 170, 110, 0.12);
+            border: 1px solid #c8aa6e;
+            color: #e8d3a0;
+            padding: 12px 15px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            font-size: 14px;
+            animation: aparecer 0.4s ease;
+        }
+
         @media (max-width: 900px) {
             .results { grid-template-columns: repeat(3, 1fr); }
             .players { grid-template-columns: repeat(3, 1fr); }
@@ -329,6 +384,14 @@
             </div>
 
             <div class="setting">
+                <input type="checkbox" id="noRepeatLanes" onchange="onRotationToggle()">
+                <label for="noRepeatLanes">Não repetir lanes entre partidas (rotação)</label>
+            </div>
+
+            <div class="rotation-status" id="rotationStatus"></div>
+            <button class="mini-btn" id="resetRotationBtn" type="button" onclick="resetRotation(true)">↺ Resetar rotação</button>
+
+            <div class="setting">
                 <input type="checkbox" id="rememberNoRepeat" onchange="saveSettings()">
                 <label for="rememberNoRepeat">Salvar esta configuração no navegador</label>
             </div>
@@ -358,9 +421,21 @@
         <div class="card">
             <h2>🎯 Resultado</h2>
 
+            <div id="rotationNotice" class="notice"></div>
+
             <div id="results" class="results">
                 <div class="empty">O resultado aparecerá aqui.</div>
             </div>
+        </div>
+
+        <!-- HISTÓRICO -->
+        <div class="card">
+            <div class="history-header">
+                <h2>🕑 Histórico das últimas partidas</h2>
+                <button class="mini-btn" type="button" onclick="clearMatchHistory()">🗑 Limpar histórico</button>
+            </div>
+
+            <div id="matchHistory" class="history-list"></div>
         </div>
 
     </div>
@@ -511,7 +586,14 @@
 
         document.addEventListener("DOMContentLoaded", () => {
             loadSettings();
+            loadRotationSettings();
+            renderMatchHistory();
             renderChampions();
+
+            /* Atualiza o status da rotação quando os nomes mudam */
+            document.querySelectorAll(".player-input").forEach(input => {
+                input.addEventListener("input", updateRotationStatus);
+            });
         });
 
         /* =====================================================
@@ -661,6 +743,287 @@
         }
 
         /* =====================================================
+           ROTAÇÃO DE LANES (não repetir lane entre partidas)
+
+           Guarda, para cada jogador, as lanes que ele já jogou
+           no ciclo atual. A cada sorteio, cada um recebe uma lane
+           que ainda não jogou. Quando não for mais possível
+           (ex.: 3 jogadores, 4ª partida), avisa e reinicia o ciclo.
+        ===================================================== */
+
+        const ROTATION_KEY = "laneRotation";
+
+        function emptyRotation() {
+            return { count: 0, history: {} };
+        }
+
+        function loadRotation() {
+            try {
+                const saved = JSON.parse(localStorage.getItem(ROTATION_KEY));
+                if (saved && saved.history) return saved;
+            } catch (e) { /* ignora */ }
+            return null;
+        }
+
+        function saveRotation(state) {
+            localStorage.setItem(ROTATION_KEY, JSON.stringify(state));
+        }
+
+        function getCurrentPlayers() {
+            return [...document.querySelectorAll(".player-input")]
+                .map(input => input.value.trim())
+                .filter(name => name.length > 0);
+        }
+
+        /* Tenta dar a cada jogador uma lane diferente que ele ainda não jogou
+           (backtracking; com no máximo 5 jogadores é instantâneo).
+           Retorna a lista de pares ou null se for impossível. */
+        function findRotationMatch(players, pool, history, randomize) {
+
+            const pairs = [];
+            const used = new Set();
+
+            function assign(i) {
+
+                if (i === players.length) return true;
+
+                const played = history[players[i]] || [];
+
+                const candidates = (randomize ? shuffle(pool) : pool)
+                    .filter(lane => !played.includes(lane) && !used.has(lane));
+
+                for (const lane of candidates) {
+
+                    used.add(lane);
+                    pairs.push({ player: players[i], lane: lane });
+
+                    if (assign(i + 1)) return true;
+
+                    pairs.pop();
+                    used.delete(lane);
+
+                }
+
+                return false;
+
+            }
+
+            return assign(0) ? pairs : null;
+
+        }
+
+        function assignLanesWithRotation(players, pool, randomize) {
+
+            /* O histórico fica salvo no navegador e só é limpo quando o
+               ciclo completa ou quando o usuário clica em "Resetar rotação" */
+            let state = loadRotation() || emptyRotation();
+
+            let wasReset = false;
+
+            let pairs = findRotationMatch(players, pool, state.history, randomize);
+
+            /* Não há mais como evitar repetição -> reseta o ciclo */
+            if (!pairs) {
+                wasReset = state.count > 0;
+                state = emptyRotation();
+                pairs = findRotationMatch(players, pool, state.history, randomize);
+            }
+
+            /* Registra as lanes desta partida */
+            pairs.forEach(({ player, lane }) => {
+                if (!state.history[player]) state.history[player] = [];
+                state.history[player].push(lane);
+            });
+
+            state.count++;
+
+            saveRotation(state);
+
+            return { pairs: pairs, wasReset: wasReset, count: state.count };
+
+        }
+
+        function resetRotation(manual) {
+
+            localStorage.removeItem(ROTATION_KEY);
+
+            hideRotationNotice();
+            updateRotationStatus();
+
+            if (manual) {
+                showRotationNotice("↺ Rotação resetada. A próxima partida começa um novo ciclo.");
+            }
+
+        }
+
+        function showRotationNotice(message) {
+            const notice = document.getElementById("rotationNotice");
+            notice.textContent = message;
+            notice.style.display = "block";
+        }
+
+        function hideRotationNotice() {
+            const notice = document.getElementById("rotationNotice");
+            notice.style.display = "none";
+            notice.textContent = "";
+        }
+
+        function updateRotationStatus() {
+
+            const status = document.getElementById("rotationStatus");
+            const button = document.getElementById("resetRotationBtn");
+            const enabled = document.getElementById("noRepeatLanes").checked;
+
+            status.style.display = button.style.display = enabled ? "" : "none";
+
+            if (!enabled) return;
+
+            const players = getCurrentPlayers();
+            const state = loadRotation();
+
+            if (!state || state.count === 0) {
+                status.textContent = "Rotação nova: nenhuma partida registrada ainda.";
+                return;
+            }
+
+            const fullRandom = document.getElementById("fullRandom").checked;
+
+            /* No modo manual o ciclo tem exatamente "nº de jogadores" partidas */
+            if (!fullRandom && state.count >= players.length) {
+                status.textContent =
+                    `Rotação completa (${state.count} partidas). ` +
+                    `O próximo sorteio vai resetar o ciclo.`;
+            } else if (!fullRandom) {
+                status.textContent =
+                    `Partidas no ciclo: ${state.count} de ${players.length}.`;
+            } else {
+                status.textContent = `Partidas no ciclo: ${state.count}.`;
+            }
+
+        }
+
+        function onRotationToggle() {
+            localStorage.setItem(
+                "noRepeatLanes",
+                document.getElementById("noRepeatLanes").checked
+            );
+            updateRotationStatus();
+        }
+
+        function loadRotationSettings() {
+            document.getElementById("noRepeatLanes").checked =
+                localStorage.getItem("noRepeatLanes") === "true";
+            updateRotationStatus();
+        }
+
+        /* =====================================================
+           HISTÓRICO DAS ÚLTIMAS PARTIDAS
+        ===================================================== */
+
+        const HISTORY_KEY = "matchHistory";
+        const HISTORY_LIMIT = 20;
+
+        function loadMatchHistory() {
+            try {
+                const saved = JSON.parse(localStorage.getItem(HISTORY_KEY));
+                return Array.isArray(saved) ? saved : [];
+            } catch (e) {
+                return [];
+            }
+        }
+
+        function addMatchToHistory(results) {
+
+            const history = loadMatchHistory();
+
+            history.unshift({
+                time: Date.now(),
+                entries: results.map(r => ({
+                    player: r.player,
+                    lane: r.lane,
+                    champion: r.champion
+                }))
+            });
+
+            localStorage.setItem(
+                HISTORY_KEY,
+                JSON.stringify(history.slice(0, HISTORY_LIMIT))
+            );
+
+            renderMatchHistory();
+
+        }
+
+        function renderMatchHistory() {
+
+            const container = document.getElementById("matchHistory");
+
+            const history = loadMatchHistory();
+
+            container.innerHTML = "";
+
+            if (history.length === 0) {
+                const empty = document.createElement("div");
+                empty.className = "empty";
+                empty.textContent = "Nenhuma partida sorteada ainda.";
+                container.appendChild(empty);
+                return;
+            }
+
+            history.forEach(match => {
+
+                const item = document.createElement("div");
+                item.className = "history-item";
+
+                const when = document.createElement("div");
+                when.className = "when";
+                when.textContent = new Date(match.time).toLocaleString("pt-BR");
+                item.appendChild(when);
+
+                match.entries.forEach(entry => {
+
+                    const span = document.createElement("span");
+                    span.className = "entry";
+
+                    const lane = document.createElement("span");
+                    lane.className = "l";
+                    lane.textContent = entry.lane + ": ";
+
+                    const player = document.createElement("strong");
+                    player.textContent = entry.player;
+
+                    const champion = document.createElement("span");
+                    champion.className = "c";
+                    champion.textContent =
+                        " (" + (championNames[entry.champion] || entry.champion) + ")";
+
+                    span.appendChild(lane);
+                    span.appendChild(player);
+                    span.appendChild(champion);
+
+                    item.appendChild(span);
+
+                });
+
+                container.appendChild(item);
+
+            });
+
+        }
+
+        function clearMatchHistory() {
+
+            if (loadMatchHistory().length === 0) return;
+
+            if (!confirm("Limpar o histórico das partidas?")) return;
+
+            localStorage.removeItem(HISTORY_KEY);
+
+            renderMatchHistory();
+
+        }
+
+        /* =====================================================
            SORTEIO PRINCIPAL
         ===================================================== */
 
@@ -695,11 +1058,17 @@
 
                 const fullRandom = document.getElementById("fullRandom").checked;
 
+                const noRepeatLanes = document.getElementById("noRepeatLanes").checked;
+
                 let selectedLanes = [];
 
                 if (fullRandom) {
 
-                    selectedLanes = shuffle(laneOrder).slice(0, players.length);
+                    /* Com rotação, todas as lanes entram no "pool" e o
+                       histórico decide quais cada jogador pode receber */
+                    selectedLanes = noRepeatLanes
+                        ? [...laneOrder]
+                        : shuffle(laneOrder).slice(0, players.length);
 
                 } else {
 
@@ -752,9 +1121,43 @@
 
                 /* ---------- ASSOCIA PLAYER + LANE + CAMPEÃO ---------- */
 
+                /* ---------- PARES JOGADOR + LANE ---------- */
+
+                let pairs;
+
+                hideRotationNotice();
+
+                if (noRepeatLanes) {
+
+                    const rotation = assignLanesWithRotation(
+                        players,
+                        selectedLanes,
+                        shufflePlayers || fullRandom
+                    );
+
+                    pairs = rotation.pairs;
+
+                    if (rotation.wasReset) {
+                        showRotationNotice(
+                            "⚠️ Todos já passaram por todas as lanes desta rotação. " +
+                            "A rotação foi resetada e esta partida inicia um novo ciclo."
+                        );
+                    }
+
+                    updateRotationStatus();
+
+                } else {
+
+                    pairs = selectedLanes.map((lane, index) => ({
+                        player: orderedPlayers[index],
+                        lane: lane
+                    }));
+
+                }
+
                 const results = [];
 
-                selectedLanes.forEach((lane, index) => {
+                pairs.forEach(({ player, lane }) => {
 
                     let champion;
 
@@ -773,7 +1176,7 @@
                     }
 
                     results.push({
-                        player: orderedPlayers[index],
+                        player: player,
                         lane: lane,
                         champion: champion
                     });
@@ -789,6 +1192,8 @@
                 /* ---------- ANIMAÇÃO ---------- */
 
                 await animateResults(results);
+
+                addMatchToHistory(results);
 
             } finally {
 
