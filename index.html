@@ -867,17 +867,19 @@
 
         /* =====================================================
            SOM DO SORTEIO (POR LANE)
-           Top / Mid -> nice.mp3
-           Jungle    -> cachorro.mp3
-           ADC / Sup -> risada.mp3
+           Top - > oloko.mp3
+            Mid -> aluqix.mp3
+           Jungle    -> aluqix.mp3
+           ADC -> risada.mp3
+           Sup -> taassistindo.mp3
         ===================================================== */
 
         const laneSounds = {
-            Top: new Audio("nice.mp3"),
-            Mid: new Audio("nice.mp3"),
+            Top: new Audio("oloko.mp3"),
+            Mid: new Audio("aluqix.mp3"),
             Jungle: new Audio("cachorro.mp3"),
             ADC: new Audio("risada.mp3"),
-            Support: new Audio("risada.mp3")
+            Support: new Audio("taassistindo.mp3")
         };
 
         Object.values(laneSounds).forEach(sound => {
@@ -1937,7 +1939,7 @@
                 const text = card.querySelector(".shuffle-text");
                 const dice = card.querySelector(".dice");
 
-                const duration = 1400;
+                const duration = 3000;
                 const intervalTime = 100;
 
                 /* Troca as imagens rapidamente */
