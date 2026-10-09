@@ -1,6 +1,6 @@
 # 🎲 LoL Randomizer — Sorteador dos Guri
 
-### O matchmaking falhou. A amizade também.
+### Quer perder neurônio, é aqui mesmo.
 
 Cansou de jogar sempre com os mesmos campeões? Só escuta que teu amigo fala, jogo muito com esse boneco?
 
