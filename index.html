@@ -19,6 +19,26 @@
             min-height: 100vh;
         }
 
+        .rodape {
+            text-align: center;
+            padding: 20px 10px;
+            margin-top: 30px;
+            font-size: 14px;
+            color: #aaa;
+        }
+
+        .rodape a {
+            color: #c8aa6e;
+            text-decoration: none;
+            font-weight: bold;
+            transition: color 0.2s;
+        }
+
+        .rodape a:hover {
+            color: #f0e6d2;
+            text-decoration: underline;
+        }
+
         button,
         input {
             font-family: inherit;
@@ -908,7 +928,7 @@
                     sound.muted = false;
                 };
                 if (p && p.then) {
-                    p.then(restore).catch(() => { sound.muted = false; });
+                    p.then(restore).catch(() => {sound.muted = false;});
                 } else {
                     restore();
                 }
@@ -1053,7 +1073,7 @@
 
             const done = () => {
                 button.textContent = "✅ Copiado!";
-                setTimeout(() => { button.textContent = "📋 Copiar link"; }, 1800);
+                setTimeout(() => {button.textContent = "📋 Copiar link";}, 1800);
             };
 
             if (navigator.clipboard && navigator.clipboard.writeText) {
@@ -1298,7 +1318,7 @@
 
                 const image = document.createElement("img");
                 image.src = IMAGE_URL + champion + ".png";
-                image.onerror = () => { image.style.display = "none"; };
+                image.onerror = () => {image.style.display = "none";};
 
                 const name = document.createElement("span");
                 name.textContent = championNames[champion] || champion;
@@ -1429,14 +1449,14 @@
         const ROTATION_KEY = "laneRotation";
 
         function emptyRotation() {
-            return { count: 0, history: {} };
+            return {count: 0, history: {}};
         }
 
         function loadRotation() {
             try {
                 const saved = JSON.parse(localStorage.getItem(ROTATION_KEY));
                 if (saved && saved.history) return saved;
-            } catch (e) { /* ignora */ }
+            } catch (e) { /* ignora */}
             return null;
         }
 
@@ -1470,7 +1490,7 @@
                 for (const lane of candidates) {
 
                     used.add(lane);
-                    pairs.push({ player: players[i], lane: lane });
+                    pairs.push({player: players[i], lane: lane});
 
                     if (assign(i + 1)) return true;
 
@@ -1505,7 +1525,7 @@
             }
 
             /* Registra as lanes desta partida */
-            pairs.forEach(({ player, lane }) => {
+            pairs.forEach(({player, lane}) => {
                 if (!state.history[player]) state.history[player] = [];
                 state.history[player].push(lane);
             });
@@ -1514,7 +1534,7 @@
 
             saveRotation(state);
 
-            return { pairs: pairs, wasReset: wasReset, count: state.count };
+            return {pairs: pairs, wasReset: wasReset, count: state.count};
 
         }
 
@@ -1832,7 +1852,7 @@
 
                 const results = [];
 
-                pairs.forEach(({ player, lane }) => {
+                pairs.forEach(({player, lane}) => {
 
                     let champion;
 
@@ -1987,5 +2007,10 @@
     </script>
 
 </body>
+
+<footer class="rodape">
+    <p>Desenvolvido por <a href="https://github.com/FernandoFiorini" target="_blank" rel="noopener noreferrer">Fernando
+            Fiorini</a></p>
+</footer>
 
 </html>
