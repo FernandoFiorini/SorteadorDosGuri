@@ -7,7 +7,9 @@
     <title>Sorteador dos guri</title>
 
     <style>
-        * { box-sizing: border-box; }
+        * {
+            box-sizing: border-box;
+        }
 
         body {
             margin: 0;
@@ -17,7 +19,10 @@
             min-height: 100vh;
         }
 
-        button, input { font-family: inherit; }
+        button,
+        input {
+            font-family: inherit;
+        }
 
         .container {
             width: 100%;
@@ -26,7 +31,10 @@
             padding: 30px 20px 60px;
         }
 
-        header { text-align: center; margin-bottom: 30px; }
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
 
         header h1 {
             margin: 0;
@@ -36,7 +44,10 @@
             letter-spacing: 2px;
         }
 
-        header p { color: #9ba7b5; margin-top: 8px; }
+        header p {
+            color: #9ba7b5;
+            margin-top: 8px;
+        }
 
         .card {
             background: rgba(13, 24, 36, 0.95);
@@ -47,10 +58,18 @@
             box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
         }
 
-        .card h2 { margin-top: 0; color: #c8aa6e; font-size: 20px; }
+        .card h2 {
+            margin-top: 0;
+            color: #c8aa6e;
+            font-size: 20px;
+        }
 
         /* JOGADORES */
-        .players { display: grid; grid-template-columns: repeat(5, 1fr); gap: 10px; }
+        .players {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 10px;
+        }
 
         .player-input {
             background: #09111a;
@@ -62,14 +81,24 @@
             width: 100%;
         }
 
-        .player-input:focus { border-color: #c8aa6e; }
+        .player-input:focus {
+            border-color: #c8aa6e;
+        }
 
         /* LANES */
-        .lanes { display: grid; grid-template-columns: repeat(5, 1fr); gap: 10px; }
+        .lanes {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 10px;
+        }
 
-        .lane { position: relative; }
+        .lane {
+            position: relative;
+        }
 
-        .lane input { display: none; }
+        .lane input {
+            display: none;
+        }
 
         .lane label {
             display: block;
@@ -82,21 +111,36 @@
             transition: 0.2s;
         }
 
-        .lane input:checked + label {
+        .lane input:checked+label {
             background: #173b55;
             border-color: #c8aa6e;
             color: #c8aa6e;
         }
 
         /* CONFIGURAÇÕES */
-        .setting { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
+        .setting {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 10px;
+        }
 
-        .setting input { width: 18px; height: 18px; accent-color: #c8aa6e; }
+        .setting input {
+            width: 18px;
+            height: 18px;
+            accent-color: #c8aa6e;
+        }
 
-        .setting label { cursor: pointer; }
+        .setting label {
+            cursor: pointer;
+        }
 
         /* CAMPEÕES */
-        .champion-controls { display: flex; gap: 10px; margin-bottom: 15px; }
+        .champion-controls {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
 
         .champion-controls input {
             flex: 1;
@@ -127,11 +171,19 @@
             cursor: pointer;
         }
 
-        .champion-option:hover { border-color: #c8aa6e; }
+        .champion-option:hover {
+            border-color: #c8aa6e;
+        }
 
-        .champion-option input { accent-color: #c8aa6e; }
+        .champion-option input {
+            accent-color: #c8aa6e;
+        }
 
-        .champion-option img { width: 32px; height: 32px; border-radius: 4px; }
+        .champion-option img {
+            width: 32px;
+            height: 32px;
+            border-radius: 4px;
+        }
 
         /* BOTÃO */
         .sortear {
@@ -149,12 +201,23 @@
             transition: 0.2s;
         }
 
-        .sortear:hover { filter: brightness(1.15); transform: translateY(-1px); }
+        .sortear:hover {
+            filter: brightness(1.15);
+            transform: translateY(-1px);
+        }
 
-        .sortear:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+        .sortear:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
 
         /* RESULTADOS */
-        .results { display: grid; grid-template-columns: repeat(5, 1fr); gap: 15px; }
+        .results {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 15px;
+        }
 
         .result {
             background: #09111a;
@@ -182,7 +245,11 @@
             margin-bottom: 8px;
         }
 
-        .result .player { margin-top: 10px; font-weight: bold; font-size: 18px; }
+        .result .player {
+            margin-top: 10px;
+            font-weight: bold;
+            font-size: 18px;
+        }
 
         .result .champion {
             color: #c8aa6e;
@@ -217,39 +284,97 @@
             letter-spacing: 1px;
         }
 
-        .dice { font-size: 40px; margin-bottom: 10px; animation: diceRoll 0.4s infinite; }
+        .dice {
+            font-size: 40px;
+            margin-bottom: 10px;
+            animation: diceRoll 0.4s infinite;
+        }
 
         @keyframes shufflePulse {
-            0% { transform: scale(0.95) rotate(-3deg); opacity: 0.7; }
-            50% { transform: scale(1.05) rotate(3deg); opacity: 1; }
-            100% { transform: scale(0.95) rotate(-3deg); opacity: 0.7; }
+            0% {
+                transform: scale(0.95) rotate(-3deg);
+                opacity: 0.7;
+            }
+
+            50% {
+                transform: scale(1.05) rotate(3deg);
+                opacity: 1;
+            }
+
+            100% {
+                transform: scale(0.95) rotate(-3deg);
+                opacity: 0.7;
+            }
         }
 
         @keyframes diceRoll {
-            0% { transform: rotate(0deg) scale(1); }
-            25% { transform: rotate(90deg) scale(1.1); }
-            50% { transform: rotate(180deg) scale(0.9); }
-            75% { transform: rotate(270deg) scale(1.1); }
-            100% { transform: rotate(360deg) scale(1); }
+            0% {
+                transform: rotate(0deg) scale(1);
+            }
+
+            25% {
+                transform: rotate(90deg) scale(1.1);
+            }
+
+            50% {
+                transform: rotate(180deg) scale(0.9);
+            }
+
+            75% {
+                transform: rotate(270deg) scale(1.1);
+            }
+
+            100% {
+                transform: rotate(360deg) scale(1);
+            }
         }
 
         @keyframes aparecer {
-            from { opacity: 0; transform: translateY(15px) scale(0.95); }
-            to { opacity: 1; transform: translateY(0) scale(1); }
+            from {
+                opacity: 0;
+                transform: translateY(15px) scale(0.95);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
         }
 
-        .empty { text-align: center; color: #687789; padding: 30px; }
+        .empty {
+            text-align: center;
+            color: #687789;
+            padding: 30px;
+        }
 
-        .info { color: #8291a2; font-size: 13px; margin-top: 10px; }
+        .info {
+            color: #8291a2;
+            font-size: 13px;
+            margin-top: 10px;
+        }
 
         /* HISTÓRICO DE PARTIDAS */
-        .history-header { display: flex; justify-content: space-between; align-items: center; gap: 10px; margin-bottom: 12px; }
+        .history-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 12px;
+        }
 
-        .history-header h2 { margin: 0; }
+        .history-header h2 {
+            margin: 0;
+        }
 
-        .history-header .mini-btn { margin-left: 0; }
+        .history-header .mini-btn {
+            margin-left: 0;
+        }
 
-        .history-list { max-height: 300px; overflow-y: auto; padding-right: 5px; }
+        .history-list {
+            max-height: 300px;
+            overflow-y: auto;
+            padding-right: 5px;
+        }
 
         .history-item {
             background: #09111a;
@@ -260,16 +385,33 @@
             font-size: 14px;
         }
 
-        .history-item .when { color: #687789; font-size: 12px; margin-bottom: 6px; }
+        .history-item .when {
+            color: #687789;
+            font-size: 12px;
+            margin-bottom: 6px;
+        }
 
-        .history-item .entry { display: inline-block; margin: 2px 12px 2px 0; }
+        .history-item .entry {
+            display: inline-block;
+            margin: 2px 12px 2px 0;
+        }
 
-        .history-item .entry .l { color: #8e9aaa; text-transform: uppercase; font-size: 12px; }
+        .history-item .entry .l {
+            color: #8e9aaa;
+            text-transform: uppercase;
+            font-size: 12px;
+        }
 
-        .history-item .entry .c { color: #c8aa6e; }
+        .history-item .entry .c {
+            color: #c8aa6e;
+        }
 
         /* ROTAÇÃO DE LANES */
-        .rotation-status { color: #c8aa6e; font-size: 13px; margin: 2px 0 10px 28px; }
+        .rotation-status {
+            color: #c8aa6e;
+            font-size: 13px;
+            margin: 2px 0 10px 28px;
+        }
 
         .mini-btn {
             background: #09111a;
@@ -283,7 +425,10 @@
             transition: 0.2s;
         }
 
-        .mini-btn:hover { border-color: #c8aa6e; color: #c8aa6e; }
+        .mini-btn:hover {
+            border-color: #c8aa6e;
+            color: #c8aa6e;
+        }
 
         .notice {
             display: none;
@@ -297,32 +442,178 @@
             animation: aparecer 0.4s ease;
         }
 
+        /* =====================================================
+           AO VIVO (HOST / ESPECTADOR)
+        ===================================================== */
+
+        .live-row {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .live-row input {
+            flex: 1;
+            min-width: 220px;
+            background: #09111a;
+            border: 1px solid #304255;
+            color: white;
+            padding: 12px;
+            border-radius: 6px;
+            outline: none;
+        }
+
+        .live-row .mini-btn {
+            margin-left: 0;
+        }
+
+        .live-status {
+            font-size: 13px;
+            margin-top: 12px;
+            color: #8291a2;
+        }
+
+        .live-dot {
+            display: inline-block;
+            width: 9px;
+            height: 9px;
+            border-radius: 50%;
+            background: #687789;
+            margin-right: 6px;
+        }
+
+        .live-dot.on {
+            background: #3ecf72;
+            box-shadow: 0 0 8px #3ecf72;
+        }
+
+        .live-dot.off {
+            background: #d9534f;
+        }
+
+        /* No modo espectador, esconde tudo que é do host */
+        body.viewer .host-only {
+            display: none;
+        }
+
+        body:not(.viewer) .viewer-only {
+            display: none;
+        }
+
+        .viewer-bar {
+            text-align: center;
+            font-size: 14px;
+            color: #9ba7b5;
+        }
+
+        .overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(5, 10, 16, 0.94);
+            z-index: 100;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .overlay-box {
+            max-width: 420px;
+            text-align: center;
+            background: rgba(13, 24, 36, 0.98);
+            border: 1px solid #c8aa6e;
+            border-radius: 14px;
+            padding: 30px 24px;
+        }
+
+        .overlay-box h2 {
+            color: #c8aa6e;
+            margin-top: 0;
+        }
+
+        .overlay-box p {
+            color: #9ba7b5;
+            font-size: 14px;
+        }
+
         @media (max-width: 900px) {
-            .results { grid-template-columns: repeat(3, 1fr); }
-            .players { grid-template-columns: repeat(3, 1fr); }
-            .lanes { grid-template-columns: repeat(3, 1fr); }
+            .results {
+                grid-template-columns: repeat(3, 1fr);
+            }
+
+            .players {
+                grid-template-columns: repeat(3, 1fr);
+            }
+
+            .lanes {
+                grid-template-columns: repeat(3, 1fr);
+            }
         }
 
         @media (max-width: 600px) {
-            header h1 { font-size: 27px; }
-            .players { grid-template-columns: 1fr; }
-            .lanes { grid-template-columns: repeat(2, 1fr); }
-            .results { grid-template-columns: repeat(2, 1fr); }
+            header h1 {
+                font-size: 27px;
+            }
+
+            .players {
+                grid-template-columns: 1fr;
+            }
+
+            .lanes {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .results {
+                grid-template-columns: repeat(2, 1fr);
+            }
         }
     </style>
 </head>
 
 <body>
 
+    <!-- ENTRADA DO ESPECTADOR (necessária para liberar o áudio) -->
+    <div class="overlay" id="viewerOverlay" style="display:none;">
+        <div class="overlay-box">
+            <h2>📺 Sorteio ao vivo</h2>
+            <p id="overlayText">Clique para entrar na sala e acompanhar o sorteio com som.</p>
+            <button class="sortear" id="joinButton" type="button">Entrar na sala</button>
+        </div>
+    </div>
+
     <div class="container">
 
         <header>
             <h1>LoL Randomizer</h1>
-            <p>Sorteie jogadores, lanes e campeões</p>
+            <p id="headerSubtitle">Sorteie jogadores, lanes e campeões</p>
         </header>
 
+        <!-- BARRA DO ESPECTADOR -->
+        <div class="card viewer-only">
+            <div class="viewer-bar" id="viewerStatus">
+                <span class="live-dot"></span>Conectando...
+            </div>
+        </div>
+
+        <!-- TRANSMISSÃO AO VIVO (HOST) -->
+        <div class="card host-only">
+            <h2>📡 Transmissão ao vivo</h2>
+
+            <div class="live-row">
+                <input type="text" id="roomLink" readonly placeholder="Gerando link da sala...">
+                <button class="mini-btn" type="button" id="copyLinkBtn" onclick="copyRoomLink()">📋 Copiar link</button>
+                <button class="mini-btn" type="button" id="newRoomBtn" onclick="createNewRoom()">🔄 Nova sala</button>
+            </div>
+
+            <div class="live-status" id="hostStatus">
+                <span class="live-dot"></span>Iniciando...
+            </div>
+
+            <div class="info">Envie o link para os amigos. Cada sorteio aparece para eles em tempo real.</div>
+        </div>
+
         <!-- JOGADORES -->
-        <div class="card">
+        <div class="card host-only">
             <h2>👥 Jogadores</h2>
 
             <div class="players">
@@ -337,7 +628,7 @@
         </div>
 
         <!-- LANES -->
-        <div class="card">
+        <div class="card host-only">
             <h2>⚔️ Lanes</h2>
 
             <div class="setting">
@@ -370,7 +661,7 @@
         </div>
 
         <!-- CONFIGURAÇÕES -->
-        <div class="card">
+        <div class="card host-only">
             <h2>⚙️ Configurações</h2>
 
             <div class="setting">
@@ -389,7 +680,8 @@
             </div>
 
             <div class="rotation-status" id="rotationStatus"></div>
-            <button class="mini-btn" id="resetRotationBtn" type="button" onclick="resetRotation(true)">↺ Resetar rotação</button>
+            <button class="mini-btn" id="resetRotationBtn" type="button" onclick="resetRotation(true)">↺ Resetar
+                rotação</button>
 
             <div class="setting">
                 <input type="checkbox" id="rememberNoRepeat" onchange="saveSettings()">
@@ -400,7 +692,7 @@
         </div>
 
         <!-- CAMPEÕES -->
-        <div class="card">
+        <div class="card host-only">
             <h2>🚫 Campeões excluídos</h2>
 
             <div class="champion-controls">
@@ -413,7 +705,7 @@
         </div>
 
         <!-- BOTÃO -->
-        <div class="card">
+        <div class="card host-only">
             <button class="sortear" id="sortButton" onclick="sortear()">🎲 Sortear</button>
         </div>
 
@@ -440,7 +732,29 @@
 
     </div>
 
+    <!-- FIREBASE (versão compat: funciona direto no navegador, sem build) -->
+    <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-database-compat.js"></script>
+
     <script>
+
+        /* =====================================================
+           CONFIGURAÇÃO DO FIREBASE
+           Cole aqui os dados do seu projeto
+           (Console Firebase → Configurações do projeto → Seus apps)
+        ===================================================== */
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyD6rjLg-HpCZIRNhjkZLzlIOjOqxKc2KUY",
+            authDomain: "sorteador-dos-guri.firebaseapp.com",
+            databaseURL: "https://sorteador-dos-guri-default-rtdb.firebaseio.com",
+            projectId: "sorteador-dos-guri",
+            storageBucket: "sorteador-dos-guri.firebasestorage.app",
+            messagingSenderId: "296192489526",
+            appId: "1:296192489526:web:420d195c7e34628f500097",
+            measurementId: "G-3TGJZF3BLS"
+        };
 
         /* =====================================================
            DATA DRAGON
@@ -580,20 +894,379 @@
             });
         }
 
+        /* Navegadores só liberam áudio depois de um clique.
+           O espectador clica em "Entrar na sala" e aqui "destravamos" os sons. */
+        function unlockAudio() {
+            Object.values(laneSounds).forEach(sound => {
+                sound.muted = true;
+                const p = sound.play();
+                const restore = () => {
+                    sound.pause();
+                    sound.currentTime = 0;
+                    sound.muted = false;
+                };
+                if (p && p.then) {
+                    p.then(restore).catch(() => { sound.muted = false; });
+                } else {
+                    restore();
+                }
+            });
+        }
+
+        /* =====================================================
+           TRANSMISSÃO AO VIVO (FIREBASE)
+
+           Estrutura no banco:
+           salas/CODIGO/hostUid   -> dono da sala
+           salas/CODIGO/sorteio   -> { id, results: [{player, lane, champion}] }
+        ===================================================== */
+
+        const ROOM_KEY = "roomCode";
+
+        const params = new URLSearchParams(location.search);
+        const rawRoom = (params.get("sala") || "").trim().toUpperCase();
+        const IS_VIEWER = rawRoom.length > 0;
+
+        const FIREBASE_READY = !firebaseConfig.apiKey.startsWith("COLE");
+
+        let db = null;
+        let roomCode = null;
+        let hostUid = null;
+        let liveReady = false;
+
+        function initFirebase() {
+            if (!FIREBASE_READY) return false;
+            if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
+            db = firebase.database();
+            return true;
+        }
+
+        function generateRoomCode() {
+            const chars = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
+            const bytes = new Uint8Array(6);
+            crypto.getRandomValues(bytes);
+            return [...bytes].map(b => chars[b % chars.length]).join("");
+        }
+
+        function roomUrl() {
+            return location.origin + location.pathname + "?sala=" + roomCode;
+        }
+
+        function setHostStatus(text, state) {
+            const el = document.getElementById("hostStatus");
+            el.innerHTML = "";
+            const dot = document.createElement("span");
+            dot.className = "live-dot" + (state ? " " + state : "");
+            el.appendChild(dot);
+            el.appendChild(document.createTextNode(text));
+        }
+
+        /* ---------- HOST ---------- */
+
+        async function initHost() {
+
+            if (!initFirebase()) {
+                setHostStatus(
+                    "Firebase não configurado — o sorteio funciona, mas sem transmissão.",
+                    "off"
+                );
+                document.getElementById("roomLink").placeholder =
+                    "Preencha o firebaseConfig no código para ativar";
+                return;
+            }
+
+            try {
+
+                const cred = await firebase.auth().signInAnonymously();
+                hostUid = cred.user.uid;
+
+                roomCode = localStorage.getItem(ROOM_KEY) || generateRoomCode();
+
+                await claimRoom();
+
+                liveReady = true;
+
+                document.getElementById("roomLink").value = roomUrl();
+
+                setHostStatus("Sala " + roomCode + " pronta. Aguardando o sorteio.", "on");
+
+            } catch (error) {
+
+                console.error(error);
+
+                setHostStatus(
+                    "Erro ao conectar ao Firebase: " + (error.code || error.message),
+                    "off"
+                );
+
+            }
+
+        }
+
+        /* Garante que a sala existe e pertence a este navegador.
+           Se pertencer a outro dono, gera um código novo. */
+        async function claimRoom() {
+
+            let ref = db.ref("salas/" + roomCode + "/hostUid");
+            let snap = await ref.get();
+
+            if (snap.exists() && snap.val() !== hostUid) {
+                roomCode = generateRoomCode();
+                ref = db.ref("salas/" + roomCode + "/hostUid");
+                snap = await ref.get();
+            }
+
+            if (!snap.exists()) {
+                await ref.set(hostUid);
+            }
+
+            localStorage.setItem(ROOM_KEY, roomCode);
+
+        }
+
+        async function createNewRoom() {
+
+            if (!liveReady) return;
+
+            if (!confirm("Criar uma nova sala? O link atual deixa de receber sorteios.")) return;
+
+            try {
+                roomCode = generateRoomCode();
+                localStorage.setItem(ROOM_KEY, roomCode);
+                await claimRoom();
+                document.getElementById("roomLink").value = roomUrl();
+                setHostStatus("Nova sala " + roomCode + " criada. Envie o novo link.", "on");
+            } catch (error) {
+                setHostStatus("Erro ao criar sala: " + (error.code || error.message), "off");
+            }
+
+        }
+
+        function copyRoomLink() {
+
+            const input = document.getElementById("roomLink");
+            const button = document.getElementById("copyLinkBtn");
+
+            if (!input.value) return;
+
+            const done = () => {
+                button.textContent = "✅ Copiado!";
+                setTimeout(() => { button.textContent = "📋 Copiar link"; }, 1800);
+            };
+
+            if (navigator.clipboard && navigator.clipboard.writeText) {
+                navigator.clipboard.writeText(input.value).then(done).catch(() => {
+                    input.select();
+                    document.execCommand("copy");
+                    done();
+                });
+            } else {
+                input.select();
+                document.execCommand("copy");
+                done();
+            }
+
+        }
+
+        /* Envia o resultado aos espectadores (chamado antes da animação
+           do host, para as duas animações começarem juntas). */
+        function broadcastResults(results) {
+
+            if (!liveReady) return;
+
+            const payload = {
+                id: Date.now() + "-" + Math.random().toString(36).slice(2, 8),
+                results: results.map(r => ({
+                    player: r.player,
+                    lane: r.lane,
+                    champion: r.champion
+                }))
+            };
+
+            db.ref("salas/" + roomCode + "/sorteio").set(payload)
+                .then(() => {
+                    setHostStatus("Sorteio enviado para a sala " + roomCode + ".", "on");
+                })
+                .catch(error => {
+                    console.error(error);
+                    setHostStatus(
+                        "Falha ao enviar o sorteio: " + (error.code || error.message),
+                        "off"
+                    );
+                });
+
+        }
+
+        /* ---------- ESPECTADOR ---------- */
+
+        function setViewerStatus(text, state) {
+            const el = document.getElementById("viewerStatus");
+            el.innerHTML = "";
+            const dot = document.createElement("span");
+            dot.className = "live-dot" + (state ? " " + state : "");
+            el.appendChild(dot);
+            el.appendChild(document.createTextNode(text));
+        }
+
+        function initViewer() {
+
+            document.body.classList.add("viewer");
+
+            document.getElementById("headerSubtitle").textContent =
+                "Acompanhe o sorteio ao vivo";
+
+            const overlay = document.getElementById("viewerOverlay");
+            const joinButton = document.getElementById("joinButton");
+
+            /* Código inválido ou Firebase ausente */
+            if (!/^[A-Z0-9]{4,12}$/.test(rawRoom)) {
+                overlay.style.display = "flex";
+                document.getElementById("overlayText").textContent =
+                    "Link de sala inválido.";
+                joinButton.style.display = "none";
+                return;
+            }
+
+            if (!initFirebase()) {
+                overlay.style.display = "flex";
+                document.getElementById("overlayText").textContent =
+                    "Este site ainda não está configurado para transmissão ao vivo.";
+                joinButton.style.display = "none";
+                return;
+            }
+
+            roomCode = rawRoom;
+
+            overlay.style.display = "flex";
+
+            joinButton.onclick = () => {
+                unlockAudio();
+                overlay.style.display = "none";
+                startListening();
+            };
+
+        }
+
+        let viewerFirstSnapshot = true;
+        let viewerLastId = null;
+        let viewerQueue = Promise.resolve();
+
+        function startListening() {
+
+            setViewerStatus("Conectando à sala " + roomCode + "...");
+
+            db.ref(".info/connected").on("value", snap => {
+                if (snap.val() === true) {
+                    setViewerStatus("Ao vivo — sala " + roomCode, "on");
+                } else {
+                    setViewerStatus("Reconectando...", "off");
+                }
+            });
+
+            db.ref("salas/" + roomCode + "/sorteio").on("value", snap => {
+
+                const data = snap.val();
+
+                /* Primeira leitura: mostra o último resultado sem animar */
+                if (viewerFirstSnapshot) {
+                    viewerFirstSnapshot = false;
+
+                    if (data && data.results) {
+                        viewerLastId = data.id;
+                        renderStaticResults(Object.values(data.results));
+                    }
+
+                    return;
+                }
+
+                if (!data || !data.results || data.id === viewerLastId) return;
+
+                viewerLastId = data.id;
+
+                const results = Object.values(data.results);
+
+                /* Enfileira para não sobrepor animações */
+                viewerQueue = viewerQueue
+                    .then(() => animateResults(results))
+                    .then(() => addMatchToHistory(results))
+                    .catch(error => console.error(error));
+
+            }, error => {
+                console.error(error);
+                setViewerStatus("Sem permissão para ler a sala (" + error.code + ")", "off");
+            });
+
+        }
+
+        /* Mostra um resultado já pronto, sem animação (quem entra no meio) */
+        function renderStaticResults(results) {
+
+            const container = document.getElementById("results");
+
+            container.innerHTML = "";
+
+            results.forEach(result => {
+
+                const card = document.createElement("div");
+                card.className = "result";
+
+                const lane = document.createElement("div");
+                lane.className = "lane-name";
+                lane.textContent = result.lane;
+
+                const box = document.createElement("div");
+                box.className = "shuffle-container";
+
+                const image = document.createElement("img");
+                image.src = IMAGE_URL + result.champion + ".png";
+
+                const text = document.createElement("div");
+                text.className = "shuffle-text";
+                const strong = document.createElement("strong");
+                strong.textContent = result.player;
+                text.appendChild(strong);
+
+                const champion = document.createElement("div");
+                champion.className = "champion";
+                champion.textContent = championNames[result.champion] || result.champion;
+
+                box.appendChild(image);
+                box.appendChild(text);
+                box.appendChild(champion);
+
+                card.appendChild(lane);
+                card.appendChild(box);
+
+                container.appendChild(card);
+
+            });
+
+        }
+
         /* =====================================================
            INICIALIZAÇÃO
         ===================================================== */
 
         document.addEventListener("DOMContentLoaded", () => {
+
+            renderMatchHistory();
+
+            if (IS_VIEWER) {
+                initViewer();
+                return;
+            }
+
             loadSettings();
             loadRotationSettings();
-            renderMatchHistory();
             renderChampions();
 
             /* Atualiza o status da rotação quando os nomes mudam */
             document.querySelectorAll(".player-input").forEach(input => {
                 input.addEventListener("input", updateRotationStatus);
             });
+
+            initHost();
+
         });
 
         /* =====================================================
@@ -1119,8 +1792,6 @@
                     return;
                 }
 
-                /* ---------- ASSOCIA PLAYER + LANE + CAMPEÃO ---------- */
-
                 /* ---------- PARES JOGADOR + LANE ---------- */
 
                 let pairs;
@@ -1155,6 +1826,8 @@
 
                 }
 
+                /* ---------- ASSOCIA PLAYER + LANE + CAMPEÃO ---------- */
+
                 const results = [];
 
                 pairs.forEach(({ player, lane }) => {
@@ -1188,6 +1861,10 @@
                 results.sort(
                     (a, b) => laneOrder.indexOf(a.lane) - laneOrder.indexOf(b.lane)
                 );
+
+                /* ---------- TRANSMITE AOS ESPECTADORES ---------- */
+
+                broadcastResults(results);
 
                 /* ---------- ANIMAÇÃO ---------- */
 
@@ -1281,7 +1958,11 @@
 
                     dice.style.display = "none";
 
-                    text.innerHTML = `<strong>${result.player}</strong>`;
+                    text.innerHTML = "";
+
+                    const playerName = document.createElement("strong");
+                    playerName.textContent = result.player;
+                    text.appendChild(playerName);
 
                     /* Adiciona nome do campeão */
                     const championName = document.createElement("div");
