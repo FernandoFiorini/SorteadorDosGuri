@@ -426,6 +426,39 @@
             color: #c8aa6e;
         }
 
+        /* BOTÃO DE RESORTEAR (só aparece para o host, com "não repetir já sorteados" desligado) */
+        .reroll-btn {
+            display: block;
+            margin: 12px auto 0;
+            background: #09111a;
+            border: 1px solid #304255;
+            color: #9ba7b5;
+            padding: 7px 12px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 13px;
+            transition: 0.2s;
+        }
+
+        .reroll-btn:hover:not(:disabled) {
+            border-color: #c8aa6e;
+            color: #c8aa6e;
+        }
+
+        .reroll-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        body.viewer .reroll-btn,
+        body.persist-on .reroll-btn {
+            display: none;
+        }
+
+        .persist-wrap {
+            margin-bottom: 10px;
+        }
+
         /* ROTAÇÃO DE LANES */
         .rotation-status {
             color: #c8aa6e;
@@ -695,6 +728,19 @@
             </div>
 
             <div class="setting">
+                <input type="checkbox" id="persistNoRepeat" checked onchange="onPersistToggle()">
+                <label for="persistNoRepeat">Não repetir campeões já sorteados (lista salva no navegador)</label>
+            </div>
+
+            <div class="persist-wrap">
+                <div class="rotation-status" id="persistStatus"></div>
+                <button class="mini-btn" id="resetDrawnBtn" type="button" onclick="resetDrawn(true)">↺ Resetar
+                    campeões sorteados</button>
+                <div class="info" style="margin-left: 28px;">Desmarcado = full aleatório, e cada card do resultado ganha
+                    um botão para resortear o campeão.</div>
+            </div>
+
+            <div class="setting">
                 <input type="checkbox" id="noRepeatLanes" onchange="onRotationToggle()">
                 <label for="noRepeatLanes">Não repetir lanes entre partidas (rotação)</label>
             </div>
@@ -928,7 +974,7 @@
                     sound.muted = false;
                 };
                 if (p && p.then) {
-                    p.then(restore).catch(() => {sound.muted = false;});
+                    p.then(restore).catch(() => { sound.muted = false; });
                 } else {
                     restore();
                 }
@@ -1073,7 +1119,7 @@
 
             const done = () => {
                 button.textContent = "✅ Copiado!";
-                setTimeout(() => {button.textContent = "📋 Copiar link";}, 1800);
+                setTimeout(() => { button.textContent = "📋 Copiar link"; }, 1800);
             };
 
             if (navigator.clipboard && navigator.clipboard.writeText) {
@@ -1092,7 +1138,7 @@
 
         /* Envia o resultado aos espectadores (chamado antes da animação
            do host, para as duas animações começarem juntas). */
-        function broadcastResults(results) {
+        function broadcastResults(results, rerollLane) {
 
             if (!liveReady) return;
 
@@ -1104,6 +1150,9 @@
                     champion: r.champion
                 }))
             };
+
+            /* Resorteio de um único card: os espectadores animam só essa lane */
+            if (rerollLane) payload.reroll = rerollLane;
 
             db.ref("salas/" + roomCode + "/sorteio").set(payload)
                 .then(() => {
@@ -1207,6 +1256,20 @@
 
                 const results = Object.values(data.results);
 
+                /* Resorteio de um card só */
+                if (data.reroll) {
+                    const changed = results.find(r => r.lane === data.reroll);
+
+                    if (changed) {
+                        viewerQueue = viewerQueue
+                            .then(() => animateSingleCard(changed))
+                            .then(() => updateLatestHistory(results))
+                            .catch(error => console.error(error));
+                    }
+
+                    return;
+                }
+
                 /* Enfileira para não sobrepor animações */
                 viewerQueue = viewerQueue
                     .then(() => animateResults(results))
@@ -1231,6 +1294,7 @@
 
                 const card = document.createElement("div");
                 card.className = "result";
+                card.dataset.lane = result.lane;
 
                 const lane = document.createElement("div");
                 lane.className = "lane-name";
@@ -1280,6 +1344,7 @@
 
             loadSettings();
             loadRotationSettings();
+            loadPersistSettings();
             renderChampions();
 
             /* Atualiza o status da rotação quando os nomes mudam */
@@ -1318,7 +1383,7 @@
 
                 const image = document.createElement("img");
                 image.src = IMAGE_URL + champion + ".png";
-                image.onerror = () => {image.style.display = "none";};
+                image.onerror = () => { image.style.display = "none"; };
 
                 const name = document.createElement("span");
                 name.textContent = championNames[champion] || champion;
@@ -1449,14 +1514,14 @@
         const ROTATION_KEY = "laneRotation";
 
         function emptyRotation() {
-            return {count: 0, history: {}};
+            return { count: 0, history: {} };
         }
 
         function loadRotation() {
             try {
                 const saved = JSON.parse(localStorage.getItem(ROTATION_KEY));
                 if (saved && saved.history) return saved;
-            } catch (e) { /* ignora */}
+            } catch (e) { /* ignora */ }
             return null;
         }
 
@@ -1490,7 +1555,7 @@
                 for (const lane of candidates) {
 
                     used.add(lane);
-                    pairs.push({player: players[i], lane: lane});
+                    pairs.push({ player: players[i], lane: lane });
 
                     if (assign(i + 1)) return true;
 
@@ -1525,7 +1590,7 @@
             }
 
             /* Registra as lanes desta partida */
-            pairs.forEach(({player, lane}) => {
+            pairs.forEach(({ player, lane }) => {
                 if (!state.history[player]) state.history[player] = [];
                 state.history[player].push(lane);
             });
@@ -1534,7 +1599,7 @@
 
             saveRotation(state);
 
-            return {pairs: pairs, wasReset: wasReset, count: state.count};
+            return { pairs: pairs, wasReset: wasReset, count: state.count };
 
         }
 
@@ -1719,6 +1784,170 @@
         }
 
         /* =====================================================
+           CAMPEÕES JÁ SORTEADOS (lista persistente)
+
+           Quando a opção está ativa, a lista salva no navegador é
+           consultada antes de sortear e só é limpa pelo botão de reset
+           (ou se não sobrarem campeões suficientes e você confirmar).
+        ===================================================== */
+
+        const DRAWN_KEY = "drawnChampions";
+
+        function loadDrawn() {
+            try {
+                const saved = JSON.parse(localStorage.getItem(DRAWN_KEY));
+                return Array.isArray(saved) ? saved : [];
+            } catch (e) {
+                return [];
+            }
+        }
+
+        function addDrawn(list) {
+            const set = new Set(loadDrawn());
+            list.forEach(champion => set.add(champion));
+            localStorage.setItem(DRAWN_KEY, JSON.stringify([...set]));
+            updatePersistStatus();
+        }
+
+        function resetDrawn(manual) {
+
+            localStorage.removeItem(DRAWN_KEY);
+
+            updatePersistStatus();
+
+            if (manual) {
+                showRotationNotice("↺ Lista de campeões já sorteados resetada.");
+            }
+
+        }
+
+        function updatePersistStatus() {
+
+            const enabled = document.getElementById("persistNoRepeat").checked;
+            const status = document.getElementById("persistStatus");
+            const button = document.getElementById("resetDrawnBtn");
+
+            status.style.display = button.style.display = enabled ? "" : "none";
+
+            if (!enabled) return;
+
+            status.textContent =
+                `Já sorteados: ${loadDrawn().length} de ${champions.length} campeões.`;
+
+        }
+
+        function applyPersistClass() {
+            document.body.classList.toggle(
+                "persist-on",
+                document.getElementById("persistNoRepeat").checked
+            );
+        }
+
+        function onPersistToggle() {
+            localStorage.setItem(
+                "persistNoRepeat",
+                document.getElementById("persistNoRepeat").checked
+            );
+            applyPersistClass();
+            updatePersistStatus();
+        }
+
+        /* Por padrão a opção vem marcada */
+        function loadPersistSettings() {
+            const saved = localStorage.getItem("persistNoRepeat");
+            document.getElementById("persistNoRepeat").checked =
+                saved === null ? true : saved === "true";
+            applyPersistClass();
+            updatePersistStatus();
+        }
+
+        /* =====================================================
+           RESORTEAR UM CAMPEÃO (só com "já sorteados" desligado)
+        ===================================================== */
+
+        let currentResults = [];
+        let rerolling = false;
+
+        function updateLatestHistory(results) {
+
+            const history = loadMatchHistory();
+
+            if (history.length === 0) return;
+
+            history[0].entries = results.map(r => ({
+                player: r.player,
+                lane: r.lane,
+                champion: r.champion
+            }));
+
+            localStorage.setItem(HISTORY_KEY, JSON.stringify(history));
+
+            renderMatchHistory();
+
+        }
+
+        async function rerollChampion(lane) {
+
+            if (rerolling) return;
+
+            /* Com a lista de já sorteados ativa não há resorteio */
+            if (document.getElementById("persistNoRepeat").checked) return;
+
+            const sortButton = document.getElementById("sortButton");
+
+            /* Ainda sorteando a partida inteira */
+            if (sortButton.disabled) return;
+
+            const target = currentResults.find(r => r.lane === lane);
+
+            if (!target) return;
+
+            const excluded = JSON.parse(
+                localStorage.getItem("excludedChampions") || "[]"
+            );
+
+            const noRepeat = document.getElementById("noRepeat").checked;
+
+            const inUse = currentResults
+                .filter(r => r !== target)
+                .map(r => r.champion);
+
+            const pool = champions.filter(champion =>
+                !excluded.includes(champion)
+                && champion !== target.champion
+                && !(noRepeat && inUse.includes(champion))
+            );
+
+            if (pool.length === 0) {
+                alert("Não existem outros campeões disponíveis para resortear.");
+                return;
+            }
+
+            rerolling = true;
+            sortButton.disabled = true;
+            document.querySelectorAll(".reroll-btn").forEach(b => b.disabled = true);
+
+            try {
+
+                target.champion = randomItem(pool);
+
+                broadcastResults(currentResults, lane);
+
+                await animateSingleCard(target);
+
+                updateLatestHistory(currentResults);
+
+            } finally {
+
+                rerolling = false;
+                sortButton.disabled = false;
+                document.querySelectorAll(".reroll-btn").forEach(b => b.disabled = false);
+
+            }
+
+        }
+
+        /* =====================================================
            SORTEIO PRINCIPAL
         ===================================================== */
 
@@ -1802,7 +2031,37 @@
 
                 /* ---------- NÃO REPETIR ---------- */
 
-                const noRepeat = document.getElementById("noRepeat").checked;
+                /* Lista persistente: consulta os já sorteados antes de sortear */
+                const persist = document.getElementById("persistNoRepeat").checked;
+
+                if (persist) {
+
+                    const drawn = loadDrawn();
+
+                    let pool = available.filter(champion => !drawn.includes(champion));
+
+                    if (pool.length < players.length) {
+
+                        const ok = confirm(
+                            `Restam só ${pool.length} campeão(ões) ainda não sorteado(s), ` +
+                            `e são necessários ${players.length}. ` +
+                            `Resetar a lista de sorteados e continuar?`
+                        );
+
+                        if (!ok) return;
+
+                        resetDrawn(false);
+
+                        pool = [...available];
+
+                    }
+
+                    available = pool;
+
+                }
+
+                /* Com a lista persistente ativa, também não repete dentro do sorteio */
+                const noRepeat = persist || document.getElementById("noRepeat").checked;
 
                 if (noRepeat && available.length < players.length) {
                     alert("Não existem campeões suficientes disponíveis para esse sorteio.");
@@ -1852,7 +2111,7 @@
 
                 const results = [];
 
-                pairs.forEach(({player, lane}) => {
+                pairs.forEach(({ player, lane }) => {
 
                     let champion;
 
@@ -1883,6 +2142,12 @@
                 results.sort(
                     (a, b) => laneOrder.indexOf(a.lane) - laneOrder.indexOf(b.lane)
                 );
+
+                /* ---------- GRAVA OS SORTEADOS / GUARDA PARA RESORTEAR ---------- */
+
+                if (persist) addDrawn(results.map(r => r.champion));
+
+                currentResults = results.map(r => ({ ...r }));
 
                 /* ---------- TRANSMITE AOS ESPECTADORES ---------- */
 
@@ -1922,18 +2187,7 @@
 
                 card.dataset.lane = result.lane;
 
-                card.innerHTML = `
-                    <div class="lane-name">${result.lane}</div>
-
-                    <div class="shuffle-container">
-                        <div class="dice">🎲</div>
-
-                        <img class="shuffle-image"
-                             src="${IMAGE_URL}${randomItem(champions)}.png">
-
-                        <div class="shuffle-text">Sorteando...</div>
-                    </div>
-                `;
+                card.innerHTML = shuffleCardHTML(result.lane);
 
                 container.appendChild(card);
 
@@ -1944,6 +2198,35 @@
             for (let i = 0; i < results.length; i++) {
                 await shuffleAnimation(container.children[i], results[i]);
             }
+
+        }
+
+        function shuffleCardHTML(lane) {
+            return `
+                    <div class="lane-name">${lane}</div>
+
+                    <div class="shuffle-container">
+                        <div class="dice">🎲</div>
+
+                        <img class="shuffle-image"
+                             src="${IMAGE_URL}${randomItem(champions)}.png">
+
+                        <div class="shuffle-text">Sorteando...</div>
+                    </div>
+                `;
+        }
+
+        /* Refaz a animação de um único card (resorteio) */
+        async function animateSingleCard(result) {
+
+            const card = [...document.querySelectorAll("#results .result")]
+                .find(c => c.dataset.lane === result.lane);
+
+            if (!card) return;
+
+            card.innerHTML = shuffleCardHTML(result.lane);
+
+            await shuffleAnimation(card, result);
 
         }
 
@@ -1995,6 +2278,21 @@
                         championNames[result.champion] || result.champion;
 
                     card.querySelector(".shuffle-container").appendChild(championName);
+
+                    /* Botão de resortear (só host; fica oculto via CSS quando
+                       "não repetir campeões já sorteados" está marcado) */
+                    if (!IS_VIEWER) {
+
+                        const rerollButton = document.createElement("button");
+
+                        rerollButton.type = "button";
+                        rerollButton.className = "reroll-btn";
+                        rerollButton.textContent = "🔄 Resortear";
+                        rerollButton.onclick = () => rerollChampion(result.lane);
+
+                        card.appendChild(rerollButton);
+
+                    }
 
                     resolve();
 
