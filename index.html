@@ -589,6 +589,71 @@
             font-size: 14px;
         }
 
+        /* POOLS PREDETERMINADAS */
+        .pool-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+            gap: 10px;
+        }
+
+        .pool-option {
+            display: block;
+            padding: 12px;
+            background: #09111a;
+            border: 1px solid #304255;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        .pool-option:hover {
+            border-color: #c8aa6e;
+        }
+
+        .pool-option.active {
+            background: #173b55;
+            border-color: #c8aa6e;
+        }
+
+        .pool-option input {
+            display: none;
+        }
+
+        .pool-name {
+            font-weight: bold;
+            color: #c8aa6e;
+            margin-bottom: 8px;
+        }
+
+        .pool-champs {
+            display: flex;
+            gap: 6px;
+            flex-wrap: wrap;
+        }
+
+        .pool-champs img {
+            width: 36px;
+            height: 36px;
+            border-radius: 4px;
+            border: 1px solid #304255;
+        }
+
+        .pool-warning {
+            display: none;
+            margin-top: 12px;
+            background: rgba(200, 170, 110, 0.12);
+            border: 1px solid #c8aa6e;
+            color: #e8d3a0;
+            padding: 10px 12px;
+            border-radius: 8px;
+            font-size: 13px;
+        }
+
+        .disabled-by-pool {
+            opacity: 0.4;
+            pointer-events: none;
+        }
+
         @media (max-width: 900px) {
             .results {
                 grid-template-columns: repeat(3, 1fr);
@@ -757,8 +822,24 @@
             <div class="info">A configuração é armazenada no navegador.</div>
         </div>
 
-        <!-- CAMPEÕES -->
+        <!-- POOLS PREDETERMINADAS -->
         <div class="card host-only">
+            <h2>🧪 Listas predeterminadas</h2>
+
+            <div class="pool-list" id="poolList"></div>
+
+            <div class="pool-warning" id="poolWarning">
+                ⚠️ Pool ativa: o sorteio usa apenas os campeões das listas marcadas e ignora
+                <strong>campeões excluídos</strong>, <strong>não repetir campeões</strong>,
+                <strong>lista de já sorteados</strong> e <strong>rotação de lanes</strong>.
+            </div>
+
+            <div class="info">Marque uma ou mais pools para sortear só entre os campeões delas. Desmarque tudo para o
+                sorteio normal.</div>
+        </div>
+
+        <!-- CAMPEÕES -->
+        <div class="card host-only" id="excludedCard">
             <h2>🚫 Campeões excluídos</h2>
 
             <div class="champion-controls">
@@ -826,9 +907,11 @@
            DATA DRAGON
         ===================================================== */
 
-        const DATA_DRAGON_VERSION = "15.19.1";
+        /* Versão de reserva: a versão mais recente é buscada ao abrir a página
+           (veja loadChampionData). Estes valores só valem se a busca falhar. */
+        let DATA_DRAGON_VERSION = "15.19.1";
 
-        const IMAGE_URL =
+        let IMAGE_URL =
             "https://ddragon.leagueoflegends.com/cdn/"
             + DATA_DRAGON_VERSION
             + "/img/champion/";
@@ -837,7 +920,9 @@
            CAMPEÕES
         ===================================================== */
 
-        const champions = [
+        /* Lista de reserva (usada só se a busca no Data Dragon falhar
+           e não houver cache salvo no navegador) */
+        let champions = [
 
             "Aatrox", "Ahri", "Akali", "Akshan", "Alistar", "Ambessa", "Amumu",
             "Anivia", "Annie", "Aphelios", "Ashe", "AurelionSol", "Aurora", "Azir",
@@ -901,10 +986,168 @@
         ];
 
         /* =====================================================
+           POOLS PREDETERMINADAS
+           Para criar uma pool nova, basta adicionar um item aqui.
+           Use os mesmos IDs da lista "champions" (ex.: "MonkeyKing" = Wukong).
+        ===================================================== */
+
+        const championPools = [
+            {
+                id: "veneno",
+                name: "Veneno",
+                champions: ["Teemo", "Twitch", "Singed", "Cassiopeia", "Zyra"]
+            },
+            {
+                id: "sangramento",
+                name: "Sangramento",
+                champions: ["Darius", "Talon", "Kindred", "Draven", "Hecarim"]
+            },
+            {
+                id: "fogo",
+                name: "Fogo",
+                champions: ["Brand", "Smolder", "Annie", "Shyvana", "Rumble"]
+            },
+            {
+                id: "tankudini",
+                name: "Tankudini",
+                champions: ["Ornn", "Malphite", "Maokai", "Alistar", "Poppy"]
+            },
+            {
+                id: "velocidade",
+                name: "Velocidade",
+                champions: ["Zilean", "Janna", "Hecarim", "Rammus", "Lillia"]
+            },
+            {
+                id: "assasino",
+                name: "Assasino",
+                champions: ["Zed", "Katarina", "Talon", "Locke", "Fizz"]
+            },
+            {
+                id: "fullCC",
+                name: "Full cc",
+                champions: ["Morgana", "Leona", "Sejuani", "Amumu", "Lissandra"]
+            }
+        ];
+
+        const POOLS_KEY = "selectedPools";
+
+        function loadSelectedPools() {
+            try {
+                const saved = JSON.parse(localStorage.getItem(POOLS_KEY));
+                return Array.isArray(saved) ? saved : [];
+            } catch (e) {
+                return [];
+            }
+        }
+
+        function getSelectedPoolIds() {
+            return [...document.querySelectorAll("#poolList input:checked")]
+                .map(input => input.value);
+        }
+
+        /* União (sem repetição) dos campeões das pools marcadas */
+        function getPoolChampions() {
+
+            const ids = getSelectedPoolIds();
+            const set = new Set();
+
+            championPools
+                .filter(pool => ids.includes(pool.id))
+                .forEach(pool => pool.champions.forEach(c => {
+                    /* Ignora ids que não existem mais na versão atual do jogo */
+                    if (champions.includes(c)) set.add(c);
+                }));
+
+            return [...set];
+
+        }
+
+        function renderPools() {
+
+            const container = document.getElementById("poolList");
+            const saved = loadSelectedPools();
+
+            container.innerHTML = "";
+
+            championPools.forEach(pool => {
+
+                const wrapper = document.createElement("label");
+                wrapper.className = "pool-option";
+
+                const checkbox = document.createElement("input");
+                checkbox.type = "checkbox";
+                checkbox.value = pool.id;
+                checkbox.checked = saved.includes(pool.id);
+                checkbox.onchange = onPoolChange;
+
+                const name = document.createElement("div");
+                name.className = "pool-name";
+                name.textContent = pool.name;
+
+                const champs = document.createElement("div");
+                champs.className = "pool-champs";
+
+                pool.champions.forEach(champion => {
+                    const img = document.createElement("img");
+                    img.src = IMAGE_URL + champion + ".png";
+                    img.title = championNames[champion] || champion;
+                    img.onerror = () => { img.style.display = "none"; };
+                    champs.appendChild(img);
+                });
+
+                wrapper.appendChild(checkbox);
+                wrapper.appendChild(name);
+                wrapper.appendChild(champs);
+
+                container.appendChild(wrapper);
+
+            });
+
+            updatePoolUI();
+
+        }
+
+        function onPoolChange() {
+            localStorage.setItem(POOLS_KEY, JSON.stringify(getSelectedPoolIds()));
+            updatePoolUI();
+        }
+
+        /* Destaca pools marcadas e "apaga" as regras que ficam ignoradas */
+        function updatePoolUI() {
+
+            const active = getSelectedPoolIds().length > 0;
+
+            document.querySelectorAll(".pool-option").forEach(option => {
+                option.classList.toggle(
+                    "active",
+                    option.querySelector("input").checked
+                );
+            });
+
+            document.getElementById("poolWarning").style.display =
+                active ? "block" : "none";
+
+            document.getElementById("excludedCard")
+                .classList.toggle("disabled-by-pool", active);
+
+            ["noRepeat", "persistNoRepeat", "noRepeatLanes"].forEach(id => {
+                document.getElementById(id).closest(".setting")
+                    .classList.toggle("disabled-by-pool", active);
+            });
+
+            document.querySelector(".persist-wrap")
+                .classList.toggle("disabled-by-pool", active);
+
+            /* O botão de resortear depende de "já sorteados" estar ativo */
+            applyPersistClass();
+
+        }
+
+        /* =====================================================
            NOMES
         ===================================================== */
 
-        const championNames = {
+        let championNames = {
             AurelionSol: "Aurelion Sol",
             Belveth: "Bel'Veth",
             DrMundo: "Dr. Mundo",
@@ -930,6 +1173,107 @@
         ===================================================== */
 
         const laneOrder = ["Top", "Jungle", "Mid", "ADC", "Support"];
+
+        /* =====================================================
+           LISTA DE CAMPEÕES AUTOMÁTICA (DATA DRAGON)
+
+           Ao abrir a página:
+           1. busca a versão mais recente do jogo (versions.json);
+           2. se for a mesma do cache salvo no navegador, usa o cache;
+           3. senão baixa champion.json (nomes em português) e atualiza;
+           4. se a internet/Riot falhar, usa o cache; se não houver
+              cache, usa a lista de reserva escrita acima.
+        ===================================================== */
+
+        const DDRAGON_BASE = "https://ddragon.leagueoflegends.com";
+        const DDRAGON_CACHE_KEY = "ddragonCache";
+
+        async function fetchJson(url, timeoutMs) {
+
+            const controller = new AbortController();
+            const timer = setTimeout(() => controller.abort(), timeoutMs || 5000);
+
+            try {
+                const response = await fetch(url, { signal: controller.signal });
+                if (!response.ok) throw new Error("HTTP " + response.status);
+                return await response.json();
+            } finally {
+                clearTimeout(timer);
+            }
+
+        }
+
+        function readDdragonCache() {
+            try {
+                const saved = JSON.parse(localStorage.getItem(DDRAGON_CACHE_KEY));
+                if (saved && saved.version && Array.isArray(saved.ids)
+                    && saved.ids.length > 100 && saved.names) return saved;
+            } catch (e) { /* ignora */ }
+            return null;
+        }
+
+        function applyChampionData(data) {
+
+            DATA_DRAGON_VERSION = data.version;
+
+            IMAGE_URL = DDRAGON_BASE + "/cdn/" + data.version + "/img/champion/";
+
+            champions = data.ids;
+
+            /* Mantém as grafias manuais como reserva para o que faltar */
+            championNames = Object.assign({}, championNames, data.names);
+
+        }
+
+        async function loadChampionData() {
+
+            const cached = readDdragonCache();
+
+            try {
+
+                const versions = await fetchJson(DDRAGON_BASE + "/api/versions.json");
+                const latest = versions[0];
+
+                if (cached && cached.version === latest) {
+                    applyChampionData(cached);
+                    return;
+                }
+
+                const json = await fetchJson(
+                    DDRAGON_BASE + "/cdn/" + latest + "/data/pt_BR/champion.json",
+                    8000
+                );
+
+                const names = {};
+
+                Object.keys(json.data).forEach(id => {
+                    names[id] = json.data[id].name;
+                });
+
+                /* Ordem alfabética pelo nome exibido */
+                const ids = Object.keys(names).sort(
+                    (a, b) => names[a].localeCompare(names[b], "pt-BR")
+                );
+
+                if (ids.length < 100) throw new Error("Lista de campeões incompleta");
+
+                const data = { version: latest, ids: ids, names: names };
+
+                try {
+                    localStorage.setItem(DDRAGON_CACHE_KEY, JSON.stringify(data));
+                } catch (e) { /* cache é opcional */ }
+
+                applyChampionData(data);
+
+            } catch (error) {
+
+                console.warn("Data Dragon indisponível, usando cache/reserva:", error);
+
+                if (cached) applyChampionData(cached);
+
+            }
+
+        }
 
         /* =====================================================
            SOM DO SORTEIO (POR LANE)
@@ -1333,7 +1677,10 @@
            INICIALIZAÇÃO
         ===================================================== */
 
-        document.addEventListener("DOMContentLoaded", () => {
+        document.addEventListener("DOMContentLoaded", async () => {
+
+            /* Carrega a lista atual de campeões antes de montar a tela */
+            await loadChampionData();
 
             renderMatchHistory();
 
@@ -1346,6 +1693,7 @@
             loadRotationSettings();
             loadPersistSettings();
             renderChampions();
+            renderPools();
 
             /* Atualiza o status da rotação quando os nomes mudam */
             document.querySelectorAll(".player-input").forEach(input => {
@@ -1836,11 +2184,14 @@
 
         }
 
+        /* "Já sorteados" só vale quando nenhuma pool está ativa */
+        function persistActive() {
+            return document.getElementById("persistNoRepeat").checked
+                && getSelectedPoolIds().length === 0;
+        }
+
         function applyPersistClass() {
-            document.body.classList.toggle(
-                "persist-on",
-                document.getElementById("persistNoRepeat").checked
-            );
+            document.body.classList.toggle("persist-on", persistActive());
         }
 
         function onPersistToggle() {
@@ -1891,7 +2242,7 @@
             if (rerolling) return;
 
             /* Com a lista de já sorteados ativa não há resorteio */
-            if (document.getElementById("persistNoRepeat").checked) return;
+            if (persistActive()) return;
 
             const sortButton = document.getElementById("sortButton");
 
@@ -1912,11 +2263,31 @@
                 .filter(r => r !== target)
                 .map(r => r.champion);
 
-            const pool = champions.filter(champion =>
-                !excluded.includes(champion)
-                && champion !== target.champion
-                && !(noRepeat && inUse.includes(champion))
-            );
+            const poolChampions = getPoolChampions();
+
+            let pool;
+
+            if (poolChampions.length > 0) {
+
+                /* Pool ativa: resorteia só dentro da pool, evitando repetir
+                   quem já está em outro card quando ainda houver opção */
+                pool = poolChampions.filter(champion =>
+                    champion !== target.champion && !inUse.includes(champion)
+                );
+
+                if (pool.length === 0) {
+                    pool = poolChampions.filter(champion => champion !== target.champion);
+                }
+
+            } else {
+
+                pool = champions.filter(champion =>
+                    !excluded.includes(champion)
+                    && champion !== target.champion
+                    && !(noRepeat && inUse.includes(champion))
+                );
+
+            }
 
             if (pool.length === 0) {
                 alert("Não existem outros campeões disponíveis para resortear.");
@@ -1982,7 +2353,12 @@
 
                 const fullRandom = document.getElementById("fullRandom").checked;
 
-                const noRepeatLanes = document.getElementById("noRepeatLanes").checked;
+                /* Pool ativa: ignora excluídos, "não repetir", "já sorteados" e rotação */
+                const poolChampions = getPoolChampions();
+                const poolMode = poolChampions.length > 0;
+
+                const noRepeatLanes =
+                    !poolMode && document.getElementById("noRepeatLanes").checked;
 
                 let selectedLanes = [];
 
@@ -2025,14 +2401,17 @@
                     localStorage.getItem("excludedChampions") || "[]"
                 );
 
-                let available = champions.filter(
-                    champion => !excluded.includes(champion)
-                );
+                /* Pool ativa: só os campeões das pools marcadas, sem filtro de excluídos */
+                let available = poolMode
+                    ? [...poolChampions]
+                    : champions.filter(champion => !excluded.includes(champion));
 
                 /* ---------- NÃO REPETIR ---------- */
 
-                /* Lista persistente: consulta os já sorteados antes de sortear */
-                const persist = document.getElementById("persistNoRepeat").checked;
+                /* Lista persistente: consulta os já sorteados antes de sortear
+                   (ignorada quando há pool ativa) */
+                const persist = !poolMode
+                    && document.getElementById("persistNoRepeat").checked;
 
                 if (persist) {
 
@@ -2061,9 +2440,12 @@
                 }
 
                 /* Com a lista persistente ativa, também não repete dentro do sorteio */
-                const noRepeat = persist || document.getElementById("noRepeat").checked;
+                /* Em pool, não repete sempre que houver campeões suficientes */
+                const noRepeat = poolMode
+                    ? available.length >= players.length
+                    : (persist || document.getElementById("noRepeat").checked);
 
-                if (noRepeat && available.length < players.length) {
+                if (!poolMode && noRepeat && available.length < players.length) {
                     alert("Não existem campeões suficientes disponíveis para esse sorteio.");
                     return;
                 }
@@ -2309,6 +2691,10 @@
 <footer class="rodape">
     <p>Desenvolvido por <a href="https://github.com/FernandoFiorini" target="_blank" rel="noopener noreferrer">Fernando
             Fiorini</a></p>
+
+    <p>Sorteador dos guri isn’t endorsed by Riot Games and doesn’t reflect the views or opinions of Riot Games or anyone
+        officially involved in producing or managing Riot Games properties. Riot Games, and all associated properties
+        are trademarks or registered trademarks of Riot Games, Inc.</p>
 </footer>
 
 </html>
