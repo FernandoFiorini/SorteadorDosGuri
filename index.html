@@ -5,6 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sorteador dos guri</title>
+    <link rel="icon" type="image/svg+xml" href="icon.svg">
 
     <style>
         * {
@@ -1276,32 +1277,81 @@
         }
 
         /* =====================================================
-           SOM DO SORTEIO (POR LANE)
-           Top - > oloko.mp3
-            Mid -> aluqix.mp3
-           Jungle    -> aluqix.mp3
-           ADC -> risada.mp3
-           Sup -> taassistindo.mp3
+           SOM DO SORTEIO
         ===================================================== */
 
-        const laneSounds = {
-            Top: new Audio("oloko.mp3"),
-            Mid: new Audio("aluqix.mp3"),
-            Jungle: new Audio("cachorro.mp3"),
-            ADC: new Audio("risada.mp3"),
-            Support: new Audio("taassistindo.mp3")
-        };
+        /* =====================================================
+           LISTA DE ÁUDIOS SORTEÁVEIS
+           Para adicionar um áudio novo: coloque o arquivo na pasta do site
+           e acrescente uma linha aqui { name: "Nome exibido", file: "arquivo.mp3" }
+        ===================================================== */
 
-        Object.values(laneSounds).forEach(sound => {
-            sound.preload = "auto";
-        });
+        const soundList = [
+            { name: "Oloko", file: "oloko.mp3" },
+            { name: "Aluqix", file: "aluqix.mp3" },
+            { name: "Cachorro", file: "cachorro.mp3" },
+            { name: "Risada", file: "risada.mp3" },
+            { name: "Tá assistindo", file: "taassistindo.mp3" },
+            { name: "Queria reseta", file: "queriareseta.mp3" },
+            { name: "Ninguem quer me ajudar", file: "ninguemquermeajudar.mp3" },
+            { name: "Nando cala boca", file: "nandocalaboca.mp3" },
+            { name: "Escutou o que falei?", file: "escutouoqfalei.mp3" },
+            { name: "Deixa comigo aspira", file: "deixacomigoaspira.mp3" },
+            { name: "Deixa eu clicar", file: "deixaclicar.mp3" },
+            { name: "Ai cara", file: "aicara.mp3" },
 
-        function playChampionSound(lane) {
-            const sound = laneSounds[lane];
-            if (!sound) return;
+        ];
 
-            sound.currentTime = 0;
-            sound.play().catch(error => {
+        /* Cache de objetos Audio (um por arquivo) */
+        const audioCache = {};
+
+        function getAudio(file) {
+            if (!audioCache[file]) {
+                const audio = new Audio(file);
+                audio.preload = "auto";
+                audioCache[file] = audio;
+            }
+            return audioCache[file];
+        }
+
+        /* Pré-carrega todos os arquivos conhecidos */
+        function allSoundFiles() {
+            return [...new Set(soundList.map(s => s.file))];
+        }
+
+        allSoundFiles().forEach(getAudio);
+
+        /* Sorteia áudios para os cards: todos os da lista entram, sem repetir
+           entre lanes diferentes (só repete se houver menos áudios que cards).
+           "exclude" = áudios já em uso por outros cards (resorteio). */
+        function pickSounds(count, exclude) {
+
+            const all = soundList.map(s => s.file);
+
+            if (all.length === 0) return Array(count).fill(null);
+
+            let pool = shuffle(all.filter(f => !(exclude || []).includes(f)));
+
+            if (pool.length === 0) pool = shuffle(all);
+
+            const picked = [];
+
+            while (picked.length < count) {
+                if (pool.length === 0) pool = shuffle(all);
+                picked.push(pool.shift());
+            }
+
+            return picked;
+
+        }
+
+        function playChampionSound(file) {
+            if (!file) return;
+
+            const audio = getAudio(file);
+
+            audio.currentTime = 0;
+            audio.play().catch(error => {
                 console.log("Não foi possível reproduzir o som:", error);
             });
         }
@@ -1309,7 +1359,7 @@
         /* Navegadores só liberam áudio depois de um clique.
            O espectador clica em "Entrar na sala" e aqui "destravamos" os sons. */
         function unlockAudio() {
-            Object.values(laneSounds).forEach(sound => {
+            allSoundFiles().map(getAudio).forEach(sound => {
                 sound.muted = true;
                 const p = sound.play();
                 const restore = () => {
@@ -1491,7 +1541,8 @@
                 results: results.map(r => ({
                     player: r.player,
                     lane: r.lane,
-                    champion: r.champion
+                    champion: r.champion,
+                    sound: r.sound || null
                 }))
             };
 
@@ -2301,6 +2352,7 @@
             try {
 
                 target.champion = randomItem(pool);
+                target.sound = pickSounds(1, currentResults.filter(r => r !== target).map(r => r.sound))[0];
 
                 broadcastResults(currentResults, lane);
 
@@ -2521,6 +2573,9 @@
 
                 /* ---------- ORDENA RESULTADOS ---------- */
 
+                const sounds = pickSounds(results.length);
+                results.forEach((r, i) => { r.sound = sounds[i]; });
+
                 results.sort(
                     (a, b) => laneOrder.indexOf(a.lane) - laneOrder.indexOf(b.lane)
                 );
@@ -2639,7 +2694,7 @@
 
                     image.src = IMAGE_URL + result.champion + ".png";
 
-                    playChampionSound(result.lane);
+                    playChampionSound(result.sound);
 
                     image.classList.remove("shuffle-image");
 
