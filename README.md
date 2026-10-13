@@ -45,13 +45,9 @@ Cinco jogadores. Cinco campeões diferentes. Cinco novas maneiras de perder a pa
 
 ### 🔊 Efeitos sonoros personalizados
 
-Cada lane tem seu próprio efeito sonoro.
+Cada lane sorteia também um áudio aleatório dentre os presentes no projeto
 
-* **TOP:** - oloko.
-* **JUNGLE:** - cade o cachorro?.
-* **MID:** a luquís.
-* **ADC:** risada intensa.
-* **SUPPORT:** ta assistindo?.
+**VAI SER UMA LOUCURA:**
 
 ### 📡 Sorteio ao vivo
 
