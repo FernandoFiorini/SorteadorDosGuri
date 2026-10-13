@@ -47,7 +47,7 @@ Cinco jogadores. Cinco campeões diferentes. Cinco novas maneiras de perder a pa
 
 Cada lane sorteia também um áudio aleatório dentre os presentes no projeto
 
-**VAI SER UMA LOUCURA:**
+**VAI SER UMA LOUCURA**
 
 ### 📡 Sorteio ao vivo
 
