@@ -655,6 +655,99 @@
             pointer-events: none;
         }
 
+        /* NOME NA ENTRADA DA SALA */
+        .overlay-box input {
+            width: 100%;
+            background: #09111a;
+            border: 1px solid #304255;
+            color: white;
+            padding: 13px;
+            border-radius: 6px;
+            outline: none;
+            margin-bottom: 14px;
+            text-align: center;
+            font-size: 16px;
+        }
+
+        .overlay-box input:focus {
+            border-color: #c8aa6e;
+        }
+
+        .overlay-box input.invalid {
+            border-color: #d9534f;
+        }
+
+        /* CHAT DA SALA */
+        .chat-messages {
+            height: 260px;
+            overflow-y: auto;
+            background: #09111a;
+            border: 1px solid #253648;
+            border-radius: 8px;
+            padding: 10px;
+            margin-bottom: 10px;
+        }
+
+        .chat-msg {
+            margin-bottom: 8px;
+            font-size: 14px;
+            word-break: break-word;
+        }
+
+        .chat-msg .n {
+            color: #c8aa6e;
+            font-weight: bold;
+        }
+
+        .chat-msg .t {
+            color: #687789;
+            font-size: 11px;
+            margin-left: 6px;
+        }
+
+        .chat-msg.mine .n {
+            color: #3ecf72;
+        }
+
+        .chat-empty {
+            color: #687789;
+            font-size: 13px;
+            text-align: center;
+            padding: 20px 0;
+        }
+
+        .chat-form {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .chat-form #chatName {
+            width: 130px;
+        }
+
+        .chat-form #chatInput {
+            flex: 1;
+            min-width: 160px;
+        }
+
+        .chat-form input {
+            background: #09111a;
+            border: 1px solid #304255;
+            color: white;
+            padding: 11px;
+            border-radius: 6px;
+            outline: none;
+        }
+
+        .chat-form input:focus {
+            border-color: #c8aa6e;
+        }
+
+        .chat-form .mini-btn {
+            margin-left: 0;
+        }
+
         @media (max-width: 900px) {
             .results {
                 grid-template-columns: repeat(3, 1fr);
@@ -696,6 +789,8 @@
         <div class="overlay-box">
             <h2>📺 Sorteio ao vivo</h2>
             <p id="overlayText">Clique para entrar na sala e acompanhar o sorteio com som.</p>
+            <input type="text" id="joinName" maxlength="20" placeholder="Seu nome (obrigatório)"
+                autocomplete="off">
             <button class="sortear" id="joinButton" type="button">Entrar na sala</button>
         </div>
     </div>
@@ -866,6 +961,20 @@
             <div id="results" class="results">
                 <div class="empty">O resultado aparecerá aqui.</div>
             </div>
+        </div>
+
+        <!-- CHAT DA SALA -->
+        <div class="card" id="chatCard" style="display:none;">
+            <h2>💬 Chat da sala</h2>
+
+            <div id="chatMessages" class="chat-messages"></div>
+
+            <form id="chatForm" class="chat-form">
+                <input type="text" id="chatName" maxlength="20" placeholder="Seu nome (obrigatório)">
+                <input type="text" id="chatInput" maxlength="300" placeholder="Digite uma mensagem..."
+                    autocomplete="off">
+                <button class="mini-btn" type="submit">Enviar</button>
+            </form>
         </div>
 
         <!-- HISTÓRICO -->
@@ -1395,6 +1504,7 @@
         let roomCode = null;
         let hostUid = null;
         let liveReady = false;
+        let myUid = null;
 
         function initFirebase() {
             if (!FIREBASE_READY) return false;
@@ -1441,6 +1551,7 @@
 
                 const cred = await firebase.auth().signInAnonymously();
                 hostUid = cred.user.uid;
+                myUid = hostUid;
 
                 roomCode = localStorage.getItem(ROOM_KEY) || generateRoomCode();
 
@@ -1451,6 +1562,8 @@
                 document.getElementById("roomLink").value = roomUrl();
 
                 setHostStatus("Sala " + roomCode + " pronta. Aguardando o sorteio.", "on");
+
+                startChat();
 
             } catch (error) {
 
@@ -1492,12 +1605,15 @@
 
             if (!confirm("Criar uma nova sala? O link atual deixa de receber sorteios.")) return;
 
+            stopChat();
+
             try {
                 roomCode = generateRoomCode();
                 localStorage.setItem(ROOM_KEY, roomCode);
                 await claimRoom();
                 document.getElementById("roomLink").value = roomUrl();
                 setHostStatus("Nova sala " + roomCode + " criada. Envie o novo link.", "on");
+                startChat();
             } catch (error) {
                 setHostStatus("Erro ao criar sala: " + (error.code || error.message), "off");
             }
@@ -1563,6 +1679,149 @@
 
         }
 
+        /* =====================================================
+           CHAT DA SALA
+
+           Estrutura: salas/CODIGO/mensagens/{pushId}
+                      -> { uid, nome, texto, ts }
+        ===================================================== */
+
+        const CHAT_NAME_KEY = "chatName";
+        const CHAT_LIMIT = 100;
+
+        let chatStarted = false;
+        let chatListenerRef = null;
+        let lastSentAt = 0;
+
+        function startChat() {
+
+            if (chatStarted || !db || !roomCode) return;
+
+            chatStarted = true;
+
+            document.getElementById("chatCard").style.display = "block";
+
+            const nameInput = document.getElementById("chatName");
+
+            if (!nameInput.value) {
+                nameInput.value = localStorage.getItem(CHAT_NAME_KEY) || "";
+            }
+
+            const box = document.getElementById("chatMessages");
+
+            box.innerHTML = "";
+
+            const empty = document.createElement("div");
+            empty.className = "chat-empty";
+            empty.textContent = "Nenhuma mensagem ainda. Diga oi! 👋";
+            box.appendChild(empty);
+
+            /* Só as últimas mensagens; child_added dispara uma vez por mensagem */
+            chatListenerRef = db.ref("salas/" + roomCode + "/mensagens")
+                .orderByChild("ts")
+                .limitToLast(CHAT_LIMIT);
+
+            chatListenerRef.on("child_added", snap => {
+
+                const m = snap.val();
+
+                if (!m || typeof m.texto !== "string") return;
+
+                const emptyMsg = box.querySelector(".chat-empty");
+                if (emptyMsg) emptyMsg.remove();
+
+                const nearBottom =
+                    box.scrollHeight - box.scrollTop - box.clientHeight < 60;
+
+                const row = document.createElement("div");
+                row.className = "chat-msg" + (m.uid === myUid ? " mine" : "");
+
+                const n = document.createElement("span");
+                n.className = "n";
+                n.textContent = (m.nome || "?") + ":";
+
+                const text = document.createTextNode(" " + m.texto);
+
+                const t = document.createElement("span");
+                t.className = "t";
+                t.textContent = new Date(m.ts).toLocaleTimeString(
+                    "pt-BR", { hour: "2-digit", minute: "2-digit" }
+                );
+
+                row.appendChild(n);
+                row.appendChild(text);
+                row.appendChild(t);
+
+                box.appendChild(row);
+
+                while (box.children.length > CHAT_LIMIT) box.firstChild.remove();
+
+                if (nearBottom || m.uid === myUid) box.scrollTop = box.scrollHeight;
+
+            }, error => {
+                console.error(error);
+            });
+
+        }
+
+        /* Para de escutar a sala atual (usado ao criar nova sala) */
+        function stopChat() {
+
+            if (chatListenerRef) {
+                chatListenerRef.off();
+                chatListenerRef = null;
+            }
+
+            chatStarted = false;
+
+            document.getElementById("chatMessages").innerHTML = "";
+
+        }
+
+        function sendChatMessage() {
+
+            const nameInput = document.getElementById("chatName");
+            const input = document.getElementById("chatInput");
+
+            const nome = nameInput.value.trim().slice(0, 20);
+            const texto = input.value.trim().slice(0, 300);
+
+            if (!texto) return;
+
+            if (!nome) {
+                nameInput.focus();
+                return;
+            }
+
+            if (!myUid || !db || !roomCode) return;
+
+            /* Anti-spam simples: 1 mensagem por segundo */
+            if (Date.now() - lastSentAt < 1000) return;
+            lastSentAt = Date.now();
+
+            localStorage.setItem(CHAT_NAME_KEY, nome);
+
+            db.ref("salas/" + roomCode + "/mensagens").push({
+                uid: myUid,
+                nome: nome,
+                texto: texto,
+                ts: firebase.database.ServerValue.TIMESTAMP
+            }).then(() => {
+                input.value = "";
+            }).catch(error => {
+                console.error("Erro ao enviar mensagem:", error);
+                alert("Não foi possível enviar (" + (error.code || error.message) + "). Verifique as regras do Firebase.");
+            });
+
+        }
+
+        document.addEventListener("DOMContentLoaded", () => {
+            document.getElementById("chatForm").addEventListener("submit", event => {
+                event.preventDefault();
+                sendChatMessage();
+            });
+        });
+
         /* ---------- ESPECTADOR ---------- */
 
         function setViewerStatus(text, state) {
@@ -1583,6 +1842,16 @@
 
             const overlay = document.getElementById("viewerOverlay");
             const joinButton = document.getElementById("joinButton");
+            const joinName = document.getElementById("joinName");
+
+            /* Reaproveita o nome usado antes, se houver */
+            joinName.value = localStorage.getItem("chatName") || "";
+
+            joinName.addEventListener("input", () => joinName.classList.remove("invalid"));
+
+            joinName.addEventListener("keydown", event => {
+                if (event.key === "Enter") joinButton.click();
+            });
 
             /* Código inválido ou Firebase ausente */
             if (!/^[A-Z0-9]{4,12}$/.test(rawRoom)) {
@@ -1590,6 +1859,7 @@
                 document.getElementById("overlayText").textContent =
                     "Link de sala inválido.";
                 joinButton.style.display = "none";
+                document.getElementById("joinName").style.display = "none";
                 return;
             }
 
@@ -1598,6 +1868,7 @@
                 document.getElementById("overlayText").textContent =
                     "Este site ainda não está configurado para transmissão ao vivo.";
                 joinButton.style.display = "none";
+                document.getElementById("joinName").style.display = "none";
                 return;
             }
 
@@ -1605,10 +1876,33 @@
 
             overlay.style.display = "flex";
 
-            joinButton.onclick = () => {
+            joinButton.onclick = async () => {
+
+                /* Nome obrigatório (pode ser qualquer um) */
+                const chosenName = joinName.value.trim().slice(0, 20);
+
+                if (!chosenName) {
+                    joinName.classList.add("invalid");
+                    joinName.focus();
+                    return;
+                }
+
+                localStorage.setItem("chatName", chosenName);
+                document.getElementById("chatName").value = chosenName;
+
                 unlockAudio();
                 overlay.style.display = "none";
                 startListening();
+
+                /* Login anônimo do espectador (necessário para escrever no chat) */
+                try {
+                    const cred = await firebase.auth().signInAnonymously();
+                    myUid = cred.user.uid;
+                } catch (error) {
+                    console.error("Falha no login anônimo do chat:", error);
+                }
+
+                startChat();
             };
 
         }
