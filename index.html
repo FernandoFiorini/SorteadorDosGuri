@@ -427,6 +427,45 @@
             color: #c8aa6e;
         }
 
+        .result-tag {
+            margin-left: 8px;
+            font-weight: bold;
+            font-size: 12px;
+        }
+
+        .result-tag.vitoria {
+            color: #3ecf72;
+        }
+
+        .result-tag.derrota {
+            color: #d9534f;
+        }
+
+        .history-actions {
+            margin-top: 8px;
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .history-actions .mini-btn {
+            margin-left: 0;
+            padding: 5px 10px;
+            font-size: 12px;
+        }
+
+        .mini-btn.on-vitoria {
+            border-color: #3ecf72;
+            color: #3ecf72;
+            background: rgba(62, 207, 114, 0.12);
+        }
+
+        .mini-btn.on-derrota {
+            border-color: #d9534f;
+            color: #d9534f;
+            background: rgba(217, 83, 79, 0.12);
+        }
+
         /* BOTÃO DE RESORTEAR (só aparece para o host, com "não repetir já sorteados" desligado) */
         .reroll-btn {
             display: block;
@@ -451,9 +490,93 @@
             cursor: not-allowed;
         }
 
-        body.viewer .reroll-btn,
-        body.persist-on .reroll-btn {
+        body.viewer .reroll-btn {
             display: none;
+        }
+
+        /* LIKE / DISLIKE */
+        .vote-bar {
+            display: flex;
+            justify-content: center;
+            gap: 8px;
+            margin-top: 12px;
+        }
+
+        .vote-btn {
+            background: #09111a;
+            border: 1px solid #304255;
+            color: #9ba7b5;
+            padding: 6px 11px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 13px;
+            transition: 0.2s;
+        }
+
+        .vote-btn:hover:not(:disabled) {
+            border-color: #c8aa6e;
+            color: #c8aa6e;
+        }
+
+        .vote-btn:disabled {
+            cursor: default;
+            opacity: 0.85;
+        }
+
+        .vote-btn.on.like {
+            background: rgba(62, 207, 114, 0.15);
+            border-color: #3ecf72;
+            color: #3ecf72;
+        }
+
+        .vote-btn.on.dislike {
+            background: rgba(217, 83, 79, 0.15);
+            border-color: #d9534f;
+            color: #d9534f;
+        }
+
+        /* RESULTADO DA PARTIDA (host) */
+        .result-bar {
+            display: none;
+            margin-top: 18px;
+            padding: 14px;
+            border: 1px solid #27384b;
+            border-radius: 10px;
+            background: #09111a;
+            text-align: center;
+        }
+
+        .result-bar.show {
+            display: block;
+        }
+
+        body.viewer .result-bar {
+            display: none !important;
+        }
+
+        .result-bar-title {
+            color: #c8aa6e;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        .result-bar-title span {
+            color: #687789;
+            font-weight: normal;
+            font-size: 12px;
+        }
+
+        .result-bar-buttons {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .result-bar-buttons .mini-btn {
+            margin-left: 0;
+            padding: 9px 18px;
+            font-size: 14px;
         }
 
         .persist-wrap {
@@ -748,6 +871,138 @@
             margin-left: 0;
         }
 
+        /* ESTATÍSTICAS */
+        .stat-summary {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+            gap: 10px;
+            margin-bottom: 14px;
+        }
+
+        .stat-tile {
+            background: #09111a;
+            border: 1px solid #253648;
+            border-radius: 8px;
+            padding: 12px;
+            text-align: center;
+        }
+
+        .stat-tile .v {
+            font-size: 22px;
+            font-weight: bold;
+            color: #c8aa6e;
+        }
+
+        .stat-tile .k {
+            font-size: 12px;
+            color: #8e9aaa;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-top: 4px;
+        }
+
+        .stat-highlights {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 10px;
+            margin-bottom: 18px;
+        }
+
+        .stat-hl {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            background: #09111a;
+            border: 1px solid #253648;
+            border-radius: 8px;
+            padding: 10px;
+        }
+
+        .stat-hl img {
+            width: 46px;
+            height: 46px;
+            border-radius: 6px;
+            border: 1px solid #c8aa6e;
+        }
+
+        .stat-hl .hl-label {
+            font-size: 11px;
+            color: #8e9aaa;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .stat-hl .hl-name {
+            color: #f5f5f5;
+            font-weight: bold;
+        }
+
+        .stat-hl .hl-value {
+            color: #c8aa6e;
+            font-size: 13px;
+        }
+
+        .stats-tabs {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+            margin-bottom: 12px;
+        }
+
+        .stats-tabs .mini-btn {
+            margin-left: 0;
+        }
+
+        .stats-tabs .mini-btn.active {
+            border-color: #c8aa6e;
+            color: #c8aa6e;
+            background: #173b55;
+        }
+
+        .table-wrap {
+            overflow-x: auto;
+        }
+
+        .stats-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 14px;
+        }
+
+        .stats-table th,
+        .stats-table td {
+            padding: 9px 10px;
+            text-align: center;
+            border-bottom: 1px solid #1d2b3b;
+            white-space: nowrap;
+        }
+
+        .stats-table th:first-child,
+        .stats-table td:first-child {
+            text-align: left;
+        }
+
+        .stats-table th {
+            color: #c8aa6e;
+            cursor: pointer;
+            user-select: none;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .stats-table th:hover {
+            color: #f0e6d2;
+        }
+
+        .stats-table td img {
+            width: 26px;
+            height: 26px;
+            border-radius: 4px;
+            vertical-align: middle;
+            margin-right: 8px;
+        }
+
         @media (max-width: 900px) {
             .results {
                 grid-template-columns: repeat(3, 1fr);
@@ -897,8 +1152,9 @@
                 <div class="rotation-status" id="persistStatus"></div>
                 <button class="mini-btn" id="resetDrawnBtn" type="button" onclick="resetDrawn(true)">↺ Resetar
                     campeões sorteados</button>
-                <div class="info" style="margin-left: 28px;">Desmarcado = full aleatório, e cada card do resultado ganha
-                    um botão para resortear o campeão.</div>
+                <div class="info" style="margin-left: 28px;">Desmarcado = full aleatório. Cada card do resultado sempre
+                    tem o botão de resortear; com esta opção marcada, o novo campeão também respeita a lista de já
+                    sorteados.</div>
             </div>
 
             <div class="setting">
@@ -961,6 +1217,47 @@
             <div id="results" class="results">
                 <div class="empty">O resultado aparecerá aqui.</div>
             </div>
+
+            <div class="info viewer-only" style="text-align:center;">Dê 👍 ou 👎 nos campeões depois que eles forem
+                revelados.</div>
+
+            <!-- RESULTADO DA PARTIDA (só host, opcional) -->
+            <div class="result-bar host-only" id="resultBar">
+                <div class="result-bar-title">🏁 Como terminou a partida? <span>(opcional — clique de novo para
+                        desmarcar)</span></div>
+
+                <div class="result-bar-buttons">
+                    <button class="mini-btn" type="button" id="btnWin" onclick="markCurrent('vitoria')">✅
+                        Vitória</button>
+                    <button class="mini-btn" type="button" id="btnLoss" onclick="markCurrent('derrota')">❌
+                        Derrota</button>
+                </div>
+
+                <div class="info" id="resultBarStatus"></div>
+            </div>
+        </div>
+
+        <!-- ESTATÍSTICAS -->
+        <div class="card" id="statsCard">
+            <div class="history-header">
+                <h2>📊 Estatísticas da sala</h2>
+                <button class="mini-btn host-only" type="button" onclick="resetStats()">🗑 Zerar estatísticas</button>
+            </div>
+
+            <div id="statsEmpty" class="empty"></div>
+
+            <div id="statsBody" style="display:none;">
+                <div id="statsSummary" class="stat-summary"></div>
+                <div id="statsHighlights" class="stat-highlights"></div>
+                <div id="statsTabs" class="stats-tabs"></div>
+
+                <div class="table-wrap">
+                    <table class="stats-table" id="statsTable"></table>
+                </div>
+
+                <div class="info">Clique no título de uma coluna para ordenar. As estatísticas ficam salvas no Firebase,
+                    na sala atual.</div>
+            </div>
         </div>
 
         <!-- CHAT DA SALA -->
@@ -986,6 +1283,15 @@
 
             <div id="matchHistory" class="history-list"></div>
         </div>
+
+        <footer class="rodape">
+            <p>Desenvolvido por <a href="https://github.com/FernandoFiorini" target="_blank"
+                    rel="noopener noreferrer">Fernando Fiorini</a></p>
+
+            <p>Sorteador dos guri isn’t endorsed by Riot Games and doesn’t reflect the views or opinions of Riot Games
+                or anyone officially involved in producing or managing Riot Games properties. Riot Games, and all
+                associated properties are trademarks or registered trademarks of Riot Games, Inc.</p>
+        </footer>
 
     </div>
 
@@ -1488,8 +1794,11 @@
            TRANSMISSÃO AO VIVO (FIREBASE)
 
            Estrutura no banco:
-           salas/CODIGO/hostUid   -> dono da sala
-           salas/CODIGO/sorteio   -> { id, results: [{player, lane, champion}] }
+           salas/CODIGO/hostUid    -> dono da sala
+           salas/CODIGO/sorteio    -> { id, matchId, results: [{player, lane, champion}] }
+           salas/CODIGO/partidas   -> {matchId: {time, entries, rerolls, resultado}}
+           salas/CODIGO/votos      -> {matchId: {campeao: {uid: 1 | -1}}}
+           salas/CODIGO/mensagens  -> chat
         ===================================================== */
 
         const ROOM_KEY = "roomCode";
@@ -1498,13 +1807,25 @@
         const rawRoom = (params.get("sala") || "").trim().toUpperCase();
         const IS_VIEWER = rawRoom.length > 0;
 
-        const FIREBASE_READY = !firebaseConfig.apiKey.startsWith("COLE");
+        /* Em ambiente local (localhost, 127.0.0.1 ou arquivo aberto direto) o
+           Firebase fica DESLIGADO para não gravar nada no banco de produção.
+           Para testar com Firebase de verdade localmente, abra com ?firebase=on */
+        const IS_LOCAL = ["localhost", "127.0.0.1", "[::1]", ""].includes(location.hostname);
+        const FORCE_FIREBASE = params.get("firebase") === "on";
+
+        const FIREBASE_READY =
+            !firebaseConfig.apiKey.startsWith("COLE")
+            && (!IS_LOCAL || FORCE_FIREBASE);
 
         let db = null;
         let roomCode = null;
         let hostUid = null;
         let liveReady = false;
         let myUid = null;
+
+        /* Partida atual (host) e dados de estatísticas lidos do Firebase */
+        let currentMatchId = null;
+        let statsData = { partidas: {}, votos: {} };
 
         function initFirebase() {
             if (!FIREBASE_READY) return false;
@@ -1518,6 +1839,10 @@
             const bytes = new Uint8Array(6);
             crypto.getRandomValues(bytes);
             return [...bytes].map(b => chars[b % chars.length]).join("");
+        }
+
+        function newMatchId() {
+            return Date.now() + "-" + Math.random().toString(36).slice(2, 8);
         }
 
         function roomUrl() {
@@ -1539,11 +1864,16 @@
 
             if (!initFirebase()) {
                 setHostStatus(
-                    "Firebase não configurado — o sorteio funciona, mas sem transmissão.",
+                    IS_LOCAL
+                        ? "Modo local: Firebase desligado — o sorteio funciona, mas sem transmissão, chat e estatísticas."
+                        : "Firebase não configurado — o sorteio funciona, mas sem transmissão.",
                     "off"
                 );
                 document.getElementById("roomLink").placeholder =
-                    "Preencha o firebaseConfig no código para ativar";
+                    IS_LOCAL
+                        ? "Desligado em localhost (use ?firebase=on para ativar)"
+                        : "Preencha o firebaseConfig no código para ativar";
+                renderStats();
                 return;
             }
 
@@ -1564,6 +1894,7 @@
                 setHostStatus("Sala " + roomCode + " pronta. Aguardando o sorteio.", "on");
 
                 startChat();
+                startStats();
 
             } catch (error) {
 
@@ -1603,9 +1934,26 @@
 
             if (!liveReady) return;
 
-            if (!confirm("Criar uma nova sala? O link atual deixa de receber sorteios.")) return;
+            if (!confirm(
+                "Criar uma nova sala? O link atual deixa de receber sorteios " +
+                "e as estatísticas começam do zero na sala nova " +
+                "(as da sala antiga continuam salvas no link antigo)."
+            )) return;
 
             stopChat();
+            stopStats();
+
+            /* Limpa a partida atual: ela pertencia à sala antiga */
+            currentMatchId = null;
+            currentResults = [];
+            hideResultBar();
+
+            const container = document.getElementById("results");
+            container.innerHTML = "";
+            const empty = document.createElement("div");
+            empty.className = "empty";
+            empty.textContent = "O resultado aparecerá aqui.";
+            container.appendChild(empty);
 
             try {
                 roomCode = generateRoomCode();
@@ -1614,6 +1962,7 @@
                 document.getElementById("roomLink").value = roomUrl();
                 setHostStatus("Nova sala " + roomCode + " criada. Envie o novo link.", "on");
                 startChat();
+                startStats();
             } catch (error) {
                 setHostStatus("Erro ao criar sala: " + (error.code || error.message), "off");
             }
@@ -1648,12 +1997,13 @@
 
         /* Envia o resultado aos espectadores (chamado antes da animação
            do host, para as duas animações começarem juntas). */
-        function broadcastResults(results, rerollLane) {
+        function broadcastResults(results, matchId, rerollLane) {
 
             if (!liveReady) return;
 
             const payload = {
                 id: Date.now() + "-" + Math.random().toString(36).slice(2, 8),
+                matchId: matchId,
                 results: results.map(r => ({
                     player: r.player,
                     lane: r.lane,
@@ -1676,6 +2026,757 @@
                         "off"
                     );
                 });
+
+        }
+
+        /* =====================================================
+           PARTIDAS NO FIREBASE (base das estatísticas)
+        ===================================================== */
+
+        function entriesOf(results) {
+            return results.map(r => ({
+                player: r.player,
+                lane: r.lane,
+                champion: r.champion
+            }));
+        }
+
+        /* Registra uma partida nova */
+        function saveMatch(matchId, results) {
+
+            if (!liveReady) return;
+
+            db.ref("salas/" + roomCode + "/partidas/" + matchId).set({
+                time: Date.now(),
+                entries: entriesOf(results)
+            }).catch(error => console.error("Erro ao salvar partida:", error));
+
+        }
+
+        /* Resorteio: atualiza o campeão e guarda o rejeitado */
+        function saveReroll(matchId, results, oldChampion) {
+
+            if (!liveReady || !matchId) return;
+
+            /* Partida precisa existir na sala atual (evita registro "solto") */
+            if (!statsData.partidas[matchId]) return;
+
+            const base = db.ref("salas/" + roomCode + "/partidas/" + matchId);
+
+            base.child("entries").set(entriesOf(results))
+                .catch(error => console.error(error));
+
+            base.child("rerolls").push(oldChampion)
+                .catch(error => console.error(error));
+
+        }
+
+        /* Vitória / derrota (somente host). Clicar de novo desmarca. */
+        function setMatchResult(matchId, value) {
+
+            if (!liveReady || !matchId) return;
+
+            if (!statsData.partidas[matchId]) {
+                alert("Esta partida não está registrada na sala atual.");
+                return;
+            }
+
+            const ref = db.ref("salas/" + roomCode + "/partidas/" + matchId + "/resultado");
+
+            const current = statsData.partidas[matchId].resultado || null;
+
+            const op = (value === null || current === value)
+                ? ref.remove()
+                : ref.set(value);
+
+            op.catch(error => {
+                console.error(error);
+                alert("Não foi possível salvar o resultado (" + (error.code || error.message) + ").");
+            });
+
+        }
+
+        function markCurrent(value) {
+            setMatchResult(currentMatchId, value);
+        }
+
+        function showResultBar() {
+
+            if (IS_VIEWER || !liveReady || !currentMatchId) return;
+
+            document.getElementById("resultBar").classList.add("show");
+
+            refreshResultBar();
+
+        }
+
+        function hideResultBar() {
+            document.getElementById("resultBar").classList.remove("show");
+        }
+
+        function refreshResultBar() {
+
+            if (!currentMatchId) return;
+
+            const match = statsData.partidas[currentMatchId];
+            const res = match ? match.resultado || null : null;
+
+            document.getElementById("btnWin").classList.toggle("on-vitoria", res === "vitoria");
+            document.getElementById("btnLoss").classList.toggle("on-derrota", res === "derrota");
+
+            document.getElementById("resultBarStatus").textContent =
+                res === "vitoria" ? "Marcada como vitória ✅"
+                    : res === "derrota" ? "Marcada como derrota ❌"
+                        : "Sem resultado marcado. Você pode marcar agora ou depois, pelo histórico.";
+
+        }
+
+        /* Zera partidas e votos da sala (somente host) */
+        async function resetStats() {
+
+            if (!liveReady) return;
+
+            if (!confirm(
+                "Zerar TODAS as estatísticas desta sala (partidas, resultados e votos)? " +
+                "Isso não pode ser desfeito."
+            )) return;
+
+            try {
+                await db.ref("salas/" + roomCode + "/partidas").remove();
+                await db.ref("salas/" + roomCode + "/votos").remove();
+                currentMatchId = null;
+                hideResultBar();
+            } catch (error) {
+                console.error(error);
+                alert("Não foi possível zerar (" + (error.code || error.message) + ").");
+            }
+
+        }
+
+        /* =====================================================
+           LEITURA EM TEMPO REAL: PARTIDAS + VOTOS
+        ===================================================== */
+
+        let statsRefs = [];
+        let statsTimer = null;
+
+        function startStats() {
+
+            if (!db || !roomCode) return;
+
+            stopStats();
+
+            const partidasRef = db.ref("salas/" + roomCode + "/partidas");
+            const votosRef = db.ref("salas/" + roomCode + "/votos");
+
+            partidasRef.on("value", snap => {
+                statsData.partidas = snap.val() || {};
+                onStatsChanged();
+            }, error => console.error(error));
+
+            votosRef.on("value", snap => {
+                statsData.votos = snap.val() || {};
+                onStatsChanged();
+            }, error => console.error(error));
+
+            statsRefs = [partidasRef, votosRef];
+
+            renderStats();
+
+        }
+
+        function stopStats() {
+
+            statsRefs.forEach(ref => ref.off());
+            statsRefs = [];
+
+            statsData = { partidas: {}, votos: {} };
+
+            renderStats();
+            refreshVoteBars();
+
+        }
+
+        function onStatsChanged() {
+
+            if (statsTimer) return;
+
+            statsTimer = setTimeout(() => {
+                statsTimer = null;
+                renderStats();
+                refreshVoteBars();
+                refreshResultBar();
+                renderMatchHistory();
+            }, 50);
+
+        }
+
+        /* =====================================================
+           LIKE / DISLIKE (espectadores votam na sala)
+        ===================================================== */
+
+        function getVotes(matchId, champion) {
+            const byMatch = statsData.votos[matchId];
+            return (byMatch && byMatch[champion]) || {};
+        }
+
+        async function castVote(matchId, champion, value) {
+
+            if (!IS_VIEWER || !db || !myUid || !matchId) return;
+
+            const ref = db.ref(
+                "salas/" + roomCode + "/votos/" + matchId + "/" + champion + "/" + myUid
+            );
+
+            const current = getVotes(matchId, champion)[myUid] || 0;
+
+            try {
+                if (current === value) {
+                    await ref.remove();
+                } else {
+                    await ref.set(value);
+                }
+            } catch (error) {
+                console.error(error);
+                alert("Não foi possível registrar o voto (" + (error.code || error.message) + ").");
+            }
+
+        }
+
+        function createVoteBar(matchId, champion) {
+
+            const bar = document.createElement("div");
+            bar.className = "vote-bar";
+            bar.dataset.match = matchId;
+            bar.dataset.champion = champion;
+
+            [["like", 1], ["dislike", -1]].forEach(([kind, value]) => {
+
+                const button = document.createElement("button");
+                button.type = "button";
+                button.className = "vote-btn " + kind;
+                button.dataset.kind = kind;
+                button.onclick = () => castVote(matchId, champion, value);
+
+                bar.appendChild(button);
+
+            });
+
+            return bar;
+
+        }
+
+        function refreshVoteBars() {
+
+            document.querySelectorAll(".vote-bar").forEach(bar => {
+
+                const votes = getVotes(bar.dataset.match, bar.dataset.champion);
+
+                let likes = 0;
+                let dislikes = 0;
+
+                Object.values(votes).forEach(v => {
+                    if (v === 1) likes++;
+                    else if (v === -1) dislikes++;
+                });
+
+                const mine = myUid ? votes[myUid] || 0 : 0;
+
+                const likeBtn = bar.querySelector(".like");
+                const dislikeBtn = bar.querySelector(".dislike");
+
+                likeBtn.textContent = "👍 " + likes;
+                dislikeBtn.textContent = "👎 " + dislikes;
+
+                likeBtn.classList.toggle("on", mine === 1);
+                dislikeBtn.classList.toggle("on", mine === -1);
+
+                /* Só espectador logado vota; o host só enxerga os números */
+                const canVote = IS_VIEWER && !!myUid;
+
+                likeBtn.disabled = !canVote;
+                dislikeBtn.disabled = !canVote;
+
+            });
+
+        }
+
+        /* Adiciona a barra de votos num card (quando há partida e Firebase) */
+        function appendVoteBar(card, matchId, champion) {
+
+            if (!matchId || !db) return;
+
+            card.appendChild(createVoteBar(matchId, champion));
+
+            refreshVoteBars();
+
+        }
+
+        /* =====================================================
+           ESTATÍSTICAS
+        ===================================================== */
+
+        const STATS_TABS = [
+            { id: "champions", label: "🛡️ Campeões" },
+            { id: "players", label: "👥 Jogadores" },
+            { id: "lanes", label: "⚔️ Lanes" }
+        ];
+
+        let statsTab = "champions";
+
+        const statsSort = {
+            champions: { key: "picks", dir: -1 },
+            players: { key: "games", dir: -1 },
+            lanes: { key: "games", dir: -1 }
+        };
+
+        function ratio(a, b) {
+            return (a + b) > 0 ? a / (a + b) : null;
+        }
+
+        function pct(value) {
+            return value === null ? "—" : Math.round(value * 100) + "%";
+        }
+
+        function topKey(counts) {
+
+            let best = null;
+
+            Object.keys(counts).forEach(key => {
+                if (best === null || counts[key] > counts[best]) best = key;
+            });
+
+            return best;
+
+        }
+
+        function computeStats() {
+
+            const champs = {};
+            const players = {};
+            const lanes = {};
+
+            let total = 0;
+            let wins = 0;
+            let losses = 0;
+            let likes = 0;
+            let dislikes = 0;
+
+            const champ = id => champs[id] || (champs[id] = {
+                id: id,
+                name: championNames[id] || id,
+                picks: 0, likes: 0, dislikes: 0, rerolls: 0, wins: 0, losses: 0
+            });
+
+            Object.values(statsData.partidas || {}).forEach(match => {
+
+                if (!match) return;
+
+                const entries = Object.values(match.entries || {});
+
+                if (entries.length === 0) return;
+
+                const won = match.resultado === "vitoria";
+                const lost = match.resultado === "derrota";
+
+                total++;
+                if (won) wins++;
+                if (lost) losses++;
+
+                entries.forEach(entry => {
+
+                    if (!entry || !entry.champion) return;
+
+                    const c = champ(entry.champion);
+                    c.picks++;
+                    if (won) c.wins++;
+                    if (lost) c.losses++;
+
+                    const pkey = String(entry.player || "").trim().toLowerCase();
+
+                    const p = players[pkey] || (players[pkey] = {
+                        name: entry.player || "?",
+                        games: 0, wins: 0, losses: 0, champs: {}, lanes: {}
+                    });
+
+                    p.games++;
+                    if (won) p.wins++;
+                    if (lost) p.losses++;
+                    p.champs[entry.champion] = (p.champs[entry.champion] || 0) + 1;
+                    p.lanes[entry.lane] = (p.lanes[entry.lane] || 0) + 1;
+
+                    const l = lanes[entry.lane] || (lanes[entry.lane] = {
+                        name: entry.lane, games: 0, wins: 0, losses: 0
+                    });
+
+                    l.games++;
+                    if (won) l.wins++;
+                    if (lost) l.losses++;
+
+                });
+
+                Object.values(match.rerolls || {}).forEach(id => {
+                    champ(id).rerolls++;
+                });
+
+            });
+
+            Object.keys(statsData.votos || {}).forEach(matchId => {
+
+                const byChamp = statsData.votos[matchId] || {};
+
+                Object.keys(byChamp).forEach(id => {
+
+                    const c = champ(id);
+
+                    Object.values(byChamp[id] || {}).forEach(v => {
+                        if (v === 1) { c.likes++; likes++; }
+                        else if (v === -1) { c.dislikes++; dislikes++; }
+                    });
+
+                });
+
+            });
+
+            const championRows = Object.values(champs).map(c => Object.assign(c, {
+                approval: ratio(c.likes, c.dislikes),
+                winrate: ratio(c.wins, c.losses)
+            }));
+
+            const playerRows = Object.values(players).map(p => {
+
+                const bestChamp = topKey(p.champs);
+                const bestLane = topKey(p.lanes);
+
+                return Object.assign(p, {
+                    winrate: ratio(p.wins, p.losses),
+                    topChampion: bestChamp
+                        ? (championNames[bestChamp] || bestChamp) + " (" + p.champs[bestChamp] + "x)"
+                        : "—",
+                    topLane: bestLane ? bestLane + " (" + p.lanes[bestLane] + "x)" : "—"
+                });
+
+            });
+
+            const laneRows = laneOrder
+                .filter(name => lanes[name])
+                .map(name => Object.assign(lanes[name], {
+                    winrate: ratio(lanes[name].wins, lanes[name].losses)
+                }));
+
+            return {
+                total, wins, losses, likes, dislikes,
+                championRows, playerRows, laneRows
+            };
+
+        }
+
+        function bestBy(rows, key, minValue) {
+
+            let best = null;
+
+            rows.forEach(row => {
+
+                const value = row[key];
+
+                if (value === null || value < minValue) return;
+
+                if (!best || value > best[key]) best = row;
+
+            });
+
+            return best;
+
+        }
+
+        function statTile(label, value) {
+
+            const tile = document.createElement("div");
+            tile.className = "stat-tile";
+
+            const v = document.createElement("div");
+            v.className = "v";
+            v.textContent = value;
+
+            const k = document.createElement("div");
+            k.className = "k";
+            k.textContent = label;
+
+            tile.appendChild(v);
+            tile.appendChild(k);
+
+            return tile;
+
+        }
+
+        function statHighlight(label, row, valueText) {
+
+            const box = document.createElement("div");
+            box.className = "stat-hl";
+
+            const img = document.createElement("img");
+            img.src = IMAGE_URL + row.id + ".png";
+            img.onerror = () => { img.style.display = "none"; };
+
+            const info = document.createElement("div");
+
+            const l = document.createElement("div");
+            l.className = "hl-label";
+            l.textContent = label;
+
+            const n = document.createElement("div");
+            n.className = "hl-name";
+            n.textContent = row.name;
+
+            const v = document.createElement("div");
+            v.className = "hl-value";
+            v.textContent = valueText;
+
+            info.appendChild(l);
+            info.appendChild(n);
+            info.appendChild(v);
+
+            box.appendChild(img);
+            box.appendChild(info);
+
+            return box;
+
+        }
+
+        function championColumns() {
+            return [
+                {
+                    key: "name", label: "Campeão", type: "text",
+                    value: r => r.name,
+                    show: r => {
+                        const wrap = document.createElement("span");
+                        const img = document.createElement("img");
+                        img.src = IMAGE_URL + r.id + ".png";
+                        img.onerror = () => { img.style.display = "none"; };
+                        wrap.appendChild(img);
+                        wrap.appendChild(document.createTextNode(r.name));
+                        return wrap;
+                    }
+                },
+                { key: "picks", label: "Sorteios", type: "num", value: r => r.picks },
+                { key: "likes", label: "👍", type: "num", value: r => r.likes },
+                { key: "dislikes", label: "👎", type: "num", value: r => r.dislikes },
+                { key: "approval", label: "Aprovação", type: "num", value: r => r.approval, show: r => pct(r.approval) },
+                { key: "rerolls", label: "Resorteios", type: "num", value: r => r.rerolls },
+                { key: "wins", label: "V", type: "num", value: r => r.wins },
+                { key: "losses", label: "D", type: "num", value: r => r.losses },
+                { key: "winrate", label: "Win%", type: "num", value: r => r.winrate, show: r => pct(r.winrate) }
+            ];
+        }
+
+        function playerColumns() {
+            return [
+                { key: "name", label: "Jogador", type: "text", value: r => r.name },
+                { key: "games", label: "Partidas", type: "num", value: r => r.games },
+                { key: "wins", label: "V", type: "num", value: r => r.wins },
+                { key: "losses", label: "D", type: "num", value: r => r.losses },
+                { key: "winrate", label: "Win%", type: "num", value: r => r.winrate, show: r => pct(r.winrate) },
+                { key: "topChampion", label: "Campeão mais sorteado", type: "text", value: r => r.topChampion },
+                { key: "topLane", label: "Lane mais jogada", type: "text", value: r => r.topLane }
+            ];
+        }
+
+        function laneColumns() {
+            return [
+                { key: "name", label: "Lane", type: "text", value: r => r.name },
+                { key: "games", label: "Partidas", type: "num", value: r => r.games },
+                { key: "wins", label: "V", type: "num", value: r => r.wins },
+                { key: "losses", label: "D", type: "num", value: r => r.losses },
+                { key: "winrate", label: "Win%", type: "num", value: r => r.winrate, show: r => pct(r.winrate) }
+            ];
+        }
+
+        function renderStatsTable(columns, rows) {
+
+            const table = document.getElementById("statsTable");
+
+            table.innerHTML = "";
+
+            const sort = statsSort[statsTab];
+            const sortCol = columns.find(c => c.key === sort.key) || columns[0];
+
+            const sorted = [...rows].sort((a, b) => {
+
+                const va = sortCol.value(a);
+                const vb = sortCol.value(b);
+
+                let result;
+
+                if (sortCol.type === "text") {
+                    result = String(va).localeCompare(String(vb), "pt-BR");
+                } else {
+                    result = (va === null ? -1 : va) - (vb === null ? -1 : vb);
+                }
+
+                if (result !== 0) return result * sort.dir;
+
+                return String(a.name).localeCompare(String(b.name), "pt-BR");
+
+            });
+
+            const thead = document.createElement("thead");
+            const headRow = document.createElement("tr");
+
+            columns.forEach(col => {
+
+                const th = document.createElement("th");
+
+                th.textContent = col.label +
+                    (col.key === sortCol.key ? (sort.dir === 1 ? " ▲" : " ▼") : "");
+
+                th.onclick = () => {
+
+                    if (sort.key === col.key) {
+                        sort.dir = -sort.dir;
+                    } else {
+                        sort.key = col.key;
+                        sort.dir = col.type === "text" ? 1 : -1;
+                    }
+
+                    renderStats();
+
+                };
+
+                headRow.appendChild(th);
+
+            });
+
+            thead.appendChild(headRow);
+            table.appendChild(thead);
+
+            const tbody = document.createElement("tbody");
+
+            sorted.forEach(row => {
+
+                const tr = document.createElement("tr");
+
+                columns.forEach(col => {
+
+                    const td = document.createElement("td");
+
+                    const content = col.show ? col.show(row) : col.value(row);
+
+                    if (content instanceof Node) {
+                        td.appendChild(content);
+                    } else {
+                        td.textContent = content === null ? "—" : String(content);
+                    }
+
+                    tr.appendChild(td);
+
+                });
+
+                tbody.appendChild(tr);
+
+            });
+
+            table.appendChild(tbody);
+
+        }
+
+        function renderStats() {
+
+            const body = document.getElementById("statsBody");
+            const empty = document.getElementById("statsEmpty");
+
+            if (!db) {
+                empty.textContent =
+                    IS_LOCAL
+                        ? "Estatísticas indisponíveis em modo local (Firebase desligado)."
+                        : "Estatísticas indisponíveis: o Firebase não está configurado.";
+                empty.style.display = "block";
+                body.style.display = "none";
+                return;
+            }
+
+            const stats = computeStats();
+
+            if (stats.total === 0 && stats.likes + stats.dislikes === 0) {
+                empty.textContent =
+                    "Nenhuma partida registrada ainda. Faça um sorteio para começar.";
+                empty.style.display = "block";
+                body.style.display = "none";
+                return;
+            }
+
+            empty.style.display = "none";
+            body.style.display = "block";
+
+            /* Resumo */
+            const summary = document.getElementById("statsSummary");
+            summary.innerHTML = "";
+
+            summary.appendChild(statTile("Partidas", stats.total));
+            summary.appendChild(statTile("Vitórias", stats.wins));
+            summary.appendChild(statTile("Derrotas", stats.losses));
+            summary.appendChild(statTile("Winrate", pct(ratio(stats.wins, stats.losses))));
+            summary.appendChild(statTile("👍 Likes", stats.likes));
+            summary.appendChild(statTile("👎 Dislikes", stats.dislikes));
+
+            /* Destaques */
+            const highlights = document.getElementById("statsHighlights");
+            highlights.innerHTML = "";
+
+            const rows = stats.championRows;
+
+            const mostPicked = bestBy(rows, "picks", 1);
+            const mostLoved = bestBy(rows, "likes", 1);
+            const mostHated = bestBy(rows, "dislikes", 1);
+            const mostRerolled = bestBy(rows, "rerolls", 1);
+            const bestWinrate = bestBy(
+                rows.filter(r => r.wins + r.losses >= 2), "winrate", 0
+            );
+
+            if (mostPicked) highlights.appendChild(
+                statHighlight("Mais sorteado", mostPicked, mostPicked.picks + "x"));
+
+            if (mostLoved) highlights.appendChild(
+                statHighlight("Mais amado", mostLoved, "👍 " + mostLoved.likes));
+
+            if (mostHated) highlights.appendChild(
+                statHighlight("Mais odiado", mostHated, "👎 " + mostHated.dislikes));
+
+            if (mostRerolled) highlights.appendChild(
+                statHighlight("Mais resorteado", mostRerolled, mostRerolled.rerolls + "x"));
+
+            if (bestWinrate) highlights.appendChild(
+                statHighlight(
+                    "Melhor winrate", bestWinrate,
+                    pct(bestWinrate.winrate) + " (" + bestWinrate.wins + "V " + bestWinrate.losses + "D)"
+                ));
+
+            /* Abas */
+            const tabs = document.getElementById("statsTabs");
+            tabs.innerHTML = "";
+
+            STATS_TABS.forEach(tab => {
+
+                const button = document.createElement("button");
+                button.type = "button";
+                button.className = "mini-btn" + (tab.id === statsTab ? " active" : "");
+                button.textContent = tab.label;
+                button.onclick = () => {
+                    statsTab = tab.id;
+                    renderStats();
+                };
+
+                tabs.appendChild(button);
+
+            });
+
+            /* Tabela da aba atual */
+            if (statsTab === "champions") {
+                renderStatsTable(championColumns(), stats.championRows);
+            } else if (statsTab === "players") {
+                renderStatsTable(playerColumns(), stats.playerRows);
+            } else {
+                renderStatsTable(laneColumns(), stats.laneRows);
+            }
 
         }
 
@@ -1893,16 +2994,20 @@
                 unlockAudio();
                 overlay.style.display = "none";
                 startListening();
+                startStats();
 
-                /* Login anônimo do espectador (necessário para escrever no chat) */
+                /* Login anônimo do espectador (necessário para chat e votos) */
                 try {
                     const cred = await firebase.auth().signInAnonymously();
                     myUid = cred.user.uid;
                 } catch (error) {
-                    console.error("Falha no login anônimo do chat:", error);
+                    console.error("Falha no login anônimo:", error);
                 }
 
                 startChat();
+
+                /* Agora que o uid existe, libera os botões de voto */
+                refreshVoteBars();
             };
 
         }
@@ -1933,7 +3038,7 @@
 
                     if (data && data.results) {
                         viewerLastId = data.id;
-                        renderStaticResults(Object.values(data.results));
+                        renderStaticResults(Object.values(data.results), data.matchId);
                     }
 
                     return;
@@ -1944,6 +3049,7 @@
                 viewerLastId = data.id;
 
                 const results = Object.values(data.results);
+                const matchId = data.matchId || null;
 
                 /* Resorteio de um card só */
                 if (data.reroll) {
@@ -1951,7 +3057,7 @@
 
                     if (changed) {
                         viewerQueue = viewerQueue
-                            .then(() => animateSingleCard(changed))
+                            .then(() => animateSingleCard(changed, matchId))
                             .then(() => updateLatestHistory(results))
                             .catch(error => console.error(error));
                     }
@@ -1961,8 +3067,8 @@
 
                 /* Enfileira para não sobrepor animações */
                 viewerQueue = viewerQueue
-                    .then(() => animateResults(results))
-                    .then(() => addMatchToHistory(results))
+                    .then(() => animateResults(results, matchId))
+                    .then(() => addMatchToHistory(results, matchId))
                     .catch(error => console.error(error));
 
             }, error => {
@@ -1973,7 +3079,7 @@
         }
 
         /* Mostra um resultado já pronto, sem animação (quem entra no meio) */
-        function renderStaticResults(results) {
+        function renderStaticResults(results, matchId) {
 
             const container = document.getElementById("results");
 
@@ -1984,6 +3090,7 @@
                 const card = document.createElement("div");
                 card.className = "result";
                 card.dataset.lane = result.lane;
+                card.dataset.match = matchId || "";
 
                 const lane = document.createElement("div");
                 lane.className = "lane-name";
@@ -2012,6 +3119,8 @@
                 card.appendChild(lane);
                 card.appendChild(box);
 
+                appendVoteBar(card, matchId, result.champion);
+
                 container.appendChild(card);
 
             });
@@ -2031,6 +3140,7 @@
 
             if (IS_VIEWER) {
                 initViewer();
+                renderStats();
                 return;
             }
 
@@ -2385,11 +3495,12 @@
             }
         }
 
-        function addMatchToHistory(results) {
+        function addMatchToHistory(results, matchId) {
 
             const history = loadMatchHistory();
 
             history.unshift({
+                id: matchId || null,
                 time: Date.now(),
                 entries: results.map(r => ({
                     player: r.player,
@@ -2431,6 +3542,18 @@
                 const when = document.createElement("div");
                 when.className = "when";
                 when.textContent = new Date(match.time).toLocaleString("pt-BR");
+
+                /* Resultado (vem do Firebase, quando a partida está registrada) */
+                const saved = match.id ? statsData.partidas[match.id] : null;
+                const res = saved ? saved.resultado || null : null;
+
+                if (res) {
+                    const tag = document.createElement("span");
+                    tag.className = "result-tag " + res;
+                    tag.textContent = res === "vitoria" ? "✅ Vitória" : "❌ Derrota";
+                    when.appendChild(tag);
+                }
+
                 item.appendChild(when);
 
                 match.entries.forEach(entry => {
@@ -2457,6 +3580,28 @@
                     item.appendChild(span);
 
                 });
+
+                /* Host pode marcar vitória/derrota de partidas anteriores */
+                if (!IS_VIEWER && liveReady && match.id && saved) {
+
+                    const actions = document.createElement("div");
+                    actions.className = "history-actions";
+
+                    [["vitoria", "✅ Vitória"], ["derrota", "❌ Derrota"]].forEach(([value, label]) => {
+
+                        const button = document.createElement("button");
+                        button.type = "button";
+                        button.className = "mini-btn" + (res === value ? " on-" + value : "");
+                        button.textContent = label;
+                        button.onclick = () => setMatchResult(match.id, value);
+
+                        actions.appendChild(button);
+
+                    });
+
+                    item.appendChild(actions);
+
+                }
 
                 container.appendChild(item);
 
@@ -2586,9 +3731,6 @@
 
             if (rerolling) return;
 
-            /* Com a lista de já sorteados ativa não há resorteio */
-            if (persistActive()) return;
-
             const sortButton = document.getElementById("sortButton");
 
             /* Ainda sorteando a partida inteira */
@@ -2610,6 +3752,10 @@
 
             const poolChampions = getPoolChampions();
 
+            /* Lista de "já sorteados" ativa (e sem pool): o novo campeão
+               também não pode ser um que já saiu antes */
+            const persist = persistActive();
+
             let pool;
 
             if (poolChampions.length > 0) {
@@ -2626,11 +3772,32 @@
 
             } else {
 
-                pool = champions.filter(champion =>
+                const drawn = persist ? loadDrawn() : [];
+
+                const buildPool = ignoreDrawn => champions.filter(champion =>
                     !excluded.includes(champion)
                     && champion !== target.champion
-                    && !(noRepeat && inUse.includes(champion))
+                    && !((noRepeat || persist) && inUse.includes(champion))
+                    && (ignoreDrawn || !drawn.includes(champion))
                 );
+
+                pool = buildPool(false);
+
+                /* Acabaram os campeões não sorteados: oferece resetar a lista */
+                if (pool.length === 0 && persist) {
+
+                    const ok = confirm(
+                        "Não restam campeões ainda não sorteados para resortear. " +
+                        "Resetar a lista de sorteados e continuar?"
+                    );
+
+                    if (!ok) return;
+
+                    resetDrawn(false);
+
+                    pool = buildPool(true);
+
+                }
 
             }
 
@@ -2645,12 +3812,20 @@
 
             try {
 
+                const oldChampion = target.champion;
+
                 target.champion = randomItem(pool);
+
+                /* Registra o novo campeão como já sorteado */
+                if (persist && poolChampions.length === 0) addDrawn([target.champion]);
+
                 target.sound = pickSounds(1, currentResults.filter(r => r !== target).map(r => r.sound))[0];
 
-                broadcastResults(currentResults, lane);
+                broadcastResults(currentResults, currentMatchId, lane);
 
-                await animateSingleCard(target);
+                saveReroll(currentMatchId, currentResults, oldChampion);
+
+                await animateSingleCard(target, currentMatchId);
 
                 updateLatestHistory(currentResults);
 
@@ -2880,15 +4055,26 @@
 
                 currentResults = results.map(r => ({ ...r }));
 
+                /* ---------- REGISTRA A PARTIDA (estatísticas) ---------- */
+
+                currentMatchId = newMatchId();
+
+                hideResultBar();
+
+                saveMatch(currentMatchId, results);
+
                 /* ---------- TRANSMITE AOS ESPECTADORES ---------- */
 
-                broadcastResults(results);
+                broadcastResults(results, currentMatchId);
 
                 /* ---------- ANIMAÇÃO ---------- */
 
-                await animateResults(results);
+                await animateResults(results, currentMatchId);
 
-                addMatchToHistory(results);
+                addMatchToHistory(results, currentMatchId);
+
+                /* Pergunta (opcional) como terminou; não bloqueia novos sorteios */
+                showResultBar();
 
             } finally {
 
@@ -2902,7 +4088,7 @@
            ANIMAÇÃO DOS RESULTADOS
         ===================================================== */
 
-        async function animateResults(results) {
+        async function animateResults(results, matchId) {
 
             const container = document.getElementById("results");
 
@@ -2917,6 +4103,8 @@
                 card.className = "result";
 
                 card.dataset.lane = result.lane;
+
+                card.dataset.match = matchId || "";
 
                 card.innerHTML = shuffleCardHTML(result.lane);
 
@@ -2948,12 +4136,14 @@
         }
 
         /* Refaz a animação de um único card (resorteio) */
-        async function animateSingleCard(result) {
+        async function animateSingleCard(result, matchId) {
 
             const card = [...document.querySelectorAll("#results .result")]
                 .find(c => c.dataset.lane === result.lane);
 
             if (!card) return;
+
+            if (matchId) card.dataset.match = matchId;
 
             card.innerHTML = shuffleCardHTML(result.lane);
 
@@ -3010,6 +4200,9 @@
 
                     card.querySelector(".shuffle-container").appendChild(championName);
 
+                    /* Like / dislike (espectadores votam; host vê os números) */
+                    appendVoteBar(card, card.dataset.match, result.champion);
+
                     /* Botão de resortear (só host; fica oculto via CSS quando
                        "não repetir campeões já sorteados" está marcado) */
                     if (!IS_VIEWER) {
@@ -3036,14 +4229,5 @@
     </script>
 
 </body>
-
-<footer class="rodape">
-    <p>Desenvolvido por <a href="https://github.com/FernandoFiorini" target="_blank" rel="noopener noreferrer">Fernando
-            Fiorini</a></p>
-
-    <p>Sorteador dos guri isn’t endorsed by Riot Games and doesn’t reflect the views or opinions of Riot Games or anyone
-        officially involved in producing or managing Riot Games properties. Riot Games, and all associated properties
-        are trademarks or registered trademarks of Riot Games, Inc.</p>
-</footer>
 
 </html>
