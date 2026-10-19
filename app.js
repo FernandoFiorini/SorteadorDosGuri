@@ -536,7 +536,7 @@ let statsData = { partidas: {}, votos: {} };
 /* Estatísticas GLOBAIS (todas as salas). Só são lidas quando o seletor
    "Global" está ativo, para não gastar leitura do Firebase à toa.
    Estrutura no banco:
-   global/partidas/{matchId} -> {sala, time, entries, rerolls, resultado}
+   global/partidas/{matchId} -> {hostUid, time, entries, rerolls, resultado}
    global/votos/{matchId}/{campeao}/{uid} -> 1 | -1 */
 let globalData = { partidas: {}, votos: {} };
 let globalLoaded = { partidas: false, votos: false };
@@ -776,7 +776,7 @@ function saveMatch(matchId, results) {
     const updates = {};
 
     updates["salas/" + roomCode + "/partidas/" + matchId] = data;
-    updates["global/partidas/" + matchId] = Object.assign({ sala: roomCode }, data);
+    updates["global/partidas/" + matchId] = Object.assign({ hostUid: hostUid }, data);
 
     db.ref().update(updates)
         .catch(error => console.error("Erro ao salvar partida:", error));
@@ -1018,18 +1018,23 @@ async function syncRoomToGlobal() {
         "Enviar " + ids.length + " partida(s) desta sala (e seus votos) para as estatísticas globais?"
     )) return;
 
-    const updates = {};
+    /* Etapa 1: partidas. Etapa 2: votos (as regras só liberam os votos
+       de uma partida depois que ela já existe no global). */
+    const partidaUpdates = {};
 
     ids.forEach(id => {
-        updates["global/partidas/" + id] = Object.assign({ sala: roomCode }, partidas[id]);
+        partidaUpdates["global/partidas/" + id] = Object.assign({ hostUid: hostUid }, partidas[id]);
     });
 
+    const votoUpdates = {};
+
     Object.keys(votos).forEach(id => {
-        updates["global/votos/" + id] = votos[id];
+        votoUpdates["global/votos/" + id] = votos[id];
     });
 
     try {
-        await db.ref().update(updates);
+        if (ids.length > 0) await db.ref().update(partidaUpdates);
+        if (Object.keys(votoUpdates).length > 0) await db.ref().update(votoUpdates);
         alert("Pronto! As partidas desta sala foram enviadas para o global.");
     } catch (error) {
         console.error(error);
