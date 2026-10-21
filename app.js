@@ -411,6 +411,8 @@ const soundList = [
     { name: "Deixa comigo aspira", file: "deixacomigoaspira.mp3" },
     { name: "Deixa eu clicar", file: "deixaclicar.mp3" },
     { name: "Ai cara", file: "aicara.mp3" },
+    { name: "Paixão pode relaxar", file: "paixaopoderelaxar.mp3" },
+    { name: "Gritinho nardi", file: "gritinhonardi.mp3" },
 
 ];
 
