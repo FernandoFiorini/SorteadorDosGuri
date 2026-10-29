@@ -3805,4 +3805,3 @@ function shuffleAnimation(card, result) {
     });
 
 }
-
