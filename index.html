@@ -231,6 +231,20 @@
 
                 <div class="info" id="resultBarStatus"></div>
             </div>
+
+            <!-- ADICIONAR JOGADOR NO MEIO DA PARTIDA (só host) -->
+            <div class="result-bar host-only" id="addPlayerBar">
+                <div class="result-bar-title">➕ Alguém quer entrar no time? <span>(sorteia só o novo jogador, sem
+                        mexer nos já sorteados)</span></div>
+
+                <div class="add-player-row">
+                    <input type="text" id="addPlayerName" maxlength="20" placeholder="Nome do novo jogador"
+                        autocomplete="off" onkeydown="if(event.key==='Enter')addPlayerToMatch()">
+                    <select id="addPlayerLane"></select>
+                    <button class="mini-btn" type="button" id="addPlayerBtn" onclick="addPlayerToMatch()">🎲 Sortear
+                        novo jogador</button>
+                </div>
+            </div>
         </div>
 
         <!-- ESTATÍSTICAS -->

@@ -1105,3 +1105,42 @@ body:not(.viewer) .viewer-only {
 .stats-actions .mini-btn {
     margin-left: 0;
 }
+
+/* ADICIONAR JOGADOR NO MEIO DA PARTIDA */
+.add-player-row {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+.add-player-row input,
+.add-player-row select {
+    background: #09111a;
+    border: 1px solid #304255;
+    color: white;
+    padding: 10px 12px;
+    border-radius: 6px;
+    outline: none;
+    font-size: 14px;
+}
+
+.add-player-row input {
+    flex: 1;
+    min-width: 160px;
+    max-width: 260px;
+}
+
+.add-player-row input:focus,
+.add-player-row select:focus {
+    border-color: #c8aa6e;
+}
+
+.add-player-row .mini-btn {
+    margin-left: 0;
+}
+
+.add-player-row .mini-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}

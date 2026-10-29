@@ -670,6 +670,7 @@ async function createNewRoom() {
     currentMatchId = null;
     currentResults = [];
     hideResultBar();
+    refreshAddPlayerBar();
 
     const container = document.getElementById("results");
     container.innerHTML = "";
@@ -720,7 +721,7 @@ function copyRoomLink() {
 
 /* Envia o resultado aos espectadores (chamado antes da animação
    do host, para as duas animações começarem juntas). */
-function broadcastResults(results, matchId, rerollLane) {
+function broadcastResults(results, matchId, rerollLane, addedLane) {
 
     if (!liveReady) return;
 
@@ -737,6 +738,9 @@ function broadcastResults(results, matchId, rerollLane) {
 
     /* Resorteio de um único card: os espectadores animam só essa lane */
     if (rerollLane) payload.reroll = rerollLane;
+
+    /* Jogador adicionado depois: os espectadores animam só esse card novo */
+    if (addedLane) payload.add = addedLane;
 
     db.ref("salas/" + roomCode + "/sorteio").set(payload)
         .then(() => {
@@ -802,6 +806,28 @@ function saveReroll(matchId, results, oldChampion) {
         .forEach(base => {
             updates[base + "/entries"] = entries;
             updates[base + "/rerolls/" + rerollKey] = oldChampion;
+        });
+
+    db.ref().update(updates)
+        .catch(error => console.error(error));
+
+}
+
+/* Jogador adicionado depois do sorteio: atualiza a lista de entradas
+   da partida (sala + global) sem mexer em resultado, votos ou resorteios */
+function saveAddedPlayer(matchId, results) {
+
+    if (!liveReady || !matchId) return;
+
+    if (!statsData.partidas[matchId]) return;
+
+    const entries = entriesOf(results);
+
+    const updates = {};
+
+    ["salas/" + roomCode + "/partidas/" + matchId, "global/partidas/" + matchId]
+        .forEach(base => {
+            updates[base + "/entries"] = entries;
         });
 
     db.ref().update(updates)
@@ -2434,6 +2460,20 @@ function startListening() {
         const results = Object.values(data.results);
         const matchId = data.matchId || null;
 
+        /* Jogador novo adicionado à partida: anima só o card dele */
+        if (data.add) {
+            const added = results.find(r => r.lane === data.add);
+
+            if (added) {
+                viewerQueue = viewerQueue
+                    .then(() => animateAddedCard(added, matchId))
+                    .then(() => updateLatestHistory(results))
+                    .catch(error => console.error(error));
+            }
+
+            return;
+        }
+
         /* Resorteio de um card só */
         if (data.reroll) {
             const changed = results.find(r => r.lane === data.reroll);
@@ -3110,6 +3150,203 @@ function updateLatestHistory(results) {
 
 }
 
+/* =====================================================
+   ADICIONAR JOGADOR NO MEIO DA PARTIDA
+
+   Sorteia só o novo jogador (lane livre + campeão), sem alterar
+   os cards já sorteados. Funciona até completar 5 jogadores.
+===================================================== */
+
+let addingPlayer = false;
+
+function freeLanesNow() {
+    const used = currentResults.map(r => r.lane);
+    return laneOrder.filter(lane => !used.includes(lane));
+}
+
+/* Mostra/esconde a barra e atualiza as lanes livres no seletor */
+function refreshAddPlayerBar() {
+
+    const bar = document.getElementById("addPlayerBar");
+
+    if (!bar) return;
+
+    const total = currentResults.length;
+
+    if (IS_VIEWER || total === 0 || total >= laneOrder.length) {
+        bar.classList.remove("show");
+        return;
+    }
+
+    const select = document.getElementById("addPlayerLane");
+    const previous = select.value;
+
+    select.innerHTML = "";
+
+    const random = document.createElement("option");
+    random.value = "";
+    random.textContent = "Lane aleatória";
+    select.appendChild(random);
+
+    freeLanesNow().forEach(lane => {
+        const option = document.createElement("option");
+        option.value = lane;
+        option.textContent = lane;
+        select.appendChild(option);
+    });
+
+    if ([...select.options].some(o => o.value === previous)) {
+        select.value = previous;
+    }
+
+    bar.classList.add("show");
+
+}
+
+async function addPlayerToMatch() {
+
+    if (rerolling || addingPlayer) return;
+
+    const sortButton = document.getElementById("sortButton");
+
+    /* Ainda sorteando a partida inteira */
+    if (sortButton.disabled) return;
+
+    if (currentResults.length === 0) return;
+
+    if (currentResults.length >= laneOrder.length) {
+        alert("O time já tem 5 jogadores.");
+        return;
+    }
+
+    const nameInput = document.getElementById("addPlayerName");
+    const name = nameInput.value.trim().slice(0, 20);
+
+    if (!name) {
+        nameInput.focus();
+        return;
+    }
+
+    /* ---------- LANE ---------- */
+
+    const freeLanes = freeLanesNow();
+    const choice = document.getElementById("addPlayerLane").value;
+
+    const lane = freeLanes.includes(choice) ? choice : randomItem(freeLanes);
+
+    /* ---------- CAMPEÃO ---------- */
+
+    const excluded = JSON.parse(
+        localStorage.getItem("excludedChampions") || "[]"
+    );
+
+    const inUse = currentResults.map(r => r.champion);
+
+    const poolChampions = getPoolChampions();
+    const poolMode = poolChampions.length > 0;
+    const persist = persistActive();
+
+    let pool;
+
+    if (poolMode) {
+
+        /* Pool ativa: só dentro da pool, evitando quem já está no time */
+        pool = poolChampions.filter(champion => !inUse.includes(champion));
+
+        if (pool.length === 0) pool = [...poolChampions];
+
+    } else {
+
+        const drawn = persist ? loadDrawn() : [];
+
+        const buildPool = ignoreDrawn => champions.filter(champion =>
+            !excluded.includes(champion)
+            && !inUse.includes(champion)
+            && (ignoreDrawn || !drawn.includes(champion))
+        );
+
+        pool = buildPool(false);
+
+        if (pool.length === 0 && persist) {
+
+            const ok = confirm(
+                "Não restam campeões ainda não sorteados para o novo jogador. " +
+                "Resetar a lista de sorteados e continuar?"
+            );
+
+            if (!ok) return;
+
+            resetDrawn(false);
+
+            pool = buildPool(true);
+
+        }
+
+    }
+
+    if (pool.length === 0) {
+        alert("Não existem campeões disponíveis para o novo jogador.");
+        return;
+    }
+
+    /* ---------- SORTEIA SÓ O NOVO ---------- */
+
+    addingPlayer = true;
+    sortButton.disabled = true;
+    document.querySelectorAll(".reroll-btn").forEach(b => b.disabled = true);
+    document.getElementById("addPlayerBtn").disabled = true;
+
+    try {
+
+        const newResult = {
+            player: name,
+            lane: lane,
+            champion: randomItem(pool),
+            sound: pickSounds(1, currentResults.map(r => r.sound))[0]
+        };
+
+        /* Registra o campeão como já sorteado (mesma regra do sorteio) */
+        if (persist && !poolMode) addDrawn([newResult.champion]);
+
+        /* Rotação de lanes: guarda a lane do novo jogador no histórico */
+        if (!poolMode && document.getElementById("noRepeatLanes").checked) {
+            const state = loadRotation() || emptyRotation();
+            if (!state.history[name]) state.history[name] = [];
+            state.history[name].push(lane);
+            saveRotation(state);
+            updateRotationStatus();
+        }
+
+        currentResults.push(newResult);
+
+        currentResults.sort(
+            (a, b) => laneOrder.indexOf(a.lane) - laneOrder.indexOf(b.lane)
+        );
+
+        nameInput.value = "";
+
+        /* Espectadores animam só o card novo */
+        broadcastResults(currentResults, currentMatchId, null, lane);
+
+        saveAddedPlayer(currentMatchId, currentResults);
+
+        await animateAddedCard(newResult, currentMatchId);
+
+        updateLatestHistory(currentResults);
+
+    } finally {
+
+        addingPlayer = false;
+        sortButton.disabled = false;
+        document.querySelectorAll(".reroll-btn").forEach(b => b.disabled = false);
+        document.getElementById("addPlayerBtn").disabled = false;
+
+        refreshAddPlayerBar();
+
+    }
+
+}
+
 async function rerollChampion(lane) {
 
     if (rerolling) return;
@@ -3444,6 +3681,8 @@ async function sortear() {
 
         hideResultBar();
 
+        refreshAddPlayerBar();
+
         saveMatch(currentMatchId, results);
 
         /* ---------- TRANSMITE AOS ESPECTADORES ---------- */
@@ -3458,6 +3697,9 @@ async function sortear() {
 
         /* Pergunta (opcional) como terminou; não bloqueia novos sorteios */
         showResultBar();
+
+        /* Permite adicionar mais um jogador sem refazer o sorteio */
+        refreshAddPlayerBar();
 
     } finally {
 
@@ -3516,6 +3758,41 @@ function shuffleCardHTML(lane) {
                 <div class="shuffle-text">Sorteando...</div>
             </div>
         `;
+}
+
+/* Insere e anima o card de um jogador adicionado depois do sorteio,
+   na posição certa da ordem das lanes, sem mexer nos outros cards */
+async function animateAddedCard(result, matchId) {
+
+    const container = document.getElementById("results");
+
+    /* Já existe (ex.: evento repetido): só refaz esse card */
+    const existing = [...container.querySelectorAll(".result")]
+        .find(c => c.dataset.lane === result.lane);
+
+    if (existing) {
+        await animateSingleCard(result, matchId);
+        return;
+    }
+
+    const placeholder = container.querySelector(".empty");
+    if (placeholder) placeholder.remove();
+
+    const card = document.createElement("div");
+    card.className = "result";
+    card.dataset.lane = result.lane;
+    card.dataset.match = matchId || "";
+    card.innerHTML = shuffleCardHTML(result.lane);
+
+    const order = laneOrder.indexOf(result.lane);
+
+    const next = [...container.querySelectorAll(".result")]
+        .find(c => laneOrder.indexOf(c.dataset.lane) > order);
+
+    container.insertBefore(card, next || null);
+
+    await shuffleAnimation(card, result);
+
 }
 
 /* Refaz a animação de um único card (resorteio) */
