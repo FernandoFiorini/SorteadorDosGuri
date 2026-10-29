@@ -227,6 +227,8 @@
                         Vitória</button>
                     <button class="mini-btn" type="button" id="btnLoss" onclick="markCurrent('derrota')">❌
                         Derrota</button>
+                    <button class="mini-btn" type="button" id="btnVoid" onclick="markCurrent('anulada')">🚫 Não deu
+                        jogo</button>
                 </div>
 
                 <div class="info" id="resultBarStatus"></div>
@@ -249,24 +251,7 @@
 
         <!-- ESTATÍSTICAS -->
         <div class="card" id="statsCard">
-            <div class="history-header">
-                <h2>📊 Estatísticas</h2>
-
-                <!-- Seletor de escopo: esta sala / global -->
-                <div class="stats-scope">
-                    <button class="mini-btn active" type="button" id="scopeRoom"
-                        onclick="setStatsScope('room')">🏠 Esta sala</button>
-                    <button class="mini-btn" type="button" id="scopeGlobal"
-                        onclick="setStatsScope('global')">🌐 Global</button>
-                </div>
-            </div>
-
-            <!-- Ações do host (só aparecem no escopo "Esta sala") -->
-            <div class="stats-actions host-only" id="statsActions">
-                <button class="mini-btn" type="button" onclick="syncRoomToGlobal()">⬆️ Enviar partidas desta sala
-                    para o global</button>
-                <button class="mini-btn" type="button" onclick="resetStats()">🗑 Zerar estatísticas da sala</button>
-            </div>
+            <h2>📊 Estatísticas (global)</h2>
 
             <div id="statsEmpty" class="empty"></div>
 

@@ -542,7 +542,7 @@ let statsData = { partidas: {}, votos: {} };
    global/votos/{matchId}/{campeao}/{uid} -> 1 | -1 */
 let globalData = { partidas: {}, votos: {} };
 let globalLoaded = { partidas: false, votos: false };
-let statsScope = "room"; /* "room" | "global" */
+let statsScope = "global"; /* estatísticas sempre globais */
 
 function initFirebase() {
     if (!FIREBASE_READY) return false;
@@ -889,33 +889,13 @@ function refreshResultBar() {
 
     document.getElementById("btnWin").classList.toggle("on-vitoria", res === "vitoria");
     document.getElementById("btnLoss").classList.toggle("on-derrota", res === "derrota");
+    document.getElementById("btnVoid").classList.toggle("on-anulada", res === "anulada");
 
     document.getElementById("resultBarStatus").textContent =
         res === "vitoria" ? "Marcada como vitória ✅"
             : res === "derrota" ? "Marcada como derrota ❌"
-                : "Sem resultado marcado. Você pode marcar agora ou depois, pelo histórico.";
-
-}
-
-/* Zera partidas e votos da sala (somente host) */
-async function resetStats() {
-
-    if (!liveReady) return;
-
-    if (!confirm(
-        "Zerar TODAS as estatísticas desta sala (partidas, resultados e votos)? " +
-        "Isso não pode ser desfeito. As estatísticas globais NÃO são apagadas."
-    )) return;
-
-    try {
-        await db.ref("salas/" + roomCode + "/partidas").remove();
-        await db.ref("salas/" + roomCode + "/votos").remove();
-        currentMatchId = null;
-        hideResultBar();
-    } catch (error) {
-        console.error(error);
-        alert("Não foi possível zerar (" + (error.code || error.message) + ").");
-    }
+                : res === "anulada" ? "Partida anulada 🚫 — fora de todas as estatísticas."
+                    : "Sem resultado marcado. Você pode marcar agora ou depois, pelo histórico.";
 
 }
 
@@ -946,6 +926,9 @@ function startStats() {
     }, error => console.error(error));
 
     statsRefs = [partidasRef, votosRef];
+
+    /* Estatísticas são globais: escuta o global uma única vez */
+    if (globalRefs.length === 0) startGlobalStats();
 
     renderStats();
 
@@ -1005,69 +988,6 @@ function stopGlobalStats() {
 
     globalData = { partidas: {}, votos: {} };
     globalLoaded = { partidas: false, votos: false };
-
-}
-
-/* Alterna entre as estatísticas da sala e as globais */
-function setStatsScope(scope) {
-
-    if (scope === statsScope) return;
-
-    statsScope = scope;
-
-    if (scope === "global") {
-        startGlobalStats();
-    } else {
-        stopGlobalStats();
-    }
-
-    renderStats();
-
-}
-
-/* Copia partidas e votos que já existem na sala para o global
-   (útil para aproveitar o que foi gravado antes do global existir).
-   É seguro rodar mais de uma vez: sobrescreve com os mesmos dados. */
-async function syncRoomToGlobal() {
-
-    if (!liveReady) return;
-
-    const partidas = statsData.partidas || {};
-    const votos = statsData.votos || {};
-
-    const ids = Object.keys(partidas);
-
-    if (ids.length === 0 && Object.keys(votos).length === 0) {
-        alert("Esta sala ainda não tem partidas para enviar.");
-        return;
-    }
-
-    if (!confirm(
-        "Enviar " + ids.length + " partida(s) desta sala (e seus votos) para as estatísticas globais?"
-    )) return;
-
-    /* Etapa 1: partidas. Etapa 2: votos (as regras só liberam os votos
-       de uma partida depois que ela já existe no global). */
-    const partidaUpdates = {};
-
-    ids.forEach(id => {
-        partidaUpdates["global/partidas/" + id] = Object.assign({ hostUid: hostUid }, partidas[id]);
-    });
-
-    const votoUpdates = {};
-
-    Object.keys(votos).forEach(id => {
-        votoUpdates["global/votos/" + id] = votos[id];
-    });
-
-    try {
-        if (ids.length > 0) await db.ref().update(partidaUpdates);
-        if (Object.keys(votoUpdates).length > 0) await db.ref().update(votoUpdates);
-        alert("Pronto! As partidas desta sala foram enviadas para o global.");
-    } catch (error) {
-        console.error(error);
-        alert("Não foi possível enviar (" + (error.code || error.message) + ").");
-    }
 
 }
 
@@ -1252,6 +1172,9 @@ function computeStats(src) {
 
         if (entries.length === 0) return;
 
+        /* "Não deu jogo": partida descartada, não entra em nenhuma estatística */
+        if (match.resultado === "anulada") return;
+
         const won = match.resultado === "vitoria";
         const lost = match.resultado === "derrota";
 
@@ -1298,6 +1221,10 @@ function computeStats(src) {
     });
 
     Object.keys(src.votos || {}).forEach(matchId => {
+
+        /* Votos de partidas anuladas também ficam de fora */
+        const voted = (src.partidas || {})[matchId];
+        if (voted && voted.resultado === "anulada") return;
 
         const byChamp = src.votos[matchId] || {};
 
@@ -1560,18 +1487,10 @@ function renderStats() {
     const body = document.getElementById("statsBody");
     const empty = document.getElementById("statsEmpty");
 
-    const isGlobal = statsScope === "global";
+    const isGlobal = true;
 
-    /* Seletor Sala / Global */
-    document.getElementById("scopeRoom").classList.toggle("active", !isGlobal);
-    document.getElementById("scopeGlobal").classList.toggle("active", isGlobal);
-
-    /* Ações do host só fazem sentido no escopo "Esta sala" */
-    document.getElementById("statsActions").style.display = isGlobal ? "none" : "";
-
-    document.getElementById("statsInfo").textContent = isGlobal
-        ? "Soma de todos os sorteios já feitos em todas as salas. Clique no título de uma coluna para ordenar."
-        : "Clique no título de uma coluna para ordenar. Estas estatísticas são só da sala atual; use \"Global\" para ver todas as salas.";
+    document.getElementById("statsInfo").textContent =
+        "Soma de todos os sorteios já feitos. Partidas marcadas como \"Não deu jogo\" não entram. Clique no título de uma coluna para ordenar.";
 
     if (!db) {
         empty.textContent =
@@ -2973,7 +2892,8 @@ function renderMatchHistory() {
         if (res) {
             const tag = document.createElement("span");
             tag.className = "result-tag " + res;
-            tag.textContent = res === "vitoria" ? "✅ Vitória" : "❌ Derrota";
+            tag.textContent = res === "vitoria" ? "✅ Vitória"
+                : res === "derrota" ? "❌ Derrota" : "🚫 Não deu jogo";
             when.appendChild(tag);
         }
 
@@ -3010,7 +2930,7 @@ function renderMatchHistory() {
             const actions = document.createElement("div");
             actions.className = "history-actions";
 
-            [["vitoria", "✅ Vitória"], ["derrota", "❌ Derrota"]].forEach(([value, label]) => {
+            [["vitoria", "✅ Vitória"], ["derrota", "❌ Derrota"], ["anulada", "🚫 Não deu jogo"]].forEach(([value, label]) => {
 
                 const button = document.createElement("button");
                 button.type = "button";

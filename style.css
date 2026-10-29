@@ -431,6 +431,16 @@ header p {
     color: #d9534f;
 }
 
+.result-tag.anulada {
+    color: #9ba7b5;
+}
+
+.mini-btn.on-anulada {
+    border-color: #9ba7b5;
+    color: #cfd8e3;
+    background: rgba(155, 167, 181, 0.15);
+}
+
 .history-actions {
     margin-top: 8px;
     display: flex;
