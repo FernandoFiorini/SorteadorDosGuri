@@ -127,6 +127,21 @@ Para utilizar o modo ao vivo:
 
 Para a transmissão, todos precisam acessar a mesma versão hospedada do site. Abrir o arquivo localmente não cria um endereço público para seus amigos.
 
+### 5. Testar localmente sem mexer no banco real (opcional)
+
+Precisa de Node e Java instalados.
+
+```bash
+# terminal 1: Firebase falso (banco + login) rodando só no seu PC
+npx firebase-tools emulators:start --project demo-sorteador
+
+# terminal 2: servidor do site
+npx serve .
+```
+
+Abra `http://localhost:3000/?emulador=1`. O link da sala copiado já leva o `&emulador=1` para os espectadores (use uma aba anônima).
+Os dados podem ser vistos em `http://127.0.0.1:4000` e somem ao fechar o emulador.
+
 ---
 
 ## 🎮 Como jogar

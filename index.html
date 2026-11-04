@@ -7,7 +7,7 @@
     <title>Sorteador dos guri</title>
     <link rel="icon" type="image/svg+xml" href="icon.svg">
 
-    <link rel="stylesheet" href="style.css?v=1">
+    <link rel="stylesheet" href="style.css?v=4">
 </head>
 
 <body>
@@ -127,76 +127,81 @@
 
         <!-- CONFIGURAÇÕES -->
         <div class="card host-only">
-            <h2>⚙️ Configurações</h2>
+            <details class="collapsible" id="settingsDetails">
+                <summary>
+                    <h2>⚙️ Configurações <span class="collapsible-count" id="settingsCount"></span></h2>
+                </summary>
 
-            <div class="setting">
-                <input type="checkbox" id="shufflePlayers" checked>
-                <label for="shufflePlayers">Sortear também os jogadores (nomes)</label>
-            </div>
+                <div class="setting">
+                    <input type="checkbox" id="shufflePlayers" checked>
+                    <label for="shufflePlayers">Sortear também os jogadores (nomes)</label>
+                </div>
 
-            <div class="setting">
-                <input type="checkbox" id="noRepeat" onchange="saveSettings()">
-                <label for="noRepeat">Não repetir campeões no mesmo sorteio</label>
-            </div>
+                <div class="setting">
+                    <input type="checkbox" id="persistNoRepeat" checked onchange="onPersistToggle()">
+                    <label for="persistNoRepeat">Não repetir campeões já sorteados (lista salva no navegador)</label>
+                </div>
 
-            <div class="setting">
-                <input type="checkbox" id="persistNoRepeat" checked onchange="onPersistToggle()">
-                <label for="persistNoRepeat">Não repetir campeões já sorteados (lista salva no navegador)</label>
-            </div>
+                <div class="persist-wrap">
+                    <div class="rotation-status" id="persistStatus"></div>
+                    <button class="mini-btn" id="resetDrawnBtn" type="button" onclick="resetDrawn(true)">↺ Resetar
+                        campeões sorteados</button>
+                    <div class="info" style="margin-left: 28px;">Desmarcado = full aleatório. Cada card do resultado sempre
+                        tem o botão de resortear; com esta opção marcada, o novo campeão também respeita a lista de já
+                        sorteados.</div>
+                </div>
 
-            <div class="persist-wrap">
-                <div class="rotation-status" id="persistStatus"></div>
-                <button class="mini-btn" id="resetDrawnBtn" type="button" onclick="resetDrawn(true)">↺ Resetar
-                    campeões sorteados</button>
-                <div class="info" style="margin-left: 28px;">Desmarcado = full aleatório. Cada card do resultado sempre
-                    tem o botão de resortear; com esta opção marcada, o novo campeão também respeita a lista de já
-                    sorteados.</div>
-            </div>
+                <div class="setting">
+                    <input type="checkbox" id="noRepeatLanes" onchange="onRotationToggle()">
+                    <label for="noRepeatLanes">Não repetir lanes entre partidas (rotação)</label>
+                </div>
 
-            <div class="setting">
-                <input type="checkbox" id="noRepeatLanes" onchange="onRotationToggle()">
-                <label for="noRepeatLanes">Não repetir lanes entre partidas (rotação)</label>
-            </div>
+                <div class="rotation-status" id="rotationStatus"></div>
+                <button class="mini-btn" id="resetRotationBtn" type="button" onclick="resetRotation(true)">↺ Resetar
+                    rotação</button>
 
-            <div class="rotation-status" id="rotationStatus"></div>
-            <button class="mini-btn" id="resetRotationBtn" type="button" onclick="resetRotation(true)">↺ Resetar
-                rotação</button>
-
-            <div class="setting">
-                <input type="checkbox" id="rememberNoRepeat" onchange="saveSettings()">
-                <label for="rememberNoRepeat">Salvar esta configuração no navegador</label>
-            </div>
-
-            <div class="info">A configuração é armazenada no navegador.</div>
+                <div class="info">As configurações ficam salvas no navegador. Campeões nunca se repetem dentro do mesmo
+                    sorteio.</div>
+            </details>
         </div>
 
         <!-- POOLS PREDETERMINADAS -->
         <div class="card host-only">
-            <h2>🧪 Listas predeterminadas</h2>
+            <details class="collapsible" id="poolsDetails">
+                <summary>
+                    <h2>🧪 Listas predeterminadas <span class="collapsible-count" id="poolsCount"></span></h2>
+                </summary>
 
-            <div class="pool-list" id="poolList"></div>
+                <div class="pool-list" id="poolList"></div>
 
+                <div class="info">Marque uma ou mais pools para sortear só entre os campeões delas. Desmarque tudo
+                    para o sorteio normal.</div>
+            </details>
+
+            <!-- Fica fora do bloco que fecha: o aviso aparece mesmo com o card fechado -->
             <div class="pool-warning" id="poolWarning">
                 ⚠️ Pool ativa: o sorteio usa apenas os campeões das listas marcadas e ignora
-                <strong>campeões excluídos</strong>, <strong>não repetir campeões</strong>,
+                <strong>campeões excluídos</strong>,
                 <strong>lista de já sorteados</strong> e <strong>rotação de lanes</strong>.
             </div>
-
-            <div class="info">Marque uma ou mais pools para sortear só entre os campeões delas. Desmarque tudo para o
-                sorteio normal.</div>
         </div>
 
         <!-- CAMPEÕES -->
         <div class="card host-only" id="excludedCard">
-            <h2>🚫 Campeões excluídos</h2>
+            <details class="collapsible" id="excludedDetails">
+                <summary>
+                    <h2>🚫 Campeões excluídos <span class="collapsible-count" id="excludedCount"></span></h2>
+                </summary>
 
-            <div class="champion-controls">
-                <input type="text" id="championSearch" placeholder="Pesquisar campeão..." oninput="filterChampions()">
-            </div>
+                <div class="champion-controls">
+                    <input type="text" id="championSearch" placeholder="Pesquisar campeão..."
+                        oninput="filterChampions()">
+                </div>
 
-            <div class="champion-list" id="championList"></div>
+                <div class="champion-list" id="championList"></div>
 
-            <div class="info">Marque os campeões que não devem participar do sorteio.</div>
+                <div class="info">Marque os campeões que não devem participar do sorteio.</div>
+            </details>
         </div>
 
         <!-- BOTÃO -->
@@ -249,25 +254,6 @@
             </div>
         </div>
 
-        <!-- ESTATÍSTICAS -->
-        <div class="card" id="statsCard">
-            <h2>📊 Estatísticas (global)</h2>
-
-            <div id="statsEmpty" class="empty"></div>
-
-            <div id="statsBody" style="display:none;">
-                <div id="statsSummary" class="stat-summary"></div>
-                <div id="statsHighlights" class="stat-highlights"></div>
-                <div id="statsTabs" class="stats-tabs"></div>
-
-                <div class="table-wrap">
-                    <table class="stats-table" id="statsTable"></table>
-                </div>
-
-                <div class="info" id="statsInfo"></div>
-            </div>
-        </div>
-
         <!-- CHAT DA SALA -->
         <div class="card" id="chatCard" style="display:none;">
             <h2>💬 Chat da sala</h2>
@@ -280,6 +266,27 @@
                     autocomplete="off">
                 <button class="mini-btn" type="submit">Enviar</button>
             </form>
+        </div>
+
+        <!-- ESTATÍSTICAS -->
+        <div class="card" id="statsCard">
+            <h2>📊 Estatísticas (global)</h2>
+
+            <div id="statsEmpty" class="empty"></div>
+
+            <div id="statsBody" style="display:none;">
+                <div id="statsSummary" class="stat-summary"></div>
+                <div id="statsHighlights" class="stat-highlights"></div>
+                <div id="statsTabs" class="stats-tabs"></div>
+
+                <div class="table-wrap" id="statsTableWrap">
+                    <table class="stats-table" id="statsTable"></table>
+                </div>
+
+                <div id="statsAchievements" class="achievements" style="display:none;"></div>
+
+                <div class="info" id="statsInfo"></div>
+            </div>
         </div>
 
         <!-- HISTÓRICO -->
@@ -308,8 +315,28 @@
     <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-database-compat.js"></script>
 
-    <!-- Lógica do site (precisa vir depois do Firebase) -->
-    <script src="app.js?v=1"></script>
+    <!-- Lógica do site (precisa vir depois do Firebase).
+         Scripts comuns (não-módulos) compartilham o escopo global, então a
+         ordem só importa para o código que roda no carregamento. -->
+    <script src="js/config.js?v=4"></script>
+    <script src="js/utils.js?v=4"></script>
+    <script src="js/champions.js?v=4"></script>
+    <script src="js/pools.js?v=4"></script>
+    <script src="js/sounds.js?v=4"></script>
+    <script src="js/firebase.js?v=4"></script>
+    <script src="js/votes.js?v=4"></script>
+    <script src="js/stats.js?v=4"></script>
+    <script src="js/achievements.js?v=4"></script>
+    <script src="js/chat.js?v=4"></script>
+    <script src="js/screen.js?v=4"></script>
+    <script src="js/viewer.js?v=4"></script>
+    <script src="js/ui.js?v=4"></script>
+    <script src="js/rotation.js?v=4"></script>
+    <script src="js/history.js?v=4"></script>
+    <script src="js/drawn.js?v=4"></script>
+    <script src="js/draw.js?v=4"></script>
+    <script src="js/animation.js?v=4"></script>
+    <script src="js/main.js?v=4"></script>
 
 </body>
 

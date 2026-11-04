@@ -826,6 +826,45 @@ body:not(.viewer) .viewer-only {
     font-size: 13px;
 }
 
+/* CARD QUE ABRE/FECHA (campeões excluídos) */
+.collapsible > summary {
+    list-style: none;
+    cursor: pointer;
+    user-select: none;
+}
+
+.collapsible > summary::-webkit-details-marker {
+    display: none;
+}
+
+.collapsible > summary h2 {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 0;
+}
+
+.collapsible > summary h2::after {
+    content: "▸";
+    margin-left: auto;
+    color: #8e9aaa;
+    transition: transform 0.2s;
+}
+
+.collapsible[open] > summary h2 {
+    margin-bottom: 16px;
+}
+
+.collapsible[open] > summary h2::after {
+    transform: rotate(90deg);
+}
+
+.collapsible-count {
+    font-size: 13px;
+    font-weight: normal;
+    color: #8e9aaa;
+}
+
 .disabled-by-pool {
     opacity: 0.4;
     pointer-events: none;
@@ -924,6 +963,64 @@ body:not(.viewer) .viewer-only {
     margin-left: 0;
 }
 
+/* BALÕES DO CHAT (canto inferior direito) */
+.chat-toasts {
+    position: fixed;
+    right: 20px;
+    bottom: 20px;
+    z-index: 50;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    max-width: 320px;
+}
+
+.chat-toast {
+    text-align: left;
+    font: inherit;
+    font-size: 14px;
+    color: #f5f5f5;
+    background: #10202f;
+    border: 1px solid #c8aa6e;
+    border-radius: 14px 14px 4px 14px;
+    padding: 10px 14px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
+    cursor: pointer;
+    overflow-wrap: anywhere;
+    animation: bubble-in 0.25s ease-out;
+}
+
+.chat-toast strong {
+    color: #c8aa6e;
+}
+
+.chat-toast.leaving {
+    opacity: 0;
+    transform: translateY(-6px);
+    transition: opacity 0.3s, transform 0.3s;
+}
+
+@keyframes bubble-in {
+    from {
+        opacity: 0;
+        transform: translateY(8px) scale(0.95);
+    }
+
+    to {
+        opacity: 1;
+        transform: none;
+    }
+}
+
+@media (max-width: 600px) {
+    .chat-toasts {
+        left: 16px;
+        right: 16px;
+        bottom: 16px;
+        max-width: none;
+    }
+}
+
 /* ESTATÍSTICAS */
 .stat-summary {
     display: grid;
@@ -1014,6 +1111,114 @@ body:not(.viewer) .viewer-only {
 
 .table-wrap {
     overflow-x: auto;
+}
+
+/* ===== CONQUISTAS ===== */
+
+.ach-section {
+    color: #c8aa6e;
+    font-size: 15px;
+    margin: 6px 0 10px;
+}
+
+.ach-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+.ach-card {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    background: #09111a;
+    border: 1px solid #c8aa6e;
+    border-radius: 8px;
+    padding: 10px 12px;
+}
+
+.ach-card.locked {
+    border-color: #253648;
+    opacity: 0.55;
+}
+
+.ach-icon {
+    font-size: 30px;
+    line-height: 1;
+}
+
+.ach-info {
+    min-width: 0;
+}
+
+.ach-name {
+    font-size: 11px;
+    color: #8e9aaa;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.ach-holder {
+    color: #f5f5f5;
+    font-weight: bold;
+    overflow-wrap: anywhere;
+}
+
+.ach-desc {
+    color: #c8aa6e;
+    font-size: 12px;
+}
+
+.ach-player {
+    background: #09111a;
+    border: 1px solid #253648;
+    border-radius: 8px;
+    padding: 10px 12px;
+    margin-bottom: 8px;
+}
+
+.ach-player-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 8px;
+}
+
+.ach-player-head span {
+    color: #8e9aaa;
+    font-size: 12px;
+}
+
+.ach-chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+}
+
+.ach-chip {
+    font-size: 12px;
+    padding: 3px 8px;
+    border-radius: 999px;
+    border: 1px solid #c8aa6e;
+    color: #f0e6d2;
+    background: #173b55;
+    cursor: default;
+}
+
+/* Título que o jogador detém (destaque dourado) */
+.ach-chip.title {
+    background: #c8aa6e;
+    border-color: #f0e6d2;
+    color: #0b1622;
+    font-weight: bold;
+}
+
+.ach-chip.locked {
+    border-color: #253648;
+    background: transparent;
+    color: #5b6878;
+    filter: grayscale(1);
 }
 
 .stats-table {
