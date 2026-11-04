@@ -69,8 +69,48 @@ function pickSounds(count, exclude) {
 
 }
 
+/* =====================================================
+   MUTAR OS ÁUDIOS
+   Vale só para este navegador (cada pessoa escolhe a sua) e
+   continua valendo depois de F5.
+===================================================== */
+
+const SOUND_MUTED_KEY = "soundMuted";
+
+let soundMuted = false;
+
+function updateMuteButton() {
+    const button = document.getElementById("muteBtn");
+    button.textContent = soundMuted ? "🔇 Som desligado" : "🔊 Som ligado";
+    button.setAttribute("aria-pressed", soundMuted);
+}
+
+function loadMuteSetting() {
+    try {
+        soundMuted = localStorage.getItem(SOUND_MUTED_KEY) === "true";
+    } catch (e) { /* ignora */ }
+    updateMuteButton();
+}
+
+function toggleMute() {
+
+    soundMuted = !soundMuted;
+
+    try {
+        localStorage.setItem(SOUND_MUTED_KEY, soundMuted);
+    } catch (e) { /* opcional */ }
+
+    /* Corta também o áudio que estiver tocando agora */
+    if (soundMuted) {
+        Object.values(audioCache).forEach(audio => audio.pause());
+    }
+
+    updateMuteButton();
+
+}
+
 function playChampionSound(file) {
-    if (!file) return;
+    if (!file || soundMuted) return;
 
     const audio = getAudio(file);
 

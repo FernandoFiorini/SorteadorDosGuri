@@ -4,6 +4,9 @@
 
 document.addEventListener("DOMContentLoaded", async () => {
 
+    /* Antes de tudo: vale para o host e para o espectador */
+    loadMuteSetting();
+
     /* Carrega a lista atual de campeões antes de montar a tela */
     await loadChampionData();
 
