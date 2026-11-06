@@ -24,6 +24,7 @@ const soundList = [
     { name: "Paixão pode relaxar", file: "paixaopoderelaxar.mp3" },
     { name: "Gritinho nardi", file: "gritinhonardi.mp3" },
     { name: "Me ajuda Valde", file: "meajudavalde.mp3" },
+    { name: "Cu do gueixo", file: "cudogueixo.mp3" },
 
 ];
 
