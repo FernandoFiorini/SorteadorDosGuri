@@ -25,6 +25,7 @@ const soundList = [
     { name: "Gritinho nardi", file: "gritinhonardi.mp3" },
     { name: "Me ajuda Valde", file: "meajudavalde.mp3" },
     { name: "Cu do gueixo", file: "cudogueixo.mp3" },
+    { name: "Me ajuda Ber", file: "meajudaber.mp3" },
 
 ];
 
