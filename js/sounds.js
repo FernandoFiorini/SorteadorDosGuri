@@ -23,6 +23,7 @@ const soundList = [
     { name: "Ai cara", file: "aicara.mp3" },
     { name: "Paixão pode relaxar", file: "paixaopoderelaxar.mp3" },
     { name: "Gritinho nardi", file: "gritinhonardi.mp3" },
+    { name: "Me ajuda Valde", file: "meajudavalde.mp3" },
 
 ];
 
