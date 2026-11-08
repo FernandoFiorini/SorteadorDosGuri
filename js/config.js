@@ -31,9 +31,20 @@ const PLAYER_ALIASES = {
     /* Fer */
     "nando": "fer",
     "nandini": "fer",
+    "fernandoviski": "fer",
 
     /* Pitty */
     "pit": "pitty",
+
+    /* Nardi */
+    "nardinski": "nardi",
+
+    /* Valde */
+    "valdemar": "valde",
+    "valdemarr": "valde",
+
+    /* Ber */
+    "bernoso": "ber",
 };
 
 /* =====================================================
