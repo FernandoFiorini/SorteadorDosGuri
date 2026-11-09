@@ -142,6 +142,32 @@ npx serve .
 Abra `http://localhost:3000/?emulador=1`. O link da sala copiado já leva o `&emulador=1` para os espectadores (use uma aba anônima).
 Os dados podem ser vistos em `http://127.0.0.1:4000` e somem ao fechar o emulador.
 
+### 6. Dados da Riot (opcional)
+
+Partidas de Swiftplay são ligadas aos sorteios para trazer KDA, gold, dano e outros números. Qualquer pessoa pode atualizar pelo botão nas estatísticas, com cooldown global de 1 minuto. As chaves ficam no Cloudflare Worker da pasta `worker/`, nunca no site.
+
+Para publicar o Worker, rode no PowerShell, a partir de `worker/`:
+
+```powershell
+npm install
+npx wrangler login
+Get-Content ..\scripts\coleta\.secrets\riot.key | npx wrangler secret put RIOT_API_KEY
+[Convert]::ToBase64String([IO.File]::ReadAllBytes((Resolve-Path ..\scripts\coleta\.secrets\firebase-admin.json))) | npx wrangler secret put FIREBASE_SERVICE_ACCOUNT
+npx wrangler deploy
+```
+
+Depois, coloque o endereço do Worker em `RIOT_WORKER_URL`, no arquivo `js/config.js`, e publique o site.
+
+Para buscar partidas mais antigas pelo seu PC, use `scripts/coleta`. Sem `--gravar`, ele só simula:
+
+```bash
+cd scripts/coleta
+npm install
+node coletar.js --desde=2026-10-19 --gravar
+```
+
+Os segredos ficam em `scripts/coleta/.secrets/` (`riot.key` e `firebase-admin.json`), ignorados pelo Git.
+
 ---
 
 ## 🎮 Como jogar

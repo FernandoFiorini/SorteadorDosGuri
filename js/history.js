@@ -64,7 +64,10 @@ function renderMatchHistory() {
 
         /* Resultado (vem do Firebase, quando a partida está registrada) */
         const saved = match.id ? statsData.partidas[match.id] : null;
-        const res = saved ? saved.resultado || null : null;
+        const savedGlobal = match.id ? globalData.partidas[match.id] : null;
+
+        /* O botão da Riot atualiza o global; partidas antigas não têm a cópia da sala */
+        const res = (savedGlobal && savedGlobal.resultado) || (saved && saved.resultado) || null;
 
         if (res) {
             const tag = document.createElement("span");
@@ -96,6 +99,27 @@ function renderMatchHistory() {
             span.appendChild(lane);
             span.appendChild(player);
             span.appendChild(champion);
+
+            /* Como foi de verdade, se a partida está ligada à Riot */
+            const riotData = riotStatsOf(globalData.riot, savedGlobal, playerKey(entry.player));
+
+            if (riotData) {
+
+                const s = riotData.stats;
+                const played = riotChampionId(s.champion);
+
+                const line = document.createElement("span");
+                line.className = "r";
+                line.textContent = " "
+                    + (played !== entry.champion ? "→ " + (championNames[played] || played) + " " : "")
+                    + s.kills + "/" + s.deaths + "/" + s.assists
+                    + " · " + s.gold.toLocaleString("pt-BR") + " gold"
+                    + " · " + s.damage.toLocaleString("pt-BR") + " dano"
+                    + " · " + s.cs + " farm";
+
+                span.appendChild(line);
+
+            }
 
             item.appendChild(span);
 

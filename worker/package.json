@@ -1,0 +1,12 @@
+{
+  "name": "sorteador-riot-worker",
+  "private": true,
+  "description": "Botão do site: busca as partidas na Riot e atualiza as estatísticas, com cooldown global.",
+  "scripts": {
+    "dev": "wrangler dev",
+    "deploy": "wrangler deploy"
+  },
+  "devDependencies": {
+    "wrangler": "^3.114.0"
+  }
+}

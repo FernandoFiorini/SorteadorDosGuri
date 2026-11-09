@@ -6,14 +6,14 @@
 ===================================================== */
 
 const firebaseConfig = {
-    apiKey: "AIzaSyD6rjLg-HpCZIRNhjkZLzlIOjOqxKc2KUY",
-    authDomain: "sorteador-dos-guri.firebaseapp.com",
-    databaseURL: "https://sorteador-dos-guri-default-rtdb.firebaseio.com",
-    projectId: "sorteador-dos-guri",
-    storageBucket: "sorteador-dos-guri.firebasestorage.app",
-    messagingSenderId: "296192489526",
-    appId: "1:296192489526:web:420d195c7e34628f500097",
-    measurementId: "G-3TGJZF3BLS"
+   apiKey: "AIzaSyD6rjLg-HpCZIRNhjkZLzlIOjOqxKc2KUY",
+   authDomain: "sorteador-dos-guri.firebaseapp.com",
+   databaseURL: "https://sorteador-dos-guri-default-rtdb.firebaseio.com",
+   projectId: "sorteador-dos-guri",
+   storageBucket: "sorteador-dos-guri.firebasestorage.app",
+   messagingSenderId: "296192489526",
+   appId: "1:296192489526:web:420d195c7e34628f500097",
+   measurementId: "G-3TGJZF3BLS"
 };
 
 /* =====================================================
@@ -28,24 +28,32 @@ const firebaseConfig = {
 ===================================================== */
 
 const PLAYER_ALIASES = {
-    /* Fer */
-    "nando": "fer",
-    "nandini": "fer",
-    "fernandoviski": "fer",
+   /* Fer */
+   "nando": "fer",
+   "nandini": "fer",
+   "fernandoviski": "fer",
 
-    /* Pitty */
-    "pit": "pitty",
+   /* Pitty */
+   "pit": "pitty",
 
-    /* Nardi */
-    "nardinski": "nardi",
+   /* Nardi */
+   "nardinski": "nardi",
 
-    /* Valde */
-    "valdemar": "valde",
-    "valdemarr": "valde",
+   /* Valde */
+   "valdemar": "valde",
+   "valdemarr": "valde",
 
-    /* Ber */
-    "bernoso": "ber",
+   /* Ber */
+   "bernoso": "ber",
 };
+
+/* =====================================================
+   BOTÃO "ATUALIZAR DADOS DA RIOT"
+
+   Endereço do Cloudflare Worker (pasta worker/). Vazio esconde o botão.
+===================================================== */
+
+const RIOT_WORKER_URL = "";
 
 /* =====================================================
    DATA DRAGON
@@ -56,7 +64,7 @@ const PLAYER_ALIASES = {
 let DATA_DRAGON_VERSION = "15.19.1";
 
 let IMAGE_URL =
-    "https://ddragon.leagueoflegends.com/cdn/"
-    + DATA_DRAGON_VERSION
-    + "/img/champion/";
+   "https://ddragon.leagueoflegends.com/cdn/"
+   + DATA_DRAGON_VERSION
+   + "/img/champion/";
 

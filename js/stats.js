@@ -52,7 +52,8 @@ function computeStats(src) {
     const champ = id => champs[id] || (champs[id] = {
         id: id,
         name: championNames[id] || id,
-        picks: 0, likes: 0, dislikes: 0, rerolls: 0, wins: 0, losses: 0
+        picks: 0, likes: 0, dislikes: 0, rerolls: 0, wins: 0, losses: 0,
+        riot: emptyRiotTotals()
     });
 
     Object.values(src.partidas || {}).forEach(match => {
@@ -86,7 +87,8 @@ function computeStats(src) {
 
             const p = players[pkey] || (players[pkey] = {
                 name: "?", spellings: {},
-                games: 0, wins: 0, losses: 0, champs: {}, lanes: {}
+                games: 0, wins: 0, losses: 0, champs: {}, lanes: {},
+                riot: emptyRiotTotals()
             });
 
             const spelled = normalizePlayerName(entry.player) || "?";
@@ -97,6 +99,14 @@ function computeStats(src) {
             if (lost) p.losses++;
             p.champs[entry.champion] = (p.champs[entry.champion] || 0) + 1;
             p.lanes[entry.lane] = (p.lanes[entry.lane] || 0) + 1;
+
+            /* O KDA do campeão vale para quem foi jogado, mesmo se houve troca */
+            const riotData = riotStatsOf(src.riot, match, pkey);
+
+            if (riotData) {
+                addRiotTotals(p.riot, riotData.stats, riotData.seconds);
+                addRiotTotals(champ(riotChampionId(riotData.stats.champion)).riot, riotData.stats, riotData.seconds);
+            }
 
             const l = lanes[entry.lane] || (lanes[entry.lane] = {
                 name: entry.lane, games: 0, wins: 0, losses: 0
@@ -137,7 +147,8 @@ function computeStats(src) {
 
     const championRows = Object.values(champs).map(c => Object.assign(c, {
         approval: ratio(c.likes, c.dislikes),
-        winrate: ratio(c.wins, c.losses)
+        winrate: ratio(c.wins, c.losses),
+        kda: riotAverages(c.riot).kda
     }));
 
     const playerRows = Object.values(players).map(p => {
@@ -149,6 +160,7 @@ function computeStats(src) {
             /* Exibe a grafia mais usada do nome */
             name: topKey(p.spellings) || "?",
             winrate: ratio(p.wins, p.losses),
+            ...riotAverages(p.riot),
             topChampion: bestChamp
                 ? (championNames[bestChamp] || bestChamp) + " (" + p.champs[bestChamp] + "x)"
                 : "—",
@@ -264,17 +276,30 @@ function championColumns() {
         { key: "rerolls", label: "Resorteios", type: "num", value: r => r.rerolls },
         { key: "wins", label: "V", type: "num", value: r => r.wins },
         { key: "losses", label: "D", type: "num", value: r => r.losses },
-        { key: "winrate", label: "Win%", type: "num", value: r => r.winrate, show: r => pct(r.winrate) }
+        { key: "winrate", label: "Win%", type: "num", value: r => r.winrate, show: r => pct(r.winrate) },
+        { key: "played", label: "Jogado", type: "num", value: r => r.riot.games },
+        { key: "kda", label: "KDA", type: "num", value: r => r.kda, show: r => formatNumber(r.kda, 2) }
     ];
 }
 
+/* Efeito de medalha no nick, recalculado ao abrir a aba Jogadores */
+let statsNicks = {};
+
 function playerColumns() {
     return [
-        { key: "name", label: "Jogador", type: "text", value: r => r.name },
+        {
+            key: "name", label: "Jogador", type: "text", value: r => r.name,
+            show: r => decoratedNick(r.name, statsNicks[playerKey(r.name)])
+        },
         { key: "games", label: "Partidas", type: "num", value: r => r.games },
         { key: "wins", label: "V", type: "num", value: r => r.wins },
         { key: "losses", label: "D", type: "num", value: r => r.losses },
         { key: "winrate", label: "Win%", type: "num", value: r => r.winrate, show: r => pct(r.winrate) },
+        { key: "kda", label: "KDA", type: "num", value: r => r.kda, show: r => formatNumber(r.kda, 2) },
+        { key: "goldPerMin", label: "Gold/min", type: "num", value: r => r.goldPerMin, show: r => formatNumber(r.goldPerMin, 0) },
+        { key: "damagePerMin", label: "Dano/min", type: "num", value: r => r.damagePerMin, show: r => formatNumber(r.damagePerMin, 0) },
+        { key: "csPerMin", label: "Farm/min", type: "num", value: r => r.csPerMin, show: r => formatNumber(r.csPerMin, 1) },
+        { key: "visionPerGame", label: "Visão/jogo", type: "num", value: r => r.visionPerGame, show: r => formatNumber(r.visionPerGame, 1) },
         { key: "topChampion", label: "Campeão mais sorteado", type: "text", value: r => r.topChampion },
         { key: "topLane", label: "Lane mais jogada", type: "text", value: r => r.topLane }
     ];
@@ -386,7 +411,7 @@ function renderStats() {
     const isGlobal = true;
 
     document.getElementById("statsInfo").textContent =
-        "Soma de todos os sorteios já feitos. Partidas marcadas como \"Não deu jogo\" não entram. Clique no título de uma coluna para ordenar.";
+        "Soma de todos os sorteios já feitos. Partidas marcadas como \"Não deu jogo\" não entram. KDA, gold, dano, farm e visão vêm da Riot e só consideram partidas ligadas. Clique no título de uma coluna para ordenar.";
 
     if (!db) {
         empty.textContent =
@@ -498,6 +523,7 @@ function renderStats() {
     if (statsTab === "champions") {
         renderStatsTable(championColumns(), stats.championRows);
     } else if (statsTab === "players") {
+        statsNicks = nickClassMap(isGlobal ? globalData : statsData);
         renderStatsTable(playerColumns(), stats.playerRows);
     } else {
         renderStatsTable(laneColumns(), stats.laneRows);

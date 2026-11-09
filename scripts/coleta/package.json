@@ -1,0 +1,12 @@
+{
+  "name": "coleta-riot",
+  "private": true,
+  "description": "Liga os sorteios às partidas de Swiftplay da Riot e salva as estatísticas no Firebase.",
+  "scripts": {
+    "simular": "node coletar.js",
+    "gravar": "node coletar.js --gravar"
+  },
+  "dependencies": {
+    "firebase-admin": "^12.7.0"
+  }
+}

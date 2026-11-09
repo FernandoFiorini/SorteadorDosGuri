@@ -1,3 +1,12 @@
 # Logs do Firebase Emulator
 *-debug.log
 .firebase/
+
+# Coleta de dados da Riot: segredos e arquivos locais (nunca versionar)
+scripts/coleta/.secrets/
+scripts/coleta/.cache/
+scripts/coleta/.backups/
+scripts/coleta/node_modules/
+worker/node_modules/
+worker/.wrangler/
+worker/.dev.vars

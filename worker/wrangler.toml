@@ -1,0 +1,13 @@
+name = "sorteador-riot"
+main = "src/index.js"
+compatibility_date = "2025-01-01"
+
+# config.js é lido como texto para reaproveitar PLAYER_ALIASES
+[[rules]]
+type = "Text"
+globs = ["**/js/config.js"]
+fallthrough = false
+
+# Segredos, configurados com "wrangler secret put":
+#   RIOT_API_KEY
+#   FIREBASE_SERVICE_ACCOUNT  (JSON da conta de serviço, em base64)

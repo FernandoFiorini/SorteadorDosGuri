@@ -417,6 +417,34 @@ header p {
     color: #c8aa6e;
 }
 
+.history-item .entry .r {
+    color: #8e9aaa;
+    font-size: 12px;
+}
+
+/* BOTÃO DE ATUALIZAÇÃO DA RIOT */
+.riot-bar {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+    margin-bottom: 14px;
+}
+
+.riot-bar .mini-btn {
+    margin-left: 0;
+}
+
+.riot-bar .mini-btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+.riot-status {
+    color: #8e9aaa;
+    font-size: 13px;
+}
+
 .result-tag {
     margin-left: 8px;
     font-weight: bold;
@@ -1212,6 +1240,208 @@ body:not(.viewer) .viewer-only {
     border-color: #f0e6d2;
     color: #0b1622;
     font-weight: bold;
+}
+
+/* ---------- Efeitos de medalha no nick ---------- */
+
+.nick {
+    font-weight: bold;
+}
+
+/* Lenda dos guri: dourado com brilho passando */
+.nick-lenda {
+    background: linear-gradient(100deg, #a8843f 0%, #f0e6d2 20%, #c8aa6e 40%, #ffd76a 60%, #c8aa6e 80%, #a8843f 100%);
+    background-size: 250% 100%;
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    animation: nick-shine 3s linear infinite;
+    filter: drop-shadow(0 0 4px rgba(255, 215, 106, 0.45));
+}
+
+/* Bafeador supremo: verde que pulsa */
+.nick-bafeador {
+    color: #5ff2a0;
+    animation: nick-pulse 1.8s ease-in-out infinite;
+}
+
+/* Mais burro já registrado: arco-íris de palhaço que balança */
+.nick-burro {
+    display: inline-block;
+    color: #ff6b6b;
+    animation: nick-clown 2.5s linear infinite, nick-wobble 1.2s ease-in-out infinite;
+}
+
+span.nick-lenda, span.nick-burro {
+    display: inline-block;
+}
+
+/* 2 medalhas: nick em chamas */
+.nick-duo {
+    display: inline-block;
+    background: linear-gradient(0deg, #ff2d2d 0%, #ff7a00 35%, #ffd000 65%, #fff3b0 100%);
+    background-size: 100% 220%;
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    animation: nick-flame 1.1s ease-in-out infinite alternate, nick-flame-glow 0.9s ease-in-out infinite alternate;
+}
+
+@keyframes nick-flame {
+    from { background-position: 0 0%; }
+    to { background-position: 0 100%; }
+}
+
+@keyframes nick-flame-glow {
+    from { filter: drop-shadow(0 0 2px rgba(255, 122, 0, 0.6)); }
+    to { filter: drop-shadow(0 -2px 6px rgba(255, 60, 0, 0.95)); }
+}
+
+/* 3 medalhas: ouro maciço premium. Metal com reflexo de luz passando,
+   halo dourado, flutuando, com estrelas douradas girando dos lados */
+.nick-trio-wrap {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    animation: nick-float 2.6s ease-in-out infinite;
+}
+
+.nick-trio {
+    display: inline-block;
+    font-weight: 900;
+    letter-spacing: 0.5px;
+    /* Faixa clara estreita (reflexo) passando por cima do ouro */
+    background:
+        linear-gradient(110deg, transparent 40%, rgba(255, 255, 255, 0.95) 50%, transparent 60%) 0 0 / 300% 100% no-repeat,
+        linear-gradient(180deg, #fff3c4 0%, #f5d27a 28%, #d4a937 50%, #a87b1f 62%, #f0c75e 80%, #fff0b3 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    animation: nick-gleam 2.8s ease-in-out infinite, nick-aura 2.2s ease-in-out infinite;
+}
+
+.nick-sparkle {
+    color: #f5d27a;
+    font-size: 0.8em;
+    text-shadow: 0 0 6px rgba(255, 215, 106, 0.9);
+    display: inline-block;
+    animation: nick-twinkle 1.8s ease-in-out infinite;
+}
+
+.nick-sparkle.late {
+    animation-delay: 0.9s;
+}
+
+@keyframes nick-gleam {
+    0% { background-position: 150% 0, 0 0; }
+    60%, 100% { background-position: -150% 0, 0 0; }
+}
+
+@keyframes nick-aura {
+    0%, 100% { filter: drop-shadow(0 0 2px rgba(255, 200, 80, 0.55)) drop-shadow(0 1px 0 rgba(90, 60, 10, 0.9)); }
+    50% { filter: drop-shadow(0 0 10px rgba(255, 210, 100, 0.95)) drop-shadow(0 1px 0 rgba(90, 60, 10, 0.9)); }
+}
+
+@keyframes nick-float {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-3px); }
+}
+
+@keyframes nick-twinkle {
+    0%, 100% { opacity: 0.2; transform: scale(0.7) rotate(0deg); }
+    50% { opacity: 1; transform: scale(1.15) rotate(20deg); }
+}
+
+@keyframes nick-shine {
+    from { background-position: 100% 0; }
+    to { background-position: -150% 0; }
+}
+
+@keyframes nick-pulse {
+    0%, 100% { text-shadow: 0 0 2px rgba(95, 242, 160, 0.3); }
+    50% { text-shadow: 0 0 10px rgba(95, 242, 160, 0.9), 0 0 18px rgba(95, 242, 160, 0.5); }
+}
+
+@keyframes nick-clown {
+    from { filter: hue-rotate(0deg); }
+    to { filter: hue-rotate(360deg); }
+}
+
+@keyframes nick-wobble {
+    0%, 100% { transform: rotate(-3deg); }
+    50% { transform: rotate(3deg); }
+}
+
+/* Medalha conquistada: borda brilhando na cor do efeito */
+.ach-chip.earned {
+    font-weight: bold;
+    animation: chip-glow 2s ease-in-out infinite;
+    --glow: rgba(200, 170, 110, 0.8);
+}
+
+.ach-chip.earned.nick-lenda {
+    color: #0b1622;
+    background: linear-gradient(100deg, #a8843f, #f0e6d2, #ffd76a, #c8aa6e, #a8843f);
+    background-size: 250% 100%;
+    -webkit-background-clip: border-box;
+    background-clip: border-box;
+    border-color: #ffd76a;
+    animation: nick-shine 3s linear infinite, chip-glow 2s ease-in-out infinite;
+    filter: none;
+}
+
+.ach-chip.earned.nick-bafeador {
+    border-color: #5ff2a0;
+    color: #5ff2a0;
+    background: #0f2e22;
+    text-shadow: none;
+    --glow: rgba(95, 242, 160, 0.8);
+}
+
+.ach-chip.earned.nick-burro {
+    border-color: #ff6b6b;
+    background: #2e1414;
+    color: #ff6b6b;
+    transform: none;
+    animation: nick-clown 2.5s linear infinite, chip-glow 2s ease-in-out infinite;
+    --glow: rgba(255, 107, 107, 0.8);
+}
+
+@keyframes chip-glow {
+    0%, 100% { box-shadow: 0 0 0 transparent; }
+    50% { box-shadow: 0 0 10px var(--glow); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .nick-lenda, .nick-bafeador, .nick-burro, .nick-duo, .nick-trio,
+    .nick-trio-wrap, .nick-sparkle, .ach-chip.earned {
+        animation: none;
+    }
+}
+
+/* Títulos negativos (vergonha) em vermelho */
+.ach-section.negative {
+    color: #e0524d;
+}
+
+.ach-card.negative {
+    border-color: #c0392b;
+    background: #1a0d10;
+}
+
+.ach-card.negative .ach-desc {
+    color: #e0524d;
+}
+
+.ach-chip.title.negative {
+    background: #c0392b;
+    border-color: #f5b7b1;
+    color: #fff;
+}
+
+.ach-card.negative.locked {
+    border-color: #253648;
+    background: #09111a;
 }
 
 .ach-chip.locked {

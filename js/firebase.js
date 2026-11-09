@@ -53,8 +53,10 @@ let statsData = { partidas: {}, votos: {} };
    "Global" está ativo, para não gastar leitura do Firebase à toa.
    Estrutura no banco:
    global/partidas/{matchId} -> {hostUid, time, entries, rerolls, resultado}
-   global/votos/{matchId}/{campeao}/{uid} -> 1 | -1 */
-let globalData = { partidas: {}, votos: {} };
+   global/votos/{matchId}/{campeao}/{uid} -> 1 | -1
+   global/riot/{riotMatchId} -> {sorteioId, start, duration, players}
+   global/riotColeta -> {ultima, status} (cooldown global do botão) */
+let globalData = { partidas: {}, votos: {}, riot: {} };
 let globalLoaded = { partidas: false, votos: false };
 let statsScope = "global"; /* estatísticas sempre globais */
 
@@ -313,7 +315,7 @@ function saveMatch(matchId, results) {
     const updates = {};
 
     updates["salas/" + roomCode + "/partidas/" + matchId] = data;
-    updates["global/partidas/" + matchId] = Object.assign({ hostUid: hostUid }, data);
+    updates["global/partidas/" + matchId] = Object.assign({ hostUid: hostUid, sala: roomCode }, data);
 
     db.ref().update(updates)
         .catch(error => console.error("Erro ao salvar partida:", error));
@@ -508,7 +510,24 @@ function startGlobalStats() {
         onStatsChanged();
     }, error => console.error(error));
 
-    globalRefs = [partidasRef, votosRef];
+    const riotRef = db.ref("global/riot");
+    const coletaRef = db.ref("global/riotColeta");
+
+    /* Não bloqueia a tela: sem isso, só as colunas da Riot ficam vazias */
+    riotRef.on("value", snap => {
+        globalData.riot = snap.val() || {};
+        onStatsChanged();
+    }, error => console.error(error));
+
+    coletaRef.on("value", snap => {
+        riotColeta = snap.val();
+        riotMessage = "";
+        renderRiotBar();
+    }, error => console.error(error));
+
+    globalRefs = [partidasRef, votosRef, riotRef, coletaRef];
+
+    renderRiotBar();
 
 }
 
@@ -517,7 +536,7 @@ function stopGlobalStats() {
     globalRefs.forEach(ref => ref.off());
     globalRefs = [];
 
-    globalData = { partidas: {}, votos: {} };
+    globalData = { partidas: {}, votos: {}, riot: {} };
     globalLoaded = { partidas: false, votos: false };
 
 }
