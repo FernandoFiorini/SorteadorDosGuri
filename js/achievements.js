@@ -256,23 +256,28 @@ const ACHIEVEMENT_TITLES = [
 
 /* "nick" é o efeito no nome de quem tem só essa medalha.
    Com 2 medalhas o nick ganha o efeito de dupla; com todas, o de trio. */
+/* "current" é o progresso do jogador e "goal" a meta para desbloquear */
 const ACHIEVEMENT_BADGES = [
     {
-        icon: "👑", name: "Lenda dos guri", desc: "Jogou mais de 100 partidas",
+        icon: "👑", name: "Lenda dos guri", desc: "Jogar 100 partidas",
         nick: "nick-lenda", effect: "nick dourado e brilhando no site",
-        test: p => p.games > 100
+        current: p => p.games, goal: 100, unit: "partidas"
     },
     {
-        icon: "🏆", name: "Bafeador supremo", desc: "Ganhou mais de 100 partidas",
+        icon: "🏆", name: "Bafeador supremo", desc: "Ganhar 100 partidas",
         nick: "nick-bafeador", effect: "nick verde e pulsando no site",
-        test: p => p.wins > 100
+        current: p => p.wins, goal: 100, unit: "vitórias"
     },
     {
-        icon: "🫏", name: "Mais burro já registrado", desc: "Perdeu mais de 100 partidas",
+        icon: "🫏", name: "Mais burro já registrado", desc: "Perder 100 partidas",
         nick: "nick-burro", effect: "nick de palhaço, trocando de cor e balançando no site",
-        test: p => p.losses > 100
+        current: p => p.losses, goal: 100, unit: "derrotas"
     }
 ];
+
+ACHIEVEMENT_BADGES.forEach(badge => {
+    badge.test = p => badge.current(p) >= badge.goal;
+});
 
 /* PRÉVIA: true ignora as metas e dá a cada jogador uma combinação fixa
    de medalhas (índices de ACHIEVEMENT_BADGES), só para ver os efeitos.
@@ -418,6 +423,131 @@ function resolveTitles(profiles) {
 
 }
 
+/* Explica cada medalha: meta e exemplo do efeito no nick */
+function badgeGuide() {
+
+    const guide = document.createElement("div");
+    guide.className = "badge-guide";
+
+    const intro = document.createElement("p");
+    intro.className = "badge-guide-intro";
+    intro.textContent = "Metas pessoais: cada um desbloqueia a sua, e a recompensa é um efeito no seu nick em todo o site. Quem junta medalhas ganha um efeito ainda melhor.";
+    guide.appendChild(intro);
+
+    const grid = document.createElement("div");
+    grid.className = "badge-guide-grid";
+
+    const item = (icon, name, goal, sample, effect) => {
+
+        const card = document.createElement("div");
+        card.className = "badge-guide-item";
+
+        const top = document.createElement("div");
+        top.className = "badge-guide-name";
+        top.textContent = icon + " " + name;
+
+        const g = document.createElement("div");
+        g.className = "badge-guide-goal";
+        g.textContent = goal;
+
+        const s = document.createElement("div");
+        s.className = "badge-guide-sample";
+        s.appendChild(sample);
+
+        const e = document.createElement("div");
+        e.className = "badge-guide-effect";
+        e.textContent = effect;
+
+        card.appendChild(top);
+        card.appendChild(g);
+        card.appendChild(s);
+        card.appendChild(e);
+
+        return card;
+
+    };
+
+    ACHIEVEMENT_BADGES.forEach(badge => {
+        grid.appendChild(item(
+            badge.icon, badge.name, "Meta: " + badge.desc.toLowerCase(),
+            decoratedNick("Seu nick", [badge]), badge.effect
+        ));
+    });
+
+    grid.appendChild(item(
+        BADGE_COMBO_EFFECTS[2].icon, "Combo de 2", "Ter 2 medalhas quaisquer",
+        decoratedNick("Seu nick", ACHIEVEMENT_BADGES.slice(0, 2)), BADGE_COMBO_EFFECTS[2].effect
+    ));
+
+    grid.appendChild(item(
+        BADGE_COMBO_EFFECTS[3].icon, "Combo supremo", "Ter as 3 medalhas",
+        decoratedNick("Seu nick", ACHIEVEMENT_BADGES), BADGE_COMBO_EFFECTS[3].effect
+    ));
+
+    guide.appendChild(grid);
+
+    return guide;
+
+}
+
+/* Anel compacto de progresso, com o ícone da medalha no meio */
+function badgeRing(badge, profile, has) {
+
+    const value = badge.current(profile);
+    const pctDone = Math.min(100, Math.round(value / badge.goal * 100));
+
+    const ring = document.createElement("span");
+    ring.className = "badge-ring ring-" + badge.nick.replace("nick-", "") + (has ? " done" : "");
+    ring.style.setProperty("--p", pctDone);
+    ring.title = badge.icon + " " + badge.name + ": "
+        + (has ? "desbloqueada ✔" : Math.min(value, badge.goal) + "/" + badge.goal + " " + badge.unit);
+
+    const icon = document.createElement("span");
+    icon.textContent = badge.icon;
+    ring.appendChild(icon);
+
+    return ring;
+
+}
+
+/* Barra de progresso de uma medalha para um jogador */
+function badgeProgress(badge, profile, has) {
+
+    const value = badge.current(profile);
+    const pctDone = Math.min(100, Math.round(value / badge.goal * 100));
+
+    const line = document.createElement("div");
+    line.className = "badge-progress" + (has ? " done" : "");
+    line.title = badge.name + ": " + badge.desc.toLowerCase()
+        + (has ? " ✔ desbloqueada" : " (faltam " + (badge.goal - value) + ")")
+        + "\nRecompensa: " + badge.effect;
+
+    const label = document.createElement("span");
+    label.className = "badge-progress-label";
+    label.textContent = badge.icon + " " + badge.name;
+
+    const bar = document.createElement("span");
+    bar.className = "badge-progress-bar";
+
+    const fill = document.createElement("span");
+    fill.className = "badge-progress-fill fill-" + badge.nick.replace("nick-", "");
+    fill.style.width = pctDone + "%";
+    bar.appendChild(fill);
+
+    const count = document.createElement("span");
+    count.className = "badge-progress-count";
+    count.textContent = has
+        ? "✔ desbloqueada"
+        : Math.min(value, badge.goal) + "/" + badge.goal + " " + badge.unit;
+
+    line.appendChild(label);
+    line.appendChild(bar);
+    line.appendChild(count);
+
+    return line;
+
+}
+
 function achievementCard(icon, name, desc, holderText, valueText, locked, negative) {
 
     const card = document.createElement("div");
@@ -525,11 +655,23 @@ function renderAchievements(src) {
     badgesHead.textContent = "🎖️ Medalhas por jogador";
     box.appendChild(badgesHead);
 
+    /* Guia recolhido: abre só para quem quiser ler */
+    const guideBox = document.createElement("details");
+    guideBox.className = "badge-guide-box";
+
+    const guideSummary = document.createElement("summary");
+    guideSummary.textContent = "ℹ️ Como ganhar medalhas e o que elas dão";
+
+    guideBox.appendChild(guideSummary);
+    guideBox.appendChild(badgeGuide());
+    box.appendChild(guideBox);
+
     profiles
         .sort((a, b) => b.games - a.games || a.name.localeCompare(b.name, "pt-BR"))
         .forEach(p => {
 
-            const row = document.createElement("div");
+            /* Linha compacta; clicar abre os detalhes */
+            const row = document.createElement("details");
             row.className = "ach-player";
 
             const earned = earnedBadges(p);
@@ -537,25 +679,37 @@ function renderAchievements(src) {
             /* Títulos que este jogador detém agora */
             const ownTitles = titles.filter(t => t.holders.includes(p));
 
-            const head = document.createElement("div");
+            const head = document.createElement("summary");
             head.className = "ach-player-head";
 
             const name = document.createElement("strong");
+            name.className = "ach-player-name";
             name.appendChild(decoratedNick(p.name, nicks[p.key]));
 
-            const count = document.createElement("span");
-            count.textContent =
-                (ownTitles.length > 0
-                    ? ownTitles.length + (ownTitles.length === 1 ? " título · " : " títulos · ")
-                    : "")
-                + earned.length + "/" + ACHIEVEMENT_BADGES.length + " medalhas";
+            /* Um anel de progresso por medalha */
+            const rings = document.createElement("span");
+            rings.className = "badge-rings";
 
-            count.title = "Títulos: categorias que este jogador lidera agora (podem mudar de dono)."
-                + "\nMedalhas: metas pessoais, quantas das " + ACHIEVEMENT_BADGES.length
-                + " ele já desbloqueou. Passe o mouse em cada uma para ver a meta.";
+            ACHIEVEMENT_BADGES.forEach(badge => {
+                rings.appendChild(badgeRing(badge, p, earned.includes(badge)));
+            });
+
+            /* Títulos só como ícones (dourado ou vermelho) */
+            const icons = document.createElement("span");
+            icons.className = "title-icons";
+
+            ownTitles.forEach(({ title, holders, best }) => {
+                const icon = document.createElement("span");
+                icon.className = "title-icon" + (title.negative ? " negative" : "");
+                icon.textContent = title.icon;
+                icon.title = title.name + "\n" + title.desc + " — " + title.show(best, holders)
+                    + (holders.length > 1 ? " (dividido)" : "");
+                icons.appendChild(icon);
+            });
 
             head.appendChild(name);
-            head.appendChild(count);
+            head.appendChild(rings);
+            head.appendChild(icons);
 
             const chips = document.createElement("div");
             chips.className = "ach-chips";
@@ -573,28 +727,22 @@ function renderAchievements(src) {
 
             });
 
-            /* Conquistadas primeiro, bloqueadas no fim */
-            [...ACHIEVEMENT_BADGES]
-                .sort((a, b) => earned.includes(b) - earned.includes(a))
-                .forEach(badge => {
+            /* Progresso de cada medalha */
+            const progress = document.createElement("div");
+            progress.className = "badge-progress-list";
 
-                    const chip = document.createElement("span");
-                    const has = earned.includes(badge);
+            ACHIEVEMENT_BADGES.forEach(badge => {
+                progress.appendChild(badgeProgress(badge, p, earned.includes(badge)));
+            });
 
-                    chip.className = "ach-chip" + (has ? " earned " + badge.nick : " locked");
-                    chip.textContent = badge.icon + " " + badge.name;
-                    chip.title = "Medalha: " + badge.desc.toLowerCase()
-                        + (has ? " ✔" : " (bloqueada)")
-                        + "\nRecompensa: " + badge.effect
-                        + "\nCom 2 medalhas: " + BADGE_COMBO_EFFECTS[2].effect
-                        + "\nCom as 3: " + BADGE_COMBO_EFFECTS[3].effect;
+            const body = document.createElement("div");
+            body.className = "ach-player-body";
 
-                    chips.appendChild(chip);
-
-                });
+            if (chips.children.length > 0) body.appendChild(chips);
+            body.appendChild(progress);
 
             row.appendChild(head);
-            row.appendChild(chips);
+            row.appendChild(body);
 
             box.appendChild(row);
 

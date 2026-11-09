@@ -1419,6 +1419,258 @@ span.nick-lenda, span.nick-burro {
     }
 }
 
+/* ---------- Guia e progresso das medalhas ---------- */
+
+.badge-guide-box {
+    margin-bottom: 10px;
+}
+
+.badge-guide-box > summary {
+    cursor: pointer;
+    color: #8e9aaa;
+    font-size: 13px;
+    padding: 4px 0;
+}
+
+.badge-guide-box > summary:hover {
+    color: #c8aa6e;
+}
+
+.badge-guide {
+    background: #09111a;
+    border: 1px solid #253648;
+    border-radius: 8px;
+    padding: 12px;
+    margin-top: 6px;
+}
+
+/* Linha compacta do jogador */
+details.ach-player {
+    padding: 0;
+    margin-bottom: 6px;
+}
+
+details.ach-player > summary.ach-player-head {
+    list-style: none;
+    cursor: pointer;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 6px 14px;
+    padding: 8px 12px;
+    margin: 0;
+}
+
+details.ach-player > summary::-webkit-details-marker {
+    display: none;
+}
+
+details.ach-player > summary.ach-player-head::after {
+    content: "▸";
+    color: #5b6878;
+    margin-left: auto;
+    transition: transform 0.2s;
+}
+
+details.ach-player[open] > summary.ach-player-head::after {
+    transform: rotate(90deg);
+}
+
+details.ach-player > summary:hover {
+    background: #0d1824;
+}
+
+.ach-player-name {
+    min-width: 90px;
+}
+
+.ach-player-body {
+    padding: 0 12px 10px;
+    border-top: 1px solid #1a2836;
+    padding-top: 8px;
+}
+
+.badge-rings {
+    display: inline-flex;
+    gap: 6px;
+}
+
+.badge-ring {
+    --p: 0;
+    --c: #c8aa6e;
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    display: inline-grid;
+    place-items: center;
+    background: conic-gradient(var(--c) calc(var(--p) * 1%), #1d3147 0);
+    position: relative;
+}
+
+.badge-ring > span {
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    background: #09111a;
+    display: grid;
+    place-items: center;
+    font-size: 13px;
+    filter: grayscale(0.8);
+    opacity: 0.75;
+}
+
+.badge-ring.done > span {
+    filter: none;
+    opacity: 1;
+}
+
+.badge-ring.done {
+    box-shadow: 0 0 8px var(--c);
+}
+
+.ring-lenda { --c: #ffd76a; }
+.ring-bafeador { --c: #5ff2a0; }
+.ring-burro { --c: #ff6b6b; }
+
+.title-icons {
+    display: inline-flex;
+    flex-wrap: wrap;
+    gap: 4px;
+}
+
+.title-icon {
+    width: 24px;
+    height: 24px;
+    border-radius: 6px;
+    display: inline-grid;
+    place-items: center;
+    font-size: 13px;
+    background: rgba(200, 170, 110, 0.18);
+    border: 1px solid #c8aa6e;
+    cursor: default;
+}
+
+.title-icon.negative {
+    background: rgba(192, 57, 43, 0.2);
+    border-color: #c0392b;
+}
+
+.badge-guide-intro {
+    color: #8e9aaa;
+    font-size: 13px;
+    margin: 0 0 10px;
+}
+
+.badge-guide-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(170px, 1fr));
+    gap: 8px;
+}
+
+.badge-guide-item {
+    border: 1px solid #253648;
+    border-radius: 8px;
+    padding: 8px 10px;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.badge-guide-name {
+    color: #f0e6d2;
+    font-weight: bold;
+    font-size: 13px;
+}
+
+.badge-guide-goal {
+    color: #c8aa6e;
+    font-size: 12px;
+}
+
+.badge-guide-sample {
+    font-size: 16px;
+    padding: 6px 0;
+    color: #f5f5f5;
+}
+
+.badge-guide-effect {
+    color: #8e9aaa;
+    font-size: 11px;
+}
+
+.badge-progress-list {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    margin-top: 8px;
+}
+
+.badge-progress {
+    display: grid;
+    grid-template-columns: minmax(0, 200px) minmax(60px, 1fr) auto;
+    align-items: center;
+    gap: 10px;
+    font-size: 12px;
+    color: #8e9aaa;
+}
+
+.badge-progress-label {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.badge-progress.done .badge-progress-label {
+    color: #f0e6d2;
+    font-weight: bold;
+}
+
+.badge-progress-bar {
+    height: 8px;
+    border-radius: 999px;
+    background: #173048;
+    overflow: hidden;
+}
+
+.badge-progress-fill {
+    display: block;
+    height: 100%;
+    border-radius: 999px;
+}
+
+.fill-lenda {
+    background: linear-gradient(90deg, #a8843f, #ffd76a);
+}
+
+.fill-bafeador {
+    background: linear-gradient(90deg, #1f8f5a, #5ff2a0);
+}
+
+.fill-burro {
+    background: linear-gradient(90deg, #b83b3b, #ff6b6b);
+}
+
+.badge-progress-count {
+    white-space: nowrap;
+    font-variant-numeric: tabular-nums;
+}
+
+.badge-progress.done .badge-progress-count {
+    color: #5ff2a0;
+}
+
+@media (max-width: 520px) {
+    .badge-progress {
+        grid-template-columns: 1fr auto;
+    }
+
+    .badge-progress-bar {
+        grid-column: 1 / -1;
+        grid-row: 2;
+    }
+}
+
 /* Títulos negativos (vergonha) em vermelho */
 .ach-section.negative {
     color: #e0524d;
