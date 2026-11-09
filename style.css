@@ -1360,6 +1360,48 @@ body:not(.viewer) .viewer-only {
     text-transform: uppercase;
     letter-spacing: 1px;
     margin: 18px 0 8px;
+    font-weight: bold;
+    list-style: none;
+    cursor: pointer;
+    user-select: none;
+    padding: 4px 0;
+}
+
+.hall-cat::-webkit-details-marker {
+    display: none;
+}
+
+/* Setinha que gira quando a categoria abre */
+.hall-cat::before {
+    content: "▸";
+    color: #c8aa6e;
+    transition: transform 0.2s;
+}
+
+.hall-cat.negative::before {
+    color: #e0524d;
+}
+
+.hall-section[open] > .hall-cat::before {
+    transform: rotate(90deg);
+}
+
+.hall-section:not([open]) > .hall-cat {
+    margin-bottom: 0;
+    color: #8e9aaa;
+}
+
+.hall-cat:hover {
+    color: #fff;
+}
+
+.hall-cat-count {
+    font-size: 11px;
+    color: #8e9aaa;
+    background: rgba(255, 255, 255, 0.08);
+    border-radius: 999px;
+    padding: 1px 7px;
+    letter-spacing: 0;
 }
 
 .hall-cat::after {

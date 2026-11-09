@@ -676,6 +676,24 @@ function badgeProgress(badge, profile, has) {
    Fica guardada para não voltar à Glória a cada atualização. */
 let hallShowNegative = false;
 
+/* Categorias recolhidas ("gloria:combate", "vergonha:visao"...).
+   Guardadas no navegador de cada um; se não der para ler, tudo abre. */
+const HALL_COLLAPSED_KEY = "sorteador.hallRecolhidas";
+
+const hallCollapsed = (() => {
+    try {
+        return new Set(JSON.parse(localStorage.getItem(HALL_COLLAPSED_KEY) || "[]"));
+    } catch (e) {
+        return new Set();
+    }
+})();
+
+function saveHallCollapsed() {
+    try {
+        localStorage.setItem(HALL_COLLAPSED_KEY, JSON.stringify([...hallCollapsed]));
+    } catch (e) { /* sem armazenamento: só não lembra */ }
+}
+
 /* Lista de nicks separados por " & " */
 function nickList(players, nicks) {
 
@@ -936,10 +954,32 @@ function renderHall(hall, titles, nicks) {
 
         if (inCat.length === 0) return;
 
-        const catHead = document.createElement("h4");
+        /* Categoria recolhível; lembra o que cada um deixou fechado */
+        const stateKey = (hallShowNegative ? "vergonha:" : "gloria:") + cat.key;
+
+        const section = document.createElement("details");
+        section.className = "hall-section";
+        section.open = !hallCollapsed.has(stateKey);
+
+        const catHead = document.createElement("summary");
         catHead.className = "hall-cat" + (hallShowNegative ? " negative" : "");
-        catHead.textContent = cat.head;
-        hall.appendChild(catHead);
+
+        const catName = document.createElement("span");
+        catName.textContent = cat.head;
+
+        const catCount = document.createElement("span");
+        catCount.className = "hall-cat-count";
+        catCount.textContent = inCat.length;
+
+        catHead.appendChild(catName);
+        catHead.appendChild(catCount);
+        section.appendChild(catHead);
+
+        section.addEventListener("toggle", () => {
+            if (section.open) hallCollapsed.delete(stateKey);
+            else hallCollapsed.add(stateKey);
+            saveHallCollapsed();
+        });
 
         const grid = document.createElement("div");
         grid.className = "hall-grid";
@@ -950,7 +990,8 @@ function renderHall(hall, titles, nicks) {
             .sort((a, b) => (a.holders.length === 0) - (b.holders.length === 0))
             .forEach(result => grid.appendChild(titleCard(result, nicks)));
 
-        hall.appendChild(grid);
+        section.appendChild(grid);
+        hall.appendChild(section);
 
     });
 
