@@ -53,7 +53,7 @@ const PLAYER_ALIASES = {
    Endereço do Cloudflare Worker (pasta worker/). Vazio esconde o botão.
 ===================================================== */
 
-const RIOT_WORKER_URL = "";
+const RIOT_WORKER_URL = "https://sorteador-riot.fernandofiorini.workers.dev";
 
 /* =====================================================
    DATA DRAGON
