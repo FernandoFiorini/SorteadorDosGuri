@@ -92,163 +92,280 @@ function computePlayerProfiles(src) {
 
 /* ---------- TÍTULOS (um dono por título; empate divide) ---------- */
 
+/* Categorias, na ordem em que aparecem na tela */
+const TITLE_CATEGORIES = [
+    { key: "combate", head: "⚔️ Combate" },
+    { key: "visao", head: "👁️ Visão e time" },
+    { key: "objetivos", head: "🏰 Objetivos, ouro e farm" },
+    { key: "rotina", head: "🎲 Rotina dos guri" }
+];
+
+/* Média por partida de um campo da Riot (null sem dados) */
+const perGame = (p, field) => p.riot.games > 0 ? p.riot[field] / p.riot.games : null;
+const minRiotGames = p => p.riot.games >= 5;
+const plural = (v, one, many) => v + " " + (v === 1 ? one : many);
+const clock = s => Math.floor(s / 60) + ":" + String(Math.round(s % 60)).padStart(2, "0");
+
 const ACHIEVEMENT_TITLES = [
+
+    /* ----- Combate ----- */
     {
-        icon: "😎", name: "Tu me conhece né valde",
-        desc: "Maior número de vitórias",
-        value: p => p.wins,
-        show: v => v + " vitórias"
-    },
-    {
-        icon: "🌲", name: "Que isso paixão, pode relaxar",
-        desc: "Mais vezes que caiu na Jungle",
-        value: p => p.lane("Jungle"),
-        show: v => v + "x"
-    },
-    {
-        icon: "🎠", name: "Pitty carrosilha",
-        desc: "Mais vezes que caiu de Support",
-        value: p => p.lane("Support"),
-        show: v => v + "x"
-    },
-    {
-        icon: "🖐️", name: "Eu sou o milior",
+        cat: "combate", icon: "🖐️", name: "Eu sou o milior",
         desc: "Mais pentakills",
         value: p => p.riot.pentaKills,
-        show: v => v + (v === 1 ? " penta" : " pentas")
+        show: v => plural(v, "penta", "pentas")
     },
     {
-        icon: "❓", name: "Pinga ne mim?",
-        desc: "Mais pings de inimigo sumido",
-        value: p => p.riot.missingPings,
-        show: v => v + " pings"
-    },
-    {
-        icon: "🎯", name: "Mata mais que a fome",
-        desc: "Maior KDA",
-        eligible: p => p.riot.games >= 5,
+        cat: "combate", icon: "🎯", name: "Mata mais que a fome",
+        desc: "Maior KDA (mín. 5 partidas)",
+        eligible: minRiotGames,
         value: p => riotAverages(p.riot).kda,
         show: v => formatNumber(v, 2)
     },
     {
-        icon: "💰", name: "Filho do vorcaro",
-        desc: "Mais ouro acumulado somando todas as partidas",
-        value: p => p.riot.gold,
-        show: v => v.toLocaleString("pt-BR") + " de ouro"
-    },
-    {
-        icon: "🏰", name: "Split push é estilo de vida",
-        desc: "Mais torres destruídas (abates e assistências)",
-        value: p => p.riot.turrets,
-        show: v => v + (v === 1 ? " torre" : " torres")
-    },
-    {
-        icon: "🦹", name: "Filho do lula",
-        desc: "Mais objetivos roubados (dragão, Barão, Arauto e afins)",
-        value: p => p.riot.objectivesStolen,
-        show: v => v + (v === 1 ? " roubo" : " roubos")
-    },
-    {
-        icon: "🩸", name: "Sou muito bom com esse boneco",
+        cat: "combate", icon: "🩸", name: "Sou muito bom com esse boneco",
         desc: "Mais first bloods",
         value: p => p.riot.firstBloods,
-        show: v => v + " first blood" + (v === 1 ? "" : "s")
+        show: v => plural(v, "first blood", "first bloods")
     },
     {
-        icon: "🗡️", name: "Aqui é valdemá",
+        cat: "combate", icon: "🗡️", name: "Aqui é valdemá",
         desc: "Mais abates solo",
         value: p => p.riot.soloKills,
-        show: v => v + " solo kill" + (v === 1 ? "" : "s")
+        show: v => plural(v, "solo kill", "solo kills")
     },
     {
-        icon: "🥊", name: "Gordão supremo",
+        cat: "combate", icon: "💥", name: "Aqui é matador",
+        desc: "Recorde de abates numa partida só",
+        value: p => p.riot.bestKills,
+        show: v => plural(v, "abate", "abates")
+    },
+    {
+        cat: "combate", icon: "🔥", name: "Mata & Mata",
+        desc: "Maior sequência de abates sem morrer",
+        value: p => p.riot.bestSpree,
+        show: v => plural(v, "abate seguido", "abates seguidos")
+    },
+    {
+        cat: "combate", icon: "⚔️", name: "7 tipo de matança",
+        desc: "Mais triple e quadra kills somados",
+        value: p => p.riot.tripleKills + p.riot.quadraKills,
+        show: v => plural(v, "multikill", "multikills")
+    },
+    {
+        cat: "combate", icon: "🎒", name: "Carregamento extensivo",
+        desc: "Maior fatia média do dano do time (mín. 5 partidas)",
+        eligible: minRiotGames,
+        value: p => perGame(p, "damageShare"),
+        show: v => formatNumber(v * 100, 0) + "% do dano"
+    },
+    {
+        cat: "combate", icon: "🥊", name: "Gordão supremo",
         desc: "Mais dano recebido somando todas as partidas",
         value: p => p.riot.damageTaken,
         show: v => v.toLocaleString("pt-BR") + " de dano"
     },
     {
-        icon: "💚", name: "Aqui cura nao adianta",
+        cat: "combate", icon: "🔒", name: "Paradinho",
+        desc: "Mais tempo prendendo inimigos com controle (CC)",
+        value: p => p.riot.ccTime,
+        show: v => clock(v) + " de CC"
+    },
+    {
+        cat: "combate", icon: "🏹", name: "Eu jogo muito, não tem jeito",
+        desc: "Mais skillshots acertadas",
+        value: p => p.riot.skillshotsHit,
+        show: v => v.toLocaleString("pt-BR") + " acertos"
+    },
+    {
+        cat: "combate", icon: "🌀", name: "Esquivo, esquivo, leo tus derechos",
+        desc: "Mais skillshots inimigas desviadas",
+        value: p => p.riot.skillshotsDodged,
+        show: v => v.toLocaleString("pt-BR") + " desviadas"
+    },
+    {
+        cat: "combate", icon: "⏳", name: "Não morre nunca",
+        desc: "Recorde de tempo vivo sem morrer numa partida",
+        value: p => p.riot.bestAlive,
+        show: v => clock(v) + " vivo"
+    },
+
+    /* ----- Visão e time ----- */
+    {
+        cat: "visao", icon: "🕯️", name: "Quer visão então toma?",
+        desc: "Mais wards colocadas somando todas as partidas",
+        value: p => p.riot.wardsPlaced,
+        show: v => plural(v, "ward", "wards")
+    },
+    {
+        cat: "visao", icon: "🧹", name: "Limpa ward teleguiado",
+        desc: "Mais wards inimigas destruídas",
+        value: p => p.riot.wardsKilled,
+        show: v => plural(v, "ward destruída", "wards destruídas")
+    },
+    {
+        cat: "visao", icon: "🔭", name: "E a gurizada abrindo o mapa",
+        desc: "Maior placar de visão por partida (mín. 5 partidas)",
+        eligible: minRiotGames,
+        value: p => riotAverages(p.riot).visionPerGame,
+        show: v => formatNumber(v, 1) + " por partida"
+    },
+    {
+        cat: "visao", icon: "❓", name: "Pinga ne mim?",
+        desc: "Mais pings de inimigo sumido",
+        value: p => p.riot.missingPings,
+        show: v => v + " pings"
+    },
+    {
+        cat: "visao", icon: "💚", name: "Aqui cura nao adianta",
         desc: "Mais cura e escudo em aliados",
         value: p => p.riot.allySupport,
         show: v => v.toLocaleString("pt-BR")
     },
 
-    /* ----- Negativos (aparecem em vermelho, numa seção separada) ----- */
+    /* ----- Objetivos, ouro e farm ----- */
     {
-        icon: "⚡", name: "Mamu gastou flash",
-        desc: "Maior número de derrotas",
-        negative: true,
-        value: p => p.losses,
-        show: v => v + " derrotas"
+        cat: "objetivos", icon: "💰", name: "Filho do vorcaro",
+        desc: "Mais ouro acumulado somando todas as partidas",
+        value: p => p.riot.gold,
+        show: v => v.toLocaleString("pt-BR") + " de ouro"
     },
     {
-        icon: "⚰️", name: "Assinante da tela cinza",
+        cat: "objetivos", icon: "🚜", name: "O agro é top",
+        desc: "Maior farm por minuto (mín. 5 partidas)",
+        eligible: minRiotGames,
+        value: p => riotAverages(p.riot).csPerMin,
+        show: v => formatNumber(v, 1) + " por minuto"
+    },
+    {
+        cat: "objetivos", icon: "🏰", name: "Alex muralha",
+        desc: "Mais torres destruídas (abates e assistências)",
+        value: p => p.riot.turrets,
+        show: v => plural(v, "torre", "torres")
+    },
+    {
+        cat: "objetivos", icon: "🦹", name: "Filho do lula",
+        desc: "Mais objetivos roubados (dragão, Barão, Arauto e afins)",
+        value: p => p.riot.objectivesStolen,
+        show: v => plural(v, "roubo", "roubos")
+    },
+
+    /* ----- Rotina ----- */
+    {
+        cat: "rotina", icon: "😎", name: "Tu me conhece né valde",
+        desc: "Maior número de vitórias",
+        value: p => p.wins,
+        show: v => plural(v, "vitória", "vitórias")
+    },
+    {
+        cat: "rotina", icon: "📈", name: "Joguinho sossegado",
+        desc: "Mais vitórias seguidas",
+        value: p => p.bestWinStreak,
+        show: v => plural(v, "seguida", "seguidas")
+    },
+    {
+        cat: "rotina", icon: "🌲", name: "Que isso paixão, pode relaxar",
+        desc: "Mais vezes que caiu na Jungle",
+        value: p => p.lane("Jungle"),
+        show: v => v + "x"
+    },
+    {
+        cat: "rotina", icon: "🎠", name: "Pitty carrosilha",
+        desc: "Mais vezes que caiu de Support",
+        value: p => p.lane("Support"),
+        show: v => v + "x"
+    },
+    {
+        cat: "rotina", icon: "🎲", name: "O cara sabe jogar com tudo, não adianta",
+        desc: "Mais campeões diferentes jogados",
+        value: p => p.uniqueChamps,
+        show: v => plural(v, "campeão", "campeões")
+    },
+
+    /* ----- Negativos (aba Vergonha, em vermelho) ----- */
+    {
+        cat: "combate", icon: "💀", name: "Só não morre mais porque tem que esperar renascer",
+        desc: "Mais mortes somando todas as partidas",
+        negative: true,
+        value: p => p.riot.deaths,
+        show: v => plural(v, "morte", "mortes")
+    },
+    {
+        cat: "combate", icon: "⚰️", name: "Mais morto que isso só no the walking dead",
         desc: "Mais tempo morto somando todas as partidas",
         negative: true,
         value: p => p.riot.timeDead,
         show: v => Math.round(v / 60) + " min"
     },
     {
-        negative: true,
-        icon: "💀", name: "Só não morre mais porque tem que esperar renascer",
-        desc: "Mais mortes somando todas as partidas",
-        value: p => p.riot.deaths,
-        show: v => v + " mortes"
-    },
-    {
-        icon: "🙈", name: "Mais cego que não sei o que",
-        desc: "Menor placar de visão por partida",
+        cat: "combate", icon: "🧸", name: "Mais ruim que isso, so 2 disso",
+        desc: "Menor KDA (mín. 5 partidas)",
         lowest: true, negative: true,
-        eligible: p => p.riot.games >= 5,
-        value: p => riotAverages(p.riot).visionPerGame,
-        show: v => formatNumber(v, 1) + " por partida"
-    },
-    {
-        icon: "🪙", name: "Tem que solicitar bolsa família",
-        desc: "Menor ouro por minuto",
-        lowest: true, negative: true,
-        eligible: p => p.riot.games >= 5,
-        value: p => riotAverages(p.riot).goldPerMin,
-        show: v => formatNumber(v, 0) + " por minuto"
-    },
-    {
-        icon: "🧸", name: "Mais ruim que isso, so 2 disso",
-        desc: "Menor KDA",
-        lowest: true, negative: true,
-        eligible: p => p.riot.games >= 5,
+        eligible: minRiotGames,
         value: p => riotAverages(p.riot).kda,
         show: v => formatNumber(v, 2)
     },
     {
-        icon: "🪶", name: "Dano é psicologico",
-        desc: "Menor dano a campeões por minuto",
+        cat: "combate", icon: "🪶", name: "Dano é psicologico",
+        desc: "Menor dano a campeões por minuto (mín. 5 partidas)",
         lowest: true, negative: true,
-        eligible: p => p.riot.games >= 5,
+        eligible: minRiotGames,
         value: p => riotAverages(p.riot).damagePerMin,
         show: v => formatNumber(v, 0) + " por minuto"
     },
     {
-        icon: "🌾", name: "Não ta jogando age né?",
-        desc: "Menor farm por minuto",
+        cat: "combate", icon: "👻", name: "O jogador, vamo começar a jogar ou não?",
+        desc: "Menor participação nos abates do time (mín. 5 partidas)",
         lowest: true, negative: true,
-        eligible: p => p.riot.games >= 5,
+        eligible: minRiotGames,
+        value: p => perGame(p, "killParticipation"),
+        show: v => formatNumber(v * 100, 0) + "%"
+    },
+    {
+        cat: "visao", icon: "🙈", name: "Mais cego que não sei o que",
+        desc: "Menor placar de visão por partida (mín. 5 partidas)",
+        lowest: true, negative: true,
+        eligible: minRiotGames,
+        value: p => riotAverages(p.riot).visionPerGame,
+        show: v => formatNumber(v, 1) + " por partida"
+    },
+    {
+        cat: "visao", icon: "🚫", name: "Ward é item de luxo",
+        desc: "Menos wards colocadas por partida (mín. 5 partidas)",
+        lowest: true, negative: true,
+        eligible: minRiotGames,
+        value: p => perGame(p, "wardsPlaced"),
+        show: v => formatNumber(v, 1) + " por partida"
+    },
+    {
+        cat: "objetivos", icon: "🪙", name: "Tem que solicitar bolsa família",
+        desc: "Menor ouro por minuto (mín. 5 partidas)",
+        lowest: true, negative: true,
+        eligible: minRiotGames,
+        value: p => riotAverages(p.riot).goldPerMin,
+        show: v => formatNumber(v, 0) + " por minuto"
+    },
+    {
+        cat: "objetivos", icon: "🌾", name: "Não ta jogando age né?",
+        desc: "Menor farm por minuto (mín. 5 partidas)",
+        lowest: true, negative: true,
+        eligible: minRiotGames,
         value: p => riotAverages(p.riot).csPerMin,
         show: v => formatNumber(v, 1) + " por minuto"
     },
     {
-        icon: "👻", name: "O jogador, vamo começar a jogar ou não?",
-        desc: "Menor média de participação nos abates do time",
-        lowest: true, negative: true,
-        eligible: p => p.riot.games >= 5,
-        value: p => p.riot.games > 0 ? p.riot.killParticipation / p.riot.games : null,
-        show: v => formatNumber(v * 100, 0) + "%"
+        cat: "rotina", icon: "⚡", name: "Mamu gastou flash",
+        desc: "Maior número de derrotas",
+        negative: true,
+        value: p => p.losses,
+        show: v => plural(v, "derrota", "derrotas")
     },
     {
-        icon: "📉", name: "Joguinhos de lambari",
+        cat: "rotina", icon: "📉", name: "Joguinhos de lambari",
         desc: "Mais derrotas seguidas",
         negative: true,
         value: p => p.worstLossStreak,
-        show: v => v + " seguidas"
+        show: v => plural(v, "seguida", "seguidas")
     }
 ];
 
@@ -394,11 +511,10 @@ function resolveTitles(profiles) {
 
     return ACHIEVEMENT_TITLES.map(title => {
 
-        let best = null;
-        let holders = [];
-
         /* Nos de menor valor, compara com o sinal trocado */
         const sign = title.lowest ? -1 : 1;
+
+        const ranking = [];
 
         profiles.forEach(p => {
 
@@ -406,18 +522,24 @@ function resolveTitles(profiles) {
 
             const v = title.value(p);
 
-            if (v === null || v === undefined || (!title.lowest && v <= 0)) return;
+            if (v === null || v === undefined || isNaN(v) || (!title.lowest && v <= 0)) return;
 
-            if (best === null || sign * v > sign * best + 1e-9) {
-                best = v;
-                holders = [p];
-            } else if (Math.abs(v - best) <= 1e-9) {
-                holders.push(p);
-            }
+            ranking.push({ player: p, value: v });
 
         });
 
-        return { title: title, holders: holders, best: best };
+        ranking.sort((a, b) => sign * (b.value - a.value) || a.player.name.localeCompare(b.player.name, "pt-BR"));
+
+        /* Posição com empate: valores iguais dividem a mesma posição */
+        ranking.forEach((r, i) => {
+            const prev = ranking[i - 1];
+            r.place = prev && Math.abs(prev.value - r.value) <= 1e-9 ? prev.place : i + 1;
+        });
+
+        const best = ranking.length > 0 ? ranking[0].value : null;
+        const holders = ranking.filter(r => r.place === 1).map(r => r.player);
+
+        return { title: title, holders: holders, best: best, ranking: ranking };
 
     });
 
@@ -548,47 +670,289 @@ function badgeProgress(badge, profile, has) {
 
 }
 
-function achievementCard(icon, name, desc, holderText, valueText, locked, negative) {
+/* ---------- HALL DOS TÍTULOS (parte de cima da aba) ---------- */
+
+/* Aba aberta no hall: false = Glória, true = Vergonha.
+   Fica guardada para não voltar à Glória a cada atualização. */
+let hallShowNegative = false;
+
+/* Lista de nicks separados por " & " */
+function nickList(players, nicks) {
+
+    const wrap = document.createElement("span");
+
+    players.forEach((p, i) => {
+        if (i > 0) wrap.appendChild(document.createTextNode(" & "));
+        wrap.appendChild(decoratedNick(p.name, nicks[p.key]));
+    });
+
+    return wrap;
+
+}
+
+/* Largura da barra de quem está atrás, em relação ao líder */
+function rankBarWidth(title, value, best) {
+
+    if (title.lowest) return value > 0 ? Math.max(4, best / value * 100) : 100;
+
+    return best > 0 ? Math.max(4, value / best * 100) : 0;
+
+}
+
+/* Card de um título: dono em destaque e quem vem logo atrás */
+function titleCard(result, nicks) {
+
+    const { title, holders, best, ranking } = result;
+    const vacant = holders.length === 0;
 
     const card = document.createElement("div");
-    card.className = "ach-card" + (negative ? " negative" : "") + (locked ? " locked" : "");
+    card.className = "tcard" + (title.negative ? " negative" : "") + (vacant ? " vacant" : "");
 
-    const i = document.createElement("div");
-    i.className = "ach-icon";
-    i.textContent = icon;
+    /* Cabeçalho: ícone, nome e regra */
+    const head = document.createElement("div");
+    head.className = "tcard-head";
 
-    const info = document.createElement("div");
-    info.className = "ach-info";
+    const icon = document.createElement("span");
+    icon.className = "tcard-icon";
+    icon.textContent = title.icon;
 
-    const n = document.createElement("div");
-    n.className = "ach-name";
-    n.textContent = name;
+    const text = document.createElement("div");
+    text.className = "tcard-text";
 
-    const h = document.createElement("div");
-    h.className = "ach-holder";
+    const name = document.createElement("div");
+    name.className = "tcard-name";
+    name.textContent = title.name;
 
-    /* Texto simples ou lista de nicks (já com o efeito da medalha) */
-    if (Array.isArray(holderText)) {
-        holderText.forEach((nick, i) => {
-            if (i > 0) h.appendChild(document.createTextNode(" & "));
-            h.appendChild(nick);
-        });
-    } else {
-        h.textContent = holderText;
+    const desc = document.createElement("div");
+    desc.className = "tcard-desc";
+    desc.textContent = title.desc;
+
+    text.appendChild(name);
+    text.appendChild(desc);
+    head.appendChild(icon);
+    head.appendChild(text);
+    card.appendChild(head);
+
+    /* Dono atual */
+    const owner = document.createElement("div");
+    owner.className = "tcard-owner";
+
+    if (vacant) {
+        owner.textContent = "Vago: ninguém pontuou ainda";
+        card.appendChild(owner);
+        return card;
     }
 
-    const d = document.createElement("div");
-    d.className = "ach-desc";
-    d.textContent = desc + (valueText ? " — " + valueText : "");
+    const crown = document.createElement("span");
+    crown.className = "tcard-crown";
+    crown.textContent = title.negative ? "🤡" : "👑";
 
-    info.appendChild(n);
-    info.appendChild(h);
-    info.appendChild(d);
+    const who = document.createElement("span");
+    who.className = "tcard-who";
+    who.appendChild(nickList(holders, nicks));
 
-    card.appendChild(i);
-    card.appendChild(info);
+    const value = document.createElement("span");
+    value.className = "tcard-value";
+    value.textContent = title.show(best);
+
+    owner.appendChild(crown);
+    owner.appendChild(who);
+    owner.appendChild(value);
+    card.appendChild(owner);
+
+    /* Na cola: 2º e 3º lugares, com barra em relação ao dono */
+    const chasers = ranking.filter(r => r.place > 1).slice(0, 2);
+
+    if (chasers.length > 0) {
+
+        const list = document.createElement("ol");
+        list.className = "tcard-chasers";
+
+        chasers.forEach(r => {
+
+            const li = document.createElement("li");
+
+            const pos = document.createElement("span");
+            pos.className = "tcard-pos";
+            pos.textContent = r.place + "º";
+
+            const nick = document.createElement("span");
+            nick.className = "tcard-chaser";
+            nick.appendChild(decoratedNick(r.player.name, nicks[r.player.key]));
+
+            const bar = document.createElement("span");
+            bar.className = "tcard-bar";
+
+            const fill = document.createElement("i");
+            fill.style.width = rankBarWidth(title, r.value, best) + "%";
+            bar.appendChild(fill);
+
+            const val = document.createElement("span");
+            val.className = "tcard-chaser-value";
+            val.textContent = title.show(r.value);
+
+            li.appendChild(pos);
+            li.appendChild(nick);
+            li.appendChild(bar);
+            li.appendChild(val);
+            list.appendChild(li);
+
+        });
+
+        card.appendChild(list);
+
+    }
 
     return card;
+
+}
+
+/* Placar: quantos títulos da aba aberta cada jogador tem */
+function hallBoard(results, nicks, negative) {
+
+    const counts = {};
+
+    results.forEach(r => {
+        r.holders.forEach(p => {
+            const c = counts[p.key] || (counts[p.key] = { player: p, titles: [] });
+            c.titles.push(r.title);
+        });
+    });
+
+    const rows = Object.values(counts)
+        .sort((a, b) => b.titles.length - a.titles.length
+            || a.player.name.localeCompare(b.player.name, "pt-BR"));
+
+    const board = document.createElement("div");
+    board.className = "hall-board" + (negative ? " negative" : "");
+
+    const label = document.createElement("div");
+    label.className = "hall-board-label";
+    label.textContent = negative ? "Quem mais passa vergonha" : "Quem manda na casa";
+    board.appendChild(label);
+
+    if (rows.length === 0) {
+        const none = document.createElement("div");
+        none.className = "hall-board-empty";
+        none.textContent = "Ninguém tem título aqui ainda.";
+        board.appendChild(none);
+        return board;
+    }
+
+    const list = document.createElement("div");
+    list.className = "hall-board-list";
+
+    let place = 0;
+    let lastCount = null;
+
+    rows.forEach((row, i) => {
+
+        if (row.titles.length !== lastCount) place = i + 1;
+        lastCount = row.titles.length;
+
+        const item = document.createElement("div");
+        item.className = "hall-board-item" + (place === 1 ? " top" : "");
+        item.title = row.titles.map(t => t.icon + " " + t.name).join("\n");
+
+        const pos = document.createElement("span");
+        pos.className = "hall-board-pos";
+        pos.textContent = place === 1 ? (negative ? "🤡" : "👑") : place + "º";
+
+        const nick = document.createElement("span");
+        nick.className = "hall-board-nick";
+        nick.appendChild(decoratedNick(row.player.name, nicks[row.player.key]));
+
+        const count = document.createElement("span");
+        count.className = "hall-board-count";
+        count.textContent = row.titles.length;
+
+        const icons = document.createElement("span");
+        icons.className = "hall-board-icons";
+        icons.textContent = row.titles.map(t => t.icon).join(" ");
+
+        item.appendChild(pos);
+        item.appendChild(nick);
+        item.appendChild(count);
+        item.appendChild(icons);
+        list.appendChild(item);
+
+    });
+
+    board.appendChild(list);
+
+    return board;
+
+}
+
+/* Abas Glória/Vergonha, placar e títulos agrupados por categoria */
+function renderHall(hall, titles, nicks) {
+
+    hall.innerHTML = "";
+
+    const tabs = document.createElement("div");
+    tabs.className = "hall-tabs";
+    tabs.setAttribute("role", "tablist");
+
+    [
+        { negative: false, label: "👑 Glória" },
+        { negative: true, label: "💀 Vergonha" }
+    ].forEach(tab => {
+
+        const owned = titles.filter(t => !!t.title.negative === tab.negative);
+
+        const button = document.createElement("button");
+        button.type = "button";
+        button.setAttribute("role", "tab");
+        button.setAttribute("aria-selected", String(hallShowNegative === tab.negative));
+        button.className = "hall-tab" + (tab.negative ? " negative" : "")
+            + (hallShowNegative === tab.negative ? " active" : "");
+
+        button.textContent = tab.label + " ";
+
+        const count = document.createElement("span");
+        count.className = "hall-tab-count";
+        count.textContent = owned.length;
+        button.appendChild(count);
+
+        button.addEventListener("click", () => {
+            if (hallShowNegative === tab.negative) return;
+            hallShowNegative = tab.negative;
+            renderHall(hall, titles, nicks);
+        });
+
+        tabs.appendChild(button);
+
+    });
+
+    hall.appendChild(tabs);
+
+    const shown = titles.filter(t => !!t.title.negative === hallShowNegative);
+
+    hall.appendChild(hallBoard(shown, nicks, hallShowNegative));
+
+    TITLE_CATEGORIES.forEach(cat => {
+
+        const inCat = shown.filter(t => t.title.cat === cat.key);
+
+        if (inCat.length === 0) return;
+
+        const catHead = document.createElement("h4");
+        catHead.className = "hall-cat" + (hallShowNegative ? " negative" : "");
+        catHead.textContent = cat.head;
+        hall.appendChild(catHead);
+
+        const grid = document.createElement("div");
+        grid.className = "hall-grid";
+
+        /* Vagos vão para o fim da categoria */
+        inCat
+            .slice()
+            .sort((a, b) => (a.holders.length === 0) - (b.holders.length === 0))
+            .forEach(result => grid.appendChild(titleCard(result, nicks)));
+
+        hall.appendChild(grid);
+
+    });
 
 }
 
@@ -613,40 +977,21 @@ function renderAchievements(src) {
 
     const titles = resolveTitles(profiles);
 
-    [
-        { head: "👑 Títulos da casa", negative: false },
-        { head: "💀 Títulos da vergonha", negative: true }
-    ].forEach(section => {
+    const titlesHead = document.createElement("h3");
+    titlesHead.className = "ach-section";
+    titlesHead.textContent = "🏆 Títulos da casa";
+    box.appendChild(titlesHead);
 
-        const titlesHead = document.createElement("h3");
-        titlesHead.className = "ach-section" + (section.negative ? " negative" : "");
-        titlesHead.textContent = section.head;
-        box.appendChild(titlesHead);
+    const hallIntro = document.createElement("p");
+    hallIntro.className = "hall-intro";
+    hallIntro.textContent = "Cada título tem um dono só: quem tem o maior número leva (empate divide). Embaixo do dono aparece quem está na cola para roubar.";
+    box.appendChild(hallIntro);
 
-        const titlesGrid = document.createElement("div");
-        titlesGrid.className = "ach-grid";
+    const hall = document.createElement("div");
+    hall.className = "hall";
+    box.appendChild(hall);
 
-        titles
-            .filter(({ title }) => !!title.negative === section.negative)
-            .forEach(({ title, holders, best }) => {
-
-                const vacant = holders.length === 0;
-
-                titlesGrid.appendChild(achievementCard(
-                    title.icon,
-                    title.name,
-                    title.desc,
-                    vacant ? "Vago" : holders.map(h => decoratedNick(h.name, nicks[h.key])),
-                    vacant ? "" : title.show(best, holders),
-                    vacant,
-                    !!title.negative
-                ));
-
-            });
-
-        box.appendChild(titlesGrid);
-
-    });
+    renderHall(hall, titles, nicks);
 
     /* ----- Medalhas por jogador ----- */
 

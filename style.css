@@ -1149,55 +1149,6 @@ body:not(.viewer) .viewer-only {
     margin: 6px 0 10px;
 }
 
-.ach-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
-    gap: 10px;
-    margin-bottom: 20px;
-}
-
-.ach-card {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    background: #09111a;
-    border: 1px solid #c8aa6e;
-    border-radius: 8px;
-    padding: 10px 12px;
-}
-
-.ach-card.locked {
-    border-color: #253648;
-    opacity: 0.55;
-}
-
-.ach-icon {
-    font-size: 30px;
-    line-height: 1;
-}
-
-.ach-info {
-    min-width: 0;
-}
-
-.ach-name {
-    font-size: 11px;
-    color: #8e9aaa;
-    text-transform: uppercase;
-    letter-spacing: 1px;
-}
-
-.ach-holder {
-    color: #f5f5f5;
-    font-weight: bold;
-    overflow-wrap: anywhere;
-}
-
-.ach-desc {
-    color: #c8aa6e;
-    font-size: 12px;
-}
-
 .ach-player {
     background: #09111a;
     border: 1px solid #253648;
@@ -1240,6 +1191,352 @@ body:not(.viewer) .viewer-only {
     border-color: #f0e6d2;
     color: #0b1622;
     font-weight: bold;
+}
+
+/* ---------- Hall dos títulos ---------- */
+
+.hall-intro {
+    color: #8e9aaa;
+    font-size: 13px;
+    margin: -4px 0 12px;
+}
+
+.hall {
+    margin-bottom: 26px;
+}
+
+.hall-tabs {
+    display: flex;
+    gap: 6px;
+    margin-bottom: 12px;
+}
+
+.hall-tab {
+    flex: 1;
+    max-width: 220px;
+    background: #09111a;
+    border: 1px solid #253648;
+    color: #8e9aaa;
+    border-radius: 8px;
+    padding: 9px 12px;
+    font-size: 14px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background 0.15s, border-color 0.15s, color 0.15s;
+}
+
+.hall-tab:hover {
+    border-color: #c8aa6e;
+    color: #f0e6d2;
+}
+
+.hall-tab.active {
+    background: linear-gradient(180deg, #2a2414, #14110a);
+    border-color: #c8aa6e;
+    color: #f0e6d2;
+}
+
+.hall-tab.negative:hover {
+    border-color: #c0392b;
+}
+
+.hall-tab.negative.active {
+    background: linear-gradient(180deg, #2c1013, #160a0c);
+    border-color: #c0392b;
+    color: #f5b7b1;
+}
+
+.hall-tab-count {
+    display: inline-block;
+    min-width: 22px;
+    padding: 1px 6px;
+    margin-left: 4px;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.08);
+    font-size: 12px;
+}
+
+/* Placar de quem tem mais títulos */
+.hall-board {
+    background: linear-gradient(135deg, rgba(200, 170, 110, 0.12), rgba(9, 17, 26, 0.9) 60%);
+    border: 1px solid rgba(200, 170, 110, 0.5);
+    border-radius: 10px;
+    padding: 10px 12px;
+    margin-bottom: 6px;
+}
+
+.hall-board.negative {
+    background: linear-gradient(135deg, rgba(192, 57, 43, 0.16), rgba(9, 17, 26, 0.9) 60%);
+    border-color: rgba(192, 57, 43, 0.6);
+}
+
+.hall-board-label {
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: #c8aa6e;
+    margin-bottom: 8px;
+}
+
+.hall-board.negative .hall-board-label {
+    color: #e0524d;
+}
+
+.hall-board-empty {
+    color: #5b6878;
+    font-size: 13px;
+}
+
+.hall-board-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+}
+
+.hall-board-item {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: #09111a;
+    border: 1px solid #253648;
+    border-radius: 999px;
+    padding: 4px 12px 4px 8px;
+    cursor: default;
+    max-width: 100%;
+}
+
+.hall-board-item.top {
+    border-color: #c8aa6e;
+    box-shadow: 0 0 10px rgba(200, 170, 110, 0.35);
+}
+
+.hall-board.negative .hall-board-item.top {
+    border-color: #c0392b;
+    box-shadow: 0 0 10px rgba(192, 57, 43, 0.4);
+}
+
+.hall-board-pos {
+    color: #8e9aaa;
+    font-size: 12px;
+    min-width: 18px;
+    text-align: center;
+}
+
+.hall-board-nick {
+    font-weight: bold;
+}
+
+.hall-board-count {
+    font-weight: bold;
+    color: #0b1622;
+    background: #c8aa6e;
+    border-radius: 999px;
+    min-width: 22px;
+    padding: 1px 7px;
+    text-align: center;
+    font-size: 13px;
+}
+
+.hall-board.negative .hall-board-count {
+    background: #c0392b;
+    color: #fff;
+}
+
+.hall-board-icons {
+    font-size: 13px;
+    letter-spacing: 1px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+/* Categorias */
+.hall-cat {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    color: #f0e6d2;
+    font-size: 13px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin: 18px 0 8px;
+}
+
+.hall-cat::after {
+    content: "";
+    flex: 1;
+    height: 1px;
+    background: linear-gradient(90deg, rgba(200, 170, 110, 0.5), transparent);
+}
+
+.hall-cat.negative::after {
+    background: linear-gradient(90deg, rgba(192, 57, 43, 0.6), transparent);
+}
+
+.hall-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 250px), 1fr));
+    gap: 10px;
+}
+
+/* Card de um título */
+.tcard {
+    --accent: #c8aa6e;
+    --accent-soft: rgba(200, 170, 110, 0.14);
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    background: #09111a;
+    border: 1px solid #253648;
+    border-top: 3px solid var(--accent);
+    border-radius: 8px;
+    padding: 10px 12px;
+    min-width: 0;
+    transition: transform 0.15s, border-color 0.15s;
+}
+
+.tcard:hover {
+    transform: translateY(-2px);
+    border-color: var(--accent);
+}
+
+.tcard.negative {
+    --accent: #e0524d;
+    --accent-soft: rgba(192, 57, 43, 0.16);
+    background: #120b0e;
+}
+
+.tcard.vacant {
+    --accent: #253648;
+    opacity: 0.6;
+}
+
+.tcard-head {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+}
+
+.tcard-icon {
+    flex: none;
+    width: 38px;
+    height: 38px;
+    display: grid;
+    place-items: center;
+    font-size: 22px;
+    border-radius: 8px;
+    background: var(--accent-soft);
+}
+
+.tcard-text {
+    min-width: 0;
+}
+
+.tcard-name {
+    font-weight: bold;
+    color: #f0e6d2;
+    font-size: 14px;
+    line-height: 1.25;
+}
+
+.tcard-desc {
+    color: #8e9aaa;
+    font-size: 12px;
+    margin-top: 2px;
+}
+
+.tcard-owner {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: var(--accent-soft);
+    border-radius: 6px;
+    padding: 6px 8px;
+    font-size: 14px;
+}
+
+.tcard.vacant .tcard-owner {
+    color: #5b6878;
+    font-size: 12px;
+}
+
+.tcard-crown {
+    flex: none;
+}
+
+.tcard-who {
+    font-weight: bold;
+    color: #f5f5f5;
+    min-width: 0;
+    overflow-wrap: anywhere;
+}
+
+.tcard-value {
+    margin-left: auto;
+    color: var(--accent);
+    font-weight: bold;
+    font-size: 13px;
+    white-space: nowrap;
+}
+
+.tcard-chasers {
+    list-style: none;
+    margin: 0;
+    padding: 0 2px;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.tcard-chasers li {
+    display: grid;
+    grid-template-columns: 22px minmax(0, 1fr) 54px auto;
+    align-items: center;
+    gap: 6px;
+    font-size: 12px;
+    color: #9ba7b5;
+}
+
+.tcard-pos {
+    color: #5b6878;
+}
+
+.tcard-chaser {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.tcard-bar {
+    height: 4px;
+    border-radius: 999px;
+    background: #1a2836;
+    overflow: hidden;
+}
+
+.tcard-bar > i {
+    display: block;
+    height: 100%;
+    background: var(--accent);
+    opacity: 0.7;
+    border-radius: inherit;
+}
+
+.tcard-chaser-value {
+    text-align: right;
+    white-space: nowrap;
+}
+
+@media (max-width: 480px) {
+
+    .hall-tab {
+        max-width: none;
+    }
+
+    .hall-board-icons {
+        display: none;
+    }
+
 }
 
 /* ---------- Efeitos de medalha no nick ---------- */
@@ -1676,24 +1973,10 @@ details.ach-player > summary:hover {
     color: #e0524d;
 }
 
-.ach-card.negative {
-    border-color: #c0392b;
-    background: #1a0d10;
-}
-
-.ach-card.negative .ach-desc {
-    color: #e0524d;
-}
-
 .ach-chip.title.negative {
     background: #c0392b;
     border-color: #f5b7b1;
     color: #fff;
-}
-
-.ach-card.negative.locked {
-    border-color: #253648;
-    background: #09111a;
 }
 
 .ach-chip.locked {

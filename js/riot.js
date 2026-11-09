@@ -13,7 +13,11 @@ function emptyRiotTotals() {
         games: 0, kills: 0, deaths: 0, assists: 0, gold: 0, damage: 0,
         cs: 0, vision: 0, seconds: 0, pentaKills: 0, timeDead: 0, missingPings: 0,
         turrets: 0, dragons: 0, barons: 0, objectivesStolen: 0, soloKills: 0,
-        firstBloods: 0, damageTaken: 0, allySupport: 0, killParticipation: 0
+        firstBloods: 0, damageTaken: 0, allySupport: 0, killParticipation: 0,
+        wardsPlaced: 0, wardsKilled: 0, ccTime: 0, skillshotsHit: 0, skillshotsDodged: 0,
+        doubleKills: 0, tripleKills: 0, quadraKills: 0, damageShare: 0,
+        /* Recordes de uma partida só (maior valor, não soma) */
+        bestSpree: 0, bestAlive: 0, bestKills: 0
     };
 }
 
@@ -24,9 +28,15 @@ function addRiotTotals(totals, stats, seconds) {
 
     ["kills", "deaths", "assists", "gold", "damage", "cs",
         "vision", "pentaKills", "timeDead", "missingPings",
-        "turrets", "dragons", "barons", "objectivesStolen", "soloKills", "damageTaken", "killParticipation"].forEach(field => {
+        "turrets", "dragons", "barons", "objectivesStolen", "soloKills", "damageTaken", "killParticipation",
+        "wardsPlaced", "wardsKilled", "ccTime", "skillshotsHit", "skillshotsDodged",
+        "doubleKills", "tripleKills", "quadraKills", "damageShare"].forEach(field => {
             totals[field] += stats[field] || 0;
         });
+
+    totals.bestSpree = Math.max(totals.bestSpree, stats.largestSpree || 0);
+    totals.bestAlive = Math.max(totals.bestAlive, stats.longestAlive || 0);
+    totals.bestKills = Math.max(totals.bestKills, stats.kills || 0);
 
     if (stats.firstBlood) totals.firstBloods++;
 
