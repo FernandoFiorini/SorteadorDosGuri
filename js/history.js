@@ -153,18 +153,6 @@ function renderMatchHistory() {
 
 }
 
-function clearMatchHistory() {
-
-    if (loadMatchHistory().length === 0) return;
-
-    if (!confirm("Limpar o histórico das partidas?")) return;
-
-    localStorage.removeItem(HISTORY_KEY);
-
-    renderMatchHistory();
-
-}
-
 function updateLatestHistory(results) {
 
     const history = loadMatchHistory();

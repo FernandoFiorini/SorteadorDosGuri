@@ -3,13 +3,13 @@
 ===================================================== */
 
 const STATS_TABS = [
-    { id: "champions", label: "🛡️ Campeões" },
     { id: "players", label: "👥 Jogadores" },
     { id: "lanes", label: "⚔️ Lanes" },
-    { id: "achievements", label: "🏆 Conquistas" }
+    { id: "achievements", label: "🏆 Conquistas" },
+    { id: "champions", label: "🛡️ Campeões" }
 ];
 
-let statsTab = "champions";
+let statsTab = "players";
 
 const statsSort = {
     champions: { key: "picks", dir: -1 },
