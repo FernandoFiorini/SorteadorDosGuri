@@ -548,6 +548,7 @@ function onStatsChanged() {
     statsTimer = setTimeout(() => {
         statsTimer = null;
         renderStats();
+        refreshDrawNicks();
         refreshVoteBars();
         refreshResultBar();
         renderMatchHistory();

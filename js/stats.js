@@ -411,7 +411,7 @@ function renderStats() {
     const isGlobal = true;
 
     document.getElementById("statsInfo").textContent =
-        "Soma de todos os sorteios já feitos. Partidas marcadas como \"Não deu jogo\" não entram. KDA, gold, dano, farm e visão vêm da Riot e só consideram partidas ligadas. Clique no título de uma coluna para ordenar.";
+        "Soma de todos os sorteios já feitos. Partidas marcadas como \"Não deu jogo\" não entram. KDA, gold, dano, farm e visão só consideram partidas com dados completos. Clique no título de uma coluna para ordenar.";
 
     if (!db) {
         empty.textContent =

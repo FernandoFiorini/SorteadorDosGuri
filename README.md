@@ -99,26 +99,49 @@ Duas medalhas que trocam de dono quando alguém faz uma partida melhor (ou pior)
 
 | Recorde | Quem leva | Efeito no nick |
 | ------- | --------- | -------------- |
-| 🐐 Melhor Paulinho Molina já registrado | Maior nota numa partida só | Pílula azul brilhante com a cabra pulando |
-| 🍼 Maior feedamento já registrado | Menor nota numa partida só | Pílula verde de enjoo, com a mamadeira tremendo |
+| 🐐 Melhor Paulinho Molina já registrado | Maior nota numa partida só | Borda azul pulsando em volta do nick |
+| 🍼 Maior feedamento já registrado | Menor nota numa partida só | Borda verde pulsando em volta do nick |
+
+#### 📜 Linha do tempo e avisos
+
+* **Linha do tempo** (aba Conquistas): quem segura cada título há mais tempo e as últimas trocas de dono, refeitas partida a partida.
+* **🚨 Aviso de troca de dono**: quem está com o site aberto vê um aviso no topo quando um título ou recorde muda de mão, tipo "Fer tomou 🏹 ... de Valde".
+* **🏁 Resumo da partida**: quando a Riot liga a partida sorteada, aparece abaixo do resultado a nota de cada um, o 🐐 MVP e o 🍼 pior da partida.
 
 #### 🎖️ Medalhas (badges)
 
 Metas pessoais: cada um desbloqueia a sua, e a recompensa é um efeito no nick **em todo o site** (títulos, tabelas e listas).
 
-| Medalha | Meta | Efeito no nick |
-| ------- | ---- | -------------- |
-| 👑 Lenda dos guri | Jogar 100 partidas | Dourado, com brilho passando |
-| 🏆 Bafeador supremo | Ganhar 100 partidas | Verde, pulsando |
-| 🫏 Mais burro já registrado | Perder 100 partidas | Palhaço, trocando de cor e balançando |
-| 🔥 Combo de 2 | Ter 2 medalhas quaisquer | Nick em chamas |
-| ✨ Combo supremo | Ter as 3 medalhas | Ouro maciço, com reflexo, halo e estrelas |
+As medalhas têm 3 níveis. Quanto maior o nível, mais forte o efeito:
+
+| Medalha | 🥉 Bronze | 🥈 Prata | 🥇 Ouro |
+| ------- | --------- | -------- | ------- |
+| 👑 Lenda dos guri (jogar) | 25 partidas: nick dourado | 50: degradê dourado | 100: dourado brilhando |
+| 🏆 Bafeador supremo (ganhar) | 25 vitórias: nick verde | 50: verde com brilho | 100: verde pulsando |
+| 🫏 Mais burro já registrado (perder) | 25 derrotas: nick vermelho | 50: palhaço trocando de cor | 100: palhaço trocando de cor e balançando |
+
+| Combo | Meta | Efeito no nick |
+| ----- | ---- | -------------- |
+| 🔥 Combo de 2 | 2 medalhas no Ouro | Nick em chamas |
+| ✨ Combo supremo | As 3 medalhas no Ouro | Ouro maciço, com reflexo, halo e estrelas |
+
+Se a pessoa tem mais de uma medalha (sem combo), vale o efeito da de maior nível.
+
+**Emblemas permanentes**: não mudam a cor, aparecem como um ícone pequeno ao lado do nick.
+
+| Emblema | Meta |
+| ------- | ---- |
+| 🌍 Rodou o mapa | Jogar 10 partidas em cada lane |
+| 🎲 Pool infinita | Jogar com 50 campeões diferentes |
+| 🖐️ Pentakill | Fazer um pentakill (fica para sempre) |
+
+No sorteio, o card mostra o nick com o efeito, uma moldura no nível da medalha e uma etiqueta com os ícones: passando o mouse (ou tocando) aparece o que cada um significa.
 
 Em **Medalhas por jogador**, cada um tem uma linha com o progresso de cada medalha (anéis), os títulos que tem agora e os recordes que está segurando. Clique na linha para ver os detalhes.
 
 Os efeitos dos recordes ficam por fora do nick e combinam com os das medalhas: dá para ser Lenda dos guri e Maior feedamento ao mesmo tempo.
 
-Para criar uma conquista nova, basta adicionar um item em `ACHIEVEMENT_TITLES` ou `ACHIEVEMENT_BADGES`, no arquivo `js/achievements.js`. Os pesos da nota dos recordes ficam em `RECORD_METRICS`.
+Para criar uma conquista nova, basta adicionar um item em `ACHIEVEMENT_TITLES`, `ACHIEVEMENT_BADGES` (com níveis) ou `EMBLEM_BADGES` (emblemas), no arquivo `js/achievements.js`. Os pesos da nota dos recordes ficam em `RECORD_METRICS`.
 
 ### 💾 Configurações salvas
 

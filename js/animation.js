@@ -112,6 +112,9 @@ function shuffleAnimation(card, result) {
         const text = card.querySelector(".shuffle-text");
         const dice = card.querySelector(".dice");
 
+        /* Resorteio: tira a moldura do jogador anterior enquanto embaralha */
+        FRAME_CLASSES.forEach(c => card.classList.remove(c));
+
         const duration = 3000;
         const intervalTime = 100;
 
@@ -135,9 +138,8 @@ function shuffleAnimation(card, result) {
 
             text.innerHTML = "";
 
-            const playerName = document.createElement("strong");
-            playerName.textContent = result.player;
-            text.appendChild(playerName);
+            /* Nick com o efeito da medalha e moldura especial (só visual) */
+            decorateResultCard(card, result.player);
 
             /* Adiciona nome do campeão */
             const championName = document.createElement("div");

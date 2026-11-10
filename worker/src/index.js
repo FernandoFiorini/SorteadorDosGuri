@@ -150,12 +150,12 @@ async function riot(env, path) {
     const response = await fetch(RIOT_API + path, { headers: { "X-Riot-Token": env.RIOT_API_KEY } });
 
     if (response.status === 401 || response.status === 403) {
-        throw new Error("A chave da Riot expirou ou foi recusada.");
+        throw new Error("A chave da API expirou ou foi recusada.");
     }
 
-    if (response.status === 429) throw new Error("Limite de requisições da Riot atingido. Tente de novo em instantes.");
+    if (response.status === 429) throw new Error("Limite de requisições atingido. Tente de novo em instantes.");
 
-    if (!response.ok) throw new Error("A Riot respondeu HTTP " + response.status + ".");
+    if (!response.ok) throw new Error("O servidor de partidas respondeu HTTP " + response.status + ".");
 
     return response.json();
 

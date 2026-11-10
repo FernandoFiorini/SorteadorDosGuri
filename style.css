@@ -25,6 +25,31 @@ body {
     transition: color 0.2s;
 }
 
+/* Links dos canais do YouTube */
+.rodape-canais {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    margin-bottom: 14px;
+}
+
+.rodape .canal-link {
+    display: inline-block;
+    padding: 5px 14px;
+    border: 1px solid #c8aa6e;
+    border-radius: 999px;
+    background: rgba(200, 170, 110, 0.08);
+    font-size: 13px;
+    transition: background 0.2s, color 0.2s;
+}
+
+.rodape .canal-link:hover {
+    background: rgba(200, 170, 110, 0.2);
+    text-decoration: none;
+}
+
 .rodape a:hover {
     color: #f0e6d2;
     text-decoration: underline;
@@ -53,6 +78,27 @@ header h1 {
     color: #c8aa6e;
     text-transform: uppercase;
     letter-spacing: 2px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 12px;
+}
+
+/* Cuia de chimarrão do lado do título (mesmo ícone da aba) */
+.header-icon {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    box-shadow: 0 0 12px rgba(200, 170, 110, 0.35);
+    flex: none;
+}
+
+@media (max-width: 600px) {
+    .header-icon {
+        width: 36px;
+        height: 36px;
+    }
 }
 
 header p {
@@ -1753,75 +1799,38 @@ span.nick-lenda, span.nick-burro {
 
 /* ---------- Recordes de uma partida (trocam de dono) ---------- */
 
-/* Pílula em volta do nick: combina com qualquer efeito de medalha */
+/* Pílula em volta do nick: só a borda pulsando, combina com qualquer
+   efeito de medalha */
 .nick-record {
     display: inline-flex;
     align-items: center;
-    gap: 4px;
-    padding: 0 7px 0 4px;
+    padding: 0 8px;
     border-radius: 999px;
     border: 1px solid;
     vertical-align: middle;
     line-height: 1.5;
 }
 
-.nick-record-icon {
-    display: inline-block;
-    font-size: 0.95em;
-}
-
-/* Paulinho Molina: azul elétrico com brilho passando, cabra pulando */
+/* Paulinho Molina: borda azul pulsando */
 .nick-record.rec-paulinho {
     border-color: #4fc3ff;
-    background:
-        linear-gradient(110deg, transparent 35%, rgba(160, 230, 255, 0.35) 50%, transparent 65%) 0 0 / 300% 100% no-repeat,
-        linear-gradient(90deg, rgba(30, 90, 160, 0.55), rgba(90, 50, 170, 0.55));
-    box-shadow: 0 0 8px rgba(79, 195, 255, 0.55);
-    animation: rec-sweep 2.4s ease-in-out infinite, rec-blue-glow 1.8s ease-in-out infinite;
+    animation: rec-blue-glow 1.8s ease-in-out infinite;
 }
 
-.nick-record.rec-paulinho > span:not(.nick-record-icon):not(.nick):not(.nick-trio-wrap):not(.nick-record) {
-    color: #e6f7ff;
-}
-
-.nick-record.rec-paulinho .nick-record-icon {
-    animation: rec-hop 1.2s ease-in-out infinite;
-}
-
-/* Feedamento: verde enjoado, mamadeira balançando, pílula tremendo */
+/* Feedamento: borda verde pulsando */
 .nick-record.rec-feed {
     border-color: #8bc34a;
-    background: linear-gradient(90deg, rgba(85, 110, 30, 0.6), rgba(60, 80, 20, 0.6));
-    animation: rec-queasy 3s ease-in-out infinite;
-}
-
-.nick-record.rec-feed > span:not(.nick-record-icon):not(.nick):not(.nick-trio-wrap):not(.nick-record) {
-    color: #d4f08a;
-}
-
-.nick-record.rec-feed .nick-record-icon {
-    animation: nick-wobble 0.8s ease-in-out infinite;
-}
-
-@keyframes rec-sweep {
-    0% { background-position: 150% 0, 0 0; }
-    60%, 100% { background-position: -150% 0, 0 0; }
+    animation: rec-green-glow 1.8s ease-in-out infinite;
 }
 
 @keyframes rec-blue-glow {
-    0%, 100% { box-shadow: 0 0 4px rgba(79, 195, 255, 0.4); }
-    50% { box-shadow: 0 0 12px rgba(79, 195, 255, 0.9); }
+    0%, 100% { box-shadow: 0 0 2px rgba(79, 195, 255, 0.3); }
+    50% { box-shadow: 0 0 10px rgba(79, 195, 255, 0.9); }
 }
 
-@keyframes rec-hop {
-    0%, 100% { transform: translateY(0); }
-    40% { transform: translateY(-3px) rotate(-8deg); }
-}
-
-@keyframes rec-queasy {
-    0%, 100% { transform: skewX(0deg); box-shadow: 0 0 4px rgba(139, 195, 74, 0.3); }
-    25% { transform: skewX(-3deg); }
-    75% { transform: skewX(3deg); box-shadow: 0 0 10px rgba(139, 195, 74, 0.7); }
+@keyframes rec-green-glow {
+    0%, 100% { box-shadow: 0 0 2px rgba(139, 195, 74, 0.3); }
+    50% { box-shadow: 0 0 10px rgba(139, 195, 74, 0.9); }
 }
 
 /* Cards dos recordes na aba Conquistas */
@@ -1940,7 +1949,7 @@ span.nick-lenda, span.nick-burro {
 @media (prefers-reduced-motion: reduce) {
     .nick-lenda, .nick-bafeador, .nick-burro, .nick-duo, .nick-trio,
     .nick-trio-wrap, .nick-sparkle, .ach-chip.earned,
-    .nick-record, .nick-record-icon {
+    .nick-record {
         animation: none;
     }
 }
@@ -2352,4 +2361,677 @@ details.ach-player > summary:hover {
 .add-player-row .mini-btn:disabled {
     opacity: 0.5;
     cursor: not-allowed;
+}
+/* =====================================================
+   MOLDURAS NOS CARDS DO SORTEIO (medalhas e recordes)
+===================================================== */
+
+.result[class*="frame-"] img {
+    transition: box-shadow 0.3s;
+}
+
+/* Lenda: ouro com brilho girando em volta */
+.result.frame-lenda {
+    border-color: #c8aa6e;
+}
+
+.result.frame-lenda img {
+    border: 3px solid #ffd76a;
+    animation: frame-gold 2.4s ease-in-out infinite;
+}
+
+/* Bafeador: verde pulsando */
+.result.frame-bafeador {
+    border-color: #2e8a5a;
+}
+
+.result.frame-bafeador img {
+    border: 3px solid #5ff2a0;
+    animation: frame-green 1.8s ease-in-out infinite;
+}
+
+/* Burro: borda de palhaço trocando de cor, imagem balançando */
+.result.frame-burro {
+    border-color: #ff6b6b;
+}
+
+.result.frame-burro img {
+    border: 3px dashed #ff6b6b;
+    animation: nick-clown 2.5s linear infinite, nick-wobble 1.2s ease-in-out infinite;
+}
+
+/* Combo de 2: em chamas */
+.result.frame-duo {
+    border-color: #ff7a00;
+    background: linear-gradient(0deg, rgba(255, 60, 0, 0.12), #09111a 60%);
+}
+
+.result.frame-duo img {
+    border: 3px solid #ff7a00;
+    animation: frame-fire 0.9s ease-in-out infinite alternate;
+}
+
+/* Combo supremo: ouro maciço, borda dupla e halo */
+.result.frame-trio {
+    border-color: #ffd76a;
+    background: radial-gradient(circle at 50% 35%, rgba(255, 215, 106, 0.16), #09111a 65%);
+}
+
+.result.frame-trio img {
+    border: 4px double #ffd76a;
+    animation: frame-trio 2.2s ease-in-out infinite, nick-float 2.6s ease-in-out infinite;
+}
+
+@keyframes frame-gold {
+    0%, 100% { box-shadow: 0 0 4px rgba(255, 215, 106, 0.4); }
+    50% { box-shadow: 0 0 16px rgba(255, 215, 106, 0.95), 0 0 30px rgba(200, 170, 110, 0.4); }
+}
+
+@keyframes frame-green {
+    0%, 100% { box-shadow: 0 0 3px rgba(95, 242, 160, 0.3); }
+    50% { box-shadow: 0 0 16px rgba(95, 242, 160, 0.9); }
+}
+
+@keyframes frame-fire {
+    from { box-shadow: 0 0 6px rgba(255, 122, 0, 0.6), 0 -2px 10px rgba(255, 45, 45, 0.4); }
+    to { box-shadow: 0 -4px 18px rgba(255, 60, 0, 0.95), 0 -10px 26px rgba(255, 208, 0, 0.5); }
+}
+
+@keyframes frame-trio {
+    0%, 100% { box-shadow: 0 0 6px rgba(255, 215, 106, 0.6), 0 0 0 2px rgba(255, 243, 196, 0.2); }
+    50% { box-shadow: 0 0 22px rgba(255, 215, 106, 1), 0 0 0 5px rgba(255, 243, 196, 0.35); }
+}
+
+/* Prévia fixa das molduras */
+.frame-preview {
+    margin-top: 18px;
+    padding-top: 12px;
+    border-top: 1px dashed #304255;
+}
+
+.frame-preview-title {
+    color: #8e9aaa;
+    font-size: 13px;
+    cursor: pointer;
+    list-style: none;
+    user-select: none;
+    width: fit-content;
+}
+
+.frame-preview-title::-webkit-details-marker {
+    display: none;
+}
+
+.frame-preview-title::before {
+    content: "▸ ";
+    display: inline-block;
+    transition: transform 0.2s;
+}
+
+.frame-preview[open] > .frame-preview-title::before {
+    transform: rotate(90deg);
+}
+
+.frame-preview-title:hover {
+    color: #f0e6d2;
+}
+
+.frame-preview[open] > .frame-preview-title {
+    margin-bottom: 10px;
+}
+
+.frame-preview-grid {
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+}
+
+.frame-preview-grid .result,
+.frame-preview-grid .shuffle-container {
+    min-height: 0;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .result[class*="frame-"] img {
+        animation: none;
+    }
+}
+
+/* Etiqueta das medalhas no card do sorteio + balão explicando */
+.medal-tag {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    gap: 2px;
+    margin-top: 6px;
+    padding: 1px 8px;
+    border-radius: 999px;
+    border: 1px solid #304255;
+    background: rgba(255, 255, 255, 0.05);
+    color: inherit;
+    font: inherit;
+    font-size: 12px;
+    letter-spacing: 0;
+    text-transform: none;
+    cursor: help;
+    transition: border-color 0.15s, background 0.15s;
+}
+
+.medal-tag:hover,
+.medal-tag:focus-visible,
+.medal-tag.open {
+    border-color: #c8aa6e;
+    background: rgba(200, 170, 110, 0.12);
+    outline: none;
+}
+
+.medal-pop {
+    position: absolute;
+    bottom: calc(100% + 8px);
+    left: 50%;
+    transform: translateX(-50%) translateY(4px);
+    z-index: 20;
+    width: max-content;
+    max-width: min(240px, 80vw);
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    padding: 8px 10px;
+    background: #0d1824;
+    border: 1px solid #c8aa6e;
+    border-radius: 8px;
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.5);
+    text-align: left;
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+    transition: opacity 0.15s, transform 0.15s, visibility 0.15s;
+}
+
+/* Setinha apontando para a etiqueta */
+.medal-pop::after {
+    content: "";
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    border: 6px solid transparent;
+    border-top-color: #c8aa6e;
+}
+
+.medal-tag:hover .medal-pop,
+.medal-tag:focus-visible .medal-pop,
+.medal-tag.open .medal-pop {
+    opacity: 1;
+    visibility: visible;
+    transform: translateX(-50%) translateY(0);
+}
+
+.medal-pop-row {
+    display: flex;
+    flex-direction: column;
+    gap: 1px;
+}
+
+.medal-pop-row strong {
+    color: #f0e6d2;
+    font-size: 12px;
+    white-space: nowrap;
+}
+
+.medal-pop-row small {
+    color: #9ba7b5;
+    font-size: 11px;
+    line-height: 1.3;
+}
+
+/* Etiqueta em linha própria, embaixo do nick */
+.shuffle-text .medal-tag {
+    display: flex;
+    width: fit-content;
+    margin: 6px auto 0;
+}
+
+/* =====================================================
+   NÍVEIS DAS MEDALHAS (🥉 Bronze, 🥈 Prata, 🥇 Ouro) E EMBLEMAS
+===================================================== */
+
+/* Bronze: só a cor da medalha, sem animação */
+.nick-lenda.tier-1 {
+    background: none;
+    color: #c8aa6e;
+    animation: none;
+    filter: none;
+}
+
+.nick-bafeador.tier-1 {
+    animation: none;
+}
+
+.nick-burro.tier-1 {
+    animation: none;
+}
+
+/* Prata: efeito parado ou mais suave */
+.nick-lenda.tier-2 {
+    animation: none;
+    background-position: 30% 0;
+}
+
+.nick-bafeador.tier-2 {
+    animation: none;
+    text-shadow: 0 0 6px rgba(95, 242, 160, 0.6);
+}
+
+.nick-burro.tier-2 {
+    animation: nick-clown 2.5s linear infinite;
+}
+
+/* Ouro: efeito completo (regras originais de cada medalha) */
+
+/* Molduras no sorteio seguem o nível */
+.result.ftier-1 img {
+    animation: none;
+    border-width: 2px;
+}
+
+.result.ftier-1 {
+    background: #09111a;
+}
+
+.result.ftier-2 img {
+    animation-duration: 4s;
+}
+
+.result.frame-burro.ftier-2 img {
+    animation: nick-clown 2.5s linear infinite;
+}
+
+/* Emblemas do lado do nick */
+.nick-with-emblems {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.nick-emblems {
+    font-size: 0.8em;
+    letter-spacing: 1px;
+    cursor: help;
+}
+
+/* Medalhinha do nível no canto do anel */
+.badge-ring-tier {
+    position: absolute;
+    right: -4px;
+    bottom: -4px;
+    font-size: 11px;
+    font-style: normal;
+    line-height: 1;
+}
+
+.badge-ring.tier-1 { --c: #cd7f32; }
+.badge-ring.tier-2 { --c: #c9d1da; }
+.ring-emblem { --c: #7fb6ff; }
+
+.badge-ring.tier-1.done,
+.badge-ring.tier-2.done {
+    box-shadow: 0 0 5px var(--c);
+}
+
+/* Barra das medalhas com marcações dos níveis do meio */
+.badge-progress-bar {
+    position: relative;
+}
+
+.badge-progress-tick {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    width: 2px;
+    margin-left: -1px;
+    background: #09111a;
+}
+
+.fill-emblem {
+    background: linear-gradient(90deg, #2f5f9e, #7fb6ff);
+}
+
+/* Guia: uma linha por nível dentro de cada card */
+.badge-guide-level {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    padding-top: 6px;
+    border-top: 1px solid #1a2836;
+}
+
+/* =====================================================
+   CARD DE FIM DE PARTIDA
+===================================================== */
+
+.match-summary {
+    margin-top: 16px;
+    background: #09111a;
+    border: 1px solid #304255;
+    border-radius: 10px;
+    padding: 12px 14px;
+}
+
+.match-summary-head {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 4px 12px;
+    margin-bottom: 8px;
+}
+
+.match-summary-head strong {
+    color: #c8aa6e;
+    font-size: 15px;
+}
+
+.match-summary-meta {
+    color: #9ba7b5;
+    font-size: 13px;
+}
+
+.match-summary-note {
+    color: #5b6878;
+    font-size: 12px;
+    margin-bottom: 8px;
+}
+
+.match-summary-list {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.match-row {
+    display: grid;
+    grid-template-columns: 40px minmax(0, 1.2fr) auto minmax(0, 1.5fr) 130px;
+    align-items: center;
+    gap: 10px;
+    padding: 6px 8px;
+    border-radius: 8px;
+    border: 1px solid transparent;
+    background: rgba(255, 255, 255, 0.03);
+}
+
+.match-row img {
+    width: 40px;
+    height: 40px;
+    border-radius: 6px;
+    border: 1px solid #304255;
+}
+
+.match-row.mvp {
+    border-color: #4fc3ff;
+    background: linear-gradient(90deg, rgba(79, 195, 255, 0.14), rgba(255, 255, 255, 0.02));
+}
+
+.match-row.worst {
+    border-color: #8bc34a;
+    background: linear-gradient(90deg, rgba(139, 195, 74, 0.14), rgba(255, 255, 255, 0.02));
+}
+
+.match-row-who {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+}
+
+.match-row-who strong,
+.match-row-who small {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.match-row-who small,
+.match-row-stats {
+    color: #9ba7b5;
+    font-size: 12px;
+}
+
+.match-row-tag {
+    font-size: 12px;
+    font-weight: bold;
+    white-space: nowrap;
+}
+
+.match-row.mvp .match-row-tag {
+    color: #4fc3ff;
+}
+
+.match-row.worst .match-row-tag {
+    color: #8bc34a;
+}
+
+.match-row-score {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.match-row-bar {
+    flex: 1;
+    height: 6px;
+    border-radius: 999px;
+    background: #1a2836;
+    overflow: hidden;
+}
+
+.match-row-bar > i {
+    display: block;
+    height: 100%;
+    background: linear-gradient(90deg, #8bc34a, #c8aa6e, #4fc3ff);
+    border-radius: inherit;
+}
+
+.match-row-score strong {
+    min-width: 30px;
+    text-align: right;
+    font-variant-numeric: tabular-nums;
+}
+
+@media (max-width: 700px) {
+
+    .match-row {
+        grid-template-columns: 40px minmax(0, 1fr) auto;
+    }
+
+    .match-row-stats {
+        grid-column: 2 / -1;
+    }
+
+    .match-row-score {
+        grid-column: 1 / -1;
+    }
+
+}
+
+/* =====================================================
+   LINHA DO TEMPO
+===================================================== */
+
+.timeline-box {
+    margin-bottom: 22px;
+}
+
+.timeline-head {
+    cursor: pointer;
+    list-style: none;
+    user-select: none;
+}
+
+.timeline-head::-webkit-details-marker {
+    display: none;
+}
+
+.timeline-head::before {
+    content: "▸ ";
+    display: inline-block;
+    transition: transform 0.2s;
+}
+
+.timeline-box[open] > .timeline-head::before {
+    transform: rotate(90deg);
+}
+
+.timeline-cols {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 320px), 1fr));
+    gap: 12px;
+}
+
+.timeline-col {
+    background: #09111a;
+    border: 1px solid #253648;
+    border-radius: 8px;
+    padding: 10px 12px;
+    min-width: 0;
+}
+
+.timeline-col-title {
+    margin: 0 0 8px;
+    font-size: 13px;
+    color: #f0e6d2;
+}
+
+.timeline-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    font-size: 13px;
+    color: #c9d3de;
+}
+
+.timeline-list li {
+    padding-left: 10px;
+    border-left: 2px solid #c8aa6e;
+}
+
+.timeline-list li.negative {
+    border-left-color: #e0524d;
+}
+
+.timeline-list li small {
+    display: block;
+    color: #5b6878;
+    font-size: 11px;
+}
+
+.timeline-list.events li {
+    display: flex;
+    gap: 8px;
+    align-items: baseline;
+}
+
+.timeline-list .timeline-date {
+    display: inline;
+    flex: none;
+    font-variant-numeric: tabular-nums;
+}
+
+/* =====================================================
+   AVISO DE TROCA DE DONO
+===================================================== */
+
+.announce-stack {
+    position: fixed;
+    top: 16px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 1000;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    width: min(440px, calc(100vw - 32px));
+    pointer-events: none;
+}
+
+.announce {
+    pointer-events: auto;
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    background: linear-gradient(135deg, #2a2414, #0d1824 70%);
+    border: 1px solid #c8aa6e;
+    border-radius: 10px;
+    padding: 10px 12px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.55), 0 0 14px rgba(200, 170, 110, 0.35);
+    color: #f0e6d2;
+    font-size: 14px;
+    animation: announce-in 0.35s ease-out;
+}
+
+.announce.negative {
+    background: linear-gradient(135deg, #2c1013, #0d1824 70%);
+    border-color: #c0392b;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.55), 0 0 14px rgba(192, 57, 43, 0.4);
+}
+
+.announce strong {
+    color: #c8aa6e;
+}
+
+.announce.negative strong {
+    color: #e0524d;
+}
+
+.announce small {
+    display: block;
+    color: #8e9aaa;
+    font-size: 11px;
+    margin-top: 2px;
+}
+
+.announce-icon {
+    font-size: 22px;
+    animation: announce-siren 0.6s ease-in-out 4;
+}
+
+.announce > div {
+    flex: 1;
+    min-width: 0;
+}
+
+.announce-close {
+    background: none;
+    border: none;
+    color: #8e9aaa;
+    cursor: pointer;
+    font-size: 14px;
+    padding: 0 2px;
+}
+
+.announce-close:hover {
+    color: #fff;
+}
+
+.announce.leaving {
+    opacity: 0;
+    transform: translateY(-8px);
+    transition: opacity 0.3s, transform 0.3s;
+}
+
+@keyframes announce-in {
+    from { opacity: 0; transform: translateY(-12px) scale(0.97); }
+    to { opacity: 1; transform: none; }
+}
+
+@keyframes announce-siren {
+    0%, 100% { transform: rotate(0); }
+    25% { transform: rotate(-15deg) scale(1.15); }
+    75% { transform: rotate(15deg) scale(1.15); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .announce, .announce-icon {
+        animation: none;
+    }
 }

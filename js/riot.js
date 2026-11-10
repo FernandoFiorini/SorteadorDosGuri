@@ -131,10 +131,10 @@ function renderRiotBar() {
     button.style.display = RIOT_WORKER_URL ? "" : "none";
     button.disabled = riotBusy || left > 0;
     button.textContent = riotBusy
-        ? "Buscando na Riot..."
+        ? "Buscando partidas..."
         : left > 0
             ? "Aguarde " + Math.ceil(left / 1000) + "s"
-            : "🔄 Atualizar dados da Riot";
+            : "🔄 Atualizar partidas";
 
     let text = riotMessage;
 

@@ -215,6 +215,9 @@ function renderStaticResults(results, matchId) {
 
         container.appendChild(card);
 
+        /* Nick com o efeito da medalha e moldura especial (só visual) */
+        decorateResultCard(card, result.player);
+
     });
 
 }
