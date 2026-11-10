@@ -368,7 +368,7 @@ function saveAddedPlayer(matchId, results) {
 
 }
 
-/* Vitória / derrota (somente host). Clicar de novo desmarca. */
+/* Marca o resultado (somente host; hoje só "anulada"). Clicar de novo desmarca. */
 function setMatchResult(matchId, value) {
 
     if (!liveReady || !matchId) return;
@@ -420,15 +420,14 @@ function refreshResultBar() {
     const match = statsData.partidas[currentMatchId];
     const res = match ? match.resultado || null : null;
 
-    document.getElementById("btnWin").classList.toggle("on-vitoria", res === "vitoria");
-    document.getElementById("btnLoss").classList.toggle("on-derrota", res === "derrota");
+    /* Só "Não deu jogo" é marcado à mão; vitória e derrota vêm ao atualizar as partidas */
     document.getElementById("btnVoid").classList.toggle("on-anulada", res === "anulada");
 
     document.getElementById("resultBarStatus").textContent =
-        res === "vitoria" ? "Marcada como vitória ✅"
-            : res === "derrota" ? "Marcada como derrota ❌"
+        res === "vitoria" ? "Vitória ✅ (veio ao atualizar as partidas)"
+            : res === "derrota" ? "Derrota ❌ (veio ao atualizar as partidas)"
                 : res === "anulada" ? "Partida anulada 🚫 — fora de todas as estatísticas."
-                    : "Sem resultado marcado. Você pode marcar agora ou depois, pelo histórico.";
+                    : "O resultado aparece aqui depois de atualizar as partidas.";
 
 }
 

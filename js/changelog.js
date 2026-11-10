@@ -24,7 +24,7 @@ const CHANGELOG = [
             ["novo", "📝 Esta página de novidades."],
             ["melhoria", "Topo do site com o nome \"Sorteador dos guri\" e a cuia de chimarrão."],
             ["melhoria", "Categorias de títulos podem ser minimizadas."],
-            ["ajuste", "O histórico só mostra o resultado: ele vem sozinho ao atualizar as partidas."],
+            ["ajuste", "Vitória e derrota não são mais marcadas à mão: vêm sozinhas ao atualizar as partidas. Só o \"🚫 Não deu jogo\" continua manual."],
             ["som", "Nardi grito louco, Vamo eu e tu com o mestre e Havan é do Brasil."]
         ]
     },
