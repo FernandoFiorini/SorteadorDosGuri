@@ -100,6 +100,43 @@ function resetChatBox() {
 
 }
 
+/* "Plim" curtinho de mensagem nova, gerado na hora (sem arquivo).
+   Respeita o botão de som; o navegador só deixa tocar depois que a
+   pessoa clicou em algo na página. */
+let chatAudioCtx = null;
+
+function playChatPing() {
+
+    if (typeof soundMuted !== "undefined" && soundMuted) return;
+
+    try {
+
+        const Ctx = window.AudioContext || window.webkitAudioContext;
+        if (!Ctx) return;
+
+        chatAudioCtx = chatAudioCtx || new Ctx();
+        if (chatAudioCtx.state === "suspended") chatAudioCtx.resume();
+
+        const t = chatAudioCtx.currentTime;
+
+        /* Duas notas rápidas subindo */
+        [[880, 0], [1320, 0.09]].forEach(([freq, delay]) => {
+            const osc = chatAudioCtx.createOscillator();
+            const gain = chatAudioCtx.createGain();
+            osc.type = "sine";
+            osc.frequency.value = freq;
+            gain.gain.setValueAtTime(0.0001, t + delay);
+            gain.gain.exponentialRampToValueAtTime(0.15, t + delay + 0.01);
+            gain.gain.exponentialRampToValueAtTime(0.0001, t + delay + 0.18);
+            osc.connect(gain).connect(chatAudioCtx.destination);
+            osc.start(t + delay);
+            osc.stop(t + delay + 0.2);
+        });
+
+    } catch (e) { }
+
+}
+
 /* Põe uma mensagem na lista; "live" = chegou agora (não é histórico) */
 function appendChatMessage(m, mine, live) {
 
@@ -142,6 +179,8 @@ function appendChatMessage(m, mine, live) {
         if (!chatIsOpen() || document.hidden) setChatUnread(chatUnread + 1);
 
         if (!chatIsOpen()) showChatToast(m.nome, m.texto);
+
+        playChatPing();
 
     }
 
