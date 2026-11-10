@@ -27,7 +27,8 @@
 
         <header>
             <h1><img class="header-icon" src="icon.svg" alt="" aria-hidden="true">Sorteador dos guri</h1>
-            <p id="headerSubtitle">Sorteie jogadores, lanes e campeões</p>
+            <p class="header-sub"><span id="headerSubtitle">Sorteie jogadores, lanes e campeões</span>
+                <a href="#" id="changelogOpen" class="changelog-link">📝 Patch Notes</a></p>
         </header>
 
         <!-- BARRA DO ESPECTADOR -->
@@ -343,18 +344,17 @@
             </div>
 
             <p>Desenvolvido por <a href="https://github.com/FernandoFiorini" target="_blank"
-                    rel="noopener noreferrer">Fernando Fiorini</a>
-                · <a href="#" id="changelogOpen" class="changelog-link">📝 novidades</a></p>
+                    rel="noopener noreferrer">Fernando Fiorini</a></p>
 
             <p>Sorteador dos guri isn’t endorsed by Riot Games and doesn’t reflect the views or opinions of Riot Games
                 or anyone officially involved in producing or managing Riot Games properties. Riot Games, and all
                 associated properties are trademarks or registered trademarks of Riot Games, Inc.</p>
         </footer>
 
-        <!-- NOVIDADES (abre pelo link discreto do rodapé) -->
+        <!-- PATCH NOTES (abre pelo link ao lado do subtítulo) -->
         <dialog id="changelogDialog" class="changelog-dialog" aria-labelledby="changelogTitle">
             <div class="changelog-head">
-                <strong id="changelogTitle">📝 Novidades</strong>
+                <strong id="changelogTitle">📝 Patch Notes</strong>
                 <button type="button" id="changelogClose" class="changelog-close" aria-label="Fechar">✕</button>
             </div>
             <div id="changelogList" class="changelog-list"></div>

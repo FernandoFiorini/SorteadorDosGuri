@@ -3361,14 +3361,31 @@ details.ach-player > summary:hover {
    NOVIDADES (link discreto no rodapé + janelinha)
 ===================================================== */
 
-.rodape a.changelog-link {
-    color: #5b6878;
-    font-weight: normal;
-    font-size: 12px;
+/* Link "Patch Notes" ao lado do subtítulo do topo */
+.header-sub {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    gap: 6px 10px;
 }
 
-.rodape a.changelog-link:hover {
-    color: #c8aa6e;
+a.changelog-link {
+    font-size: 12px;
+    color: #8e9aaa;
+    text-decoration: none;
+    padding: 2px 10px;
+    border: 1px solid #304255;
+    border-radius: 999px;
+    transition: color 0.15s, border-color 0.15s, background 0.15s;
+}
+
+a.changelog-link:hover,
+a.changelog-link:focus-visible {
+    color: #f0e6d2;
+    border-color: #c8aa6e;
+    background: rgba(200, 170, 110, 0.1);
+    outline: none;
 }
 
 .changelog-dialog {

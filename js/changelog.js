@@ -1,7 +1,7 @@
 /* =====================================================
-   NOVIDADES (histórico de atualizações por data)
+   PATCH NOTES (histórico de atualizações por data)
 
-   Link discreto no rodapé que abre uma janelinha com o que
+   Link ao lado do subtítulo do topo que abre uma janelinha com o que
    mudou em cada dia. Para registrar algo novo, adicione no
    TOPO da lista (ou no dia que já existe):
    { data: "AAAA-MM-DD", titulo: "Resumo do dia",
@@ -21,7 +21,7 @@ const CHANGELOG = [
             ["novo", "Recordes de uma partida: 🐐 Melhor Paulinho Molina e 🍼 Maior feedamento já registrado, com nota de 0 a 10."],
             ["novo", "No sorteio, quem tem medalha aparece com nick especial, moldura no card e uma etiqueta explicando cada uma."],
             ["novo", "Resumo da partida (nota de cada um, MVP e pior), linha do tempo dos títulos e aviso quando um título troca de dono."],
-            ["novo", "📝 Esta página de novidades."],
+            ["novo", "📝 Patch Notes: o histórico de atualizações do site."],
             ["melhoria", "Topo do site com o nome \"Sorteador dos guri\" e a cuia de chimarrão."],
             ["melhoria", "Categorias de títulos podem ser minimizadas."],
             ["ajuste", "Vitória e derrota não são mais marcadas à mão: vêm sozinhas ao atualizar as partidas. Só o \"🚫 Não deu jogo\" continua manual."],
