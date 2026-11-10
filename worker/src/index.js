@@ -34,7 +34,7 @@ const MAX_LISTS_PER_RUN = 10;
 
 const CORS = {
     "Access-Control-Allow-Origin": "*",
-    "Access-Control-Allow-Methods": "POST, OPTIONS",
+    "Access-Control-Allow-Methods": "GET, POST, OPTIONS",
     "Access-Control-Allow-Headers": "Content-Type"
 };
 
@@ -275,13 +275,99 @@ async function collect(env, firebase, now) {
 
 }
 
+/* -------------------- Clipes do YouTube -------------------- */
+
+/* Canais com os clipes das jogatinas (o YouTube não deixa o navegador
+   ler o feed direto, então o Worker busca e repassa) */
+const YOUTUBE_CHANNELS = [
+    { nome: "Fer", id: "UCw3J4r_bVhrVJfyq_YXJt5Q" },
+    { nome: "Valde", id: "UCKu-2Rk1VJqnZEVi621jqxQ" }
+];
+
+const VIDEOS_LIMIT = 5;
+const VIDEOS_CACHE_SECONDS = 30 * 60;
+
+function xmlText(block, tag) {
+    const found = block.match(new RegExp("<" + tag + "[^>]*>([\\s\\S]*?)</" + tag + ">"));
+    if (!found) return "";
+    return found[1]
+        .replace(/&amp;/g, "&").replace(/&lt;/g, "<").replace(/&gt;/g, ">")
+        .replace(/&quot;/g, '"').replace(/&#39;/g, "'").trim();
+}
+
+async function channelVideos(channel) {
+
+    const response = await fetch("https://www.youtube.com/feeds/videos.xml?channel_id=" + channel.id);
+
+    if (!response.ok) return [];
+
+    const xml = await response.text();
+
+    return (xml.match(/<entry>[\s\S]*?<\/entry>/g) || []).map(entry => {
+        const id = xmlText(entry, "yt:videoId");
+        return {
+            id: id,
+            titulo: xmlText(entry, "title"),
+            publicado: xmlText(entry, "published"),
+            canal: channel.nome,
+            url: "https://www.youtube.com/watch?v=" + id,
+            thumb: "https://i.ytimg.com/vi/" + id + "/mqdefault.jpg"
+        };
+    }).filter(v => v.id);
+
+}
+
+/* Últimos vídeos de cada canal, com cache de 30 min.
+   Canal com vídeo mais recente vem primeiro. */
+async function latestVideos(request, ctx) {
+
+    const cache = caches.default;
+    const key = new Request(new URL("/videos", request.url).toString(), { method: "GET" });
+    const cached = await cache.match(key);
+
+    if (cached) return cached;
+
+    const lists = await Promise.all(YOUTUBE_CHANNELS.map(c => channelVideos(c).catch(() => [])));
+
+    const canais = YOUTUBE_CHANNELS.map((c, i) => ({
+        nome: c.nome,
+        url: "https://www.youtube.com/channel/" + c.id,
+        videos: lists[i]
+            .sort((a, b) => b.publicado.localeCompare(a.publicado))
+            .slice(0, VIDEOS_LIMIT)
+    }))
+        .filter(c => c.videos.length > 0)
+        .sort((a, b) => b.videos[0].publicado.localeCompare(a.videos[0].publicado));
+
+    const response = new Response(JSON.stringify({ status: "ok", canais: canais }), {
+        headers: Object.assign({
+            "Content-Type": "application/json",
+            "Cache-Control": "public, max-age=" + VIDEOS_CACHE_SECONDS
+        }, CORS)
+    });
+
+    ctx.waitUntil(cache.put(key, response.clone()));
+
+    return response;
+
+}
+
 export default {
 
-    async fetch(request, env) {
+    async fetch(request, env, ctx) {
 
         if (request.method === "OPTIONS") return new Response(null, { status: 204, headers: CORS });
 
         const url = new URL(request.url);
+
+        if (request.method === "GET" && url.pathname === "/videos") {
+            try {
+                return await latestVideos(request, ctx);
+            } catch (error) {
+                console.error(error);
+                return json({ status: "erro", mensagem: "Não foi possível buscar os vídeos." }, 502);
+            }
+        }
 
         if (request.method !== "POST" || url.pathname !== "/atualizar") {
             return json({ status: "erro", mensagem: "Rota inválida." }, 404);

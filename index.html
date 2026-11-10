@@ -257,18 +257,35 @@
             </div>
         </div>
 
-        <!-- CHAT DA SALA -->
-        <div class="card" id="chatCard" style="display:none;">
-            <h2>💬 Chat da sala</h2>
+        <!-- CHAT DA SALA (janelinha flutuante no canto inferior direito) -->
+        <div id="chatCard" class="chat-widget" style="display:none;">
 
-            <div id="chatMessages" class="chat-messages"></div>
+            <div id="chatPanel" class="chat-panel" role="dialog" aria-label="Chat da sala">
 
-            <form id="chatForm" class="chat-form">
-                <input type="text" id="chatName" maxlength="20" placeholder="Seu nome (obrigatório)">
-                <input type="text" id="chatInput" maxlength="300" placeholder="Digite uma mensagem..."
-                    autocomplete="off">
-                <button class="mini-btn" type="submit">Enviar</button>
-            </form>
+                <div class="chat-panel-head">
+                    <strong>💬 Chat da sala</strong>
+                    <button type="button" id="chatMinimize" class="chat-minimize"
+                        aria-label="Minimizar chat" title="Minimizar">▾</button>
+                </div>
+
+                <div id="chatMessages" class="chat-messages"></div>
+
+                <form id="chatForm" class="chat-form">
+                    <input type="text" id="chatName" maxlength="20" placeholder="Seu nome (obrigatório)">
+                    <div class="chat-send-row">
+                        <input type="text" id="chatInput" maxlength="300" placeholder="Digite uma mensagem..."
+                            autocomplete="off">
+                        <button class="mini-btn" type="submit" aria-label="Enviar">➤</button>
+                    </div>
+                </form>
+            </div>
+
+            <button type="button" id="chatLauncher" class="chat-launcher" aria-label="Abrir chat"
+                aria-expanded="false" title="Chat da sala">
+                <span class="chat-launcher-icon">💬</span>
+                <span id="chatBadge" class="chat-badge" hidden>0</span>
+            </button>
+
         </div>
 
         <!-- ESTATÍSTICAS -->
@@ -304,6 +321,20 @@
             </div>
 
             <div id="matchHistory" class="history-list"></div>
+        </div>
+
+        <!-- ÚLTIMOS CLIPES DOS CANAIS (some se não conseguir carregar) -->
+        <div class="card" id="clipsCard" style="display:none;">
+            <div class="clips-head">
+                <h2>🎬 Últimos clipes</h2>
+                <div id="clipsTabs" class="clips-tabs" role="tablist"></div>
+            </div>
+
+            <div class="clips-wrap">
+                <button type="button" class="clips-arrow prev" id="clipsPrev" aria-label="Vídeos anteriores">‹</button>
+                <div id="clipsTrack" class="clips-track"></div>
+                <button type="button" class="clips-arrow next" id="clipsNext" aria-label="Próximos vídeos">›</button>
+            </div>
         </div>
 
         <footer class="rodape">
@@ -344,6 +375,7 @@
     <script src="js/stats.js?v=15"></script>
     <script src="js/achievements.js?v=15"></script>
     <script src="js/chat.js?v=15"></script>
+    <script src="js/videos.js?v=15"></script>
     <script src="js/screen.js?v=15"></script>
     <script src="js/viewer.js?v=15"></script>
     <script src="js/ui.js?v=15"></script>

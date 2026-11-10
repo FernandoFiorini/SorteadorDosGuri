@@ -29,6 +29,7 @@ const soundList = [
     { name: "Vamo fazer o drag", file: "vamofazerodrag.mp3" },
     { name: "Risada louca nardi", file: "risadaloucanardi.mp3" },
     { name: "Nardi grito louco", file: "nardigritolouco.mp3" },
+    { name: "Vamo eu e tu com o mestre", file: "vamoeuetucommestre.mp3" },
 
 ];
 
