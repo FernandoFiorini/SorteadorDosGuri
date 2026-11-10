@@ -12,8 +12,9 @@
 const CHANGELOG = [
     {
         data: "2026-11-10",
-        titulo: "Medalhas com níveis, chat flutuante e clipes",
+        titulo: "Ranking dos guri, medalhas com níveis, chat flutuante e clipes",
         itens: [
+            ["novo", "🎖️ Ranking dos guri: XP pelos títulos, medalhas e emblemas, com elo de 🔩 Ferro a ⚜️ Desafiante. Título dividido vale metade do XP. O elo aparece do lado do nick e tem aviso quando alguém sobe ou cai."],
             ["novo", "💬 Chat numa janelinha no canto inferior direito. Minimizado, mostra quantas mensagens não foram lidas (também no título da aba)."],
             ["novo", "🎬 Últimos clipes: os 5 vídeos mais recentes de cada canal, com rolagem horizontal, e links dos canais no rodapé."],
             ["novo", "Medalhas com níveis 🥉 Bronze (25), 🥈 Prata (50) e 🥇 Ouro (100). Combos só valem com medalhas no Ouro."],
@@ -24,6 +25,7 @@ const CHANGELOG = [
             ["novo", "📝 Patch Notes: o histórico de atualizações do site."],
             ["melhoria", "Topo do site com o nome \"Sorteador dos guri\" e a cuia de chimarrão."],
             ["melhoria", "Categorias de títulos podem ser minimizadas."],
+            ["melhoria", "Pódio com os 3 que mais têm títulos, na glória e na vergonha."],
             ["ajuste", "Vitória e derrota não são mais marcadas à mão: vêm sozinhas ao atualizar as partidas. Só o \"🚫 Não deu jogo\" continua manual."],
             ["som", "Nardi grito louco, Vamo eu e tu com o mestre e Havan é do Brasil."]
         ]

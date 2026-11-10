@@ -614,7 +614,97 @@ function recordLine(g) {
 
 }
 
-/* playerKey -> { badges, records } (para o efeito no nick) */
+/* ---------- RANKING POR XP (elo) ----------
+
+   Cada um soma XP pelo que está segurando agora: títulos, medalhas
+   e emblemas. Perdeu um título, perdeu o XP dele, então dá para
+   subir e cair de elo conforme as partidas acontecem.
+   Título dividido (empate) vale metade para cada dono.
+   Os recordes de uma partida (🐐 / 🍼) não contam XP: são só um
+   indicativo na listagem de jogadores. */
+
+const XP_RULES = {
+    titleGlory: 10,     /* título de glória segurado sozinho */
+    titleShame: -5,     /* título de vergonha segurado sozinho */
+    sharedFactor: 0.5,  /* título dividido: metade do XP para cada dono */
+    badgeTier: [5, 10, 20], /* medalha 🥉 / 🥈 / 🥇 */
+    emblem: 10          /* cada emblema permanente */
+};
+
+/* Elos em ordem; "min" = XP mínimo para chegar nele.
+   Desafiante é para poucos: precisa praticamente dominar a casa. */
+const ELO_TIERS = [
+    { id: "ferro", name: "Ferro", icon: "🔩", min: -Infinity },
+    { id: "bronze", name: "Bronze", icon: "🟤", min: 10 },
+    { id: "prata", name: "Prata", icon: "⚪", min: 25 },
+    { id: "ouro", name: "Ouro", icon: "🟡", min: 45 },
+    { id: "platina", name: "Platina", icon: "💠", min: 75 },
+    { id: "diamante", name: "Diamante", icon: "💎", min: 110 },
+    { id: "mestre", name: "Mestre", icon: "🔮", min: 160 },
+    { id: "desafiante", name: "Desafiante", icon: "⚜️", min: 350 }
+];
+
+function eloFor(xp) {
+    return ELO_TIERS.filter(t => xp >= t.min).pop();
+}
+
+/* XP pode ter meio ponto (título de vergonha dividido) */
+function xpText(value) {
+    return Number.isInteger(value) ? String(value) : value.toFixed(1).replace(".", ",");
+}
+
+/* Ranking: [{ player, xp, elo, next, parts: [{label, xp}] }], do maior XP ao menor */
+function computeRanking(src, profiles, titles) {
+
+    profiles = profiles || computePlayerProfiles(src);
+    titles = titles || resolveTitles(profiles);
+
+    const plural = (n, one, many) => n + " " + (n === 1 ? one : many);
+
+    return profiles.map(p => {
+
+        const parts = [];
+        const add = (label, xp) => { if (xp) parts.push({ label: label, xp: xp }); };
+
+        const mine = titles.filter(t => t.holders.includes(p));
+        const count = (negative, shared) => mine.filter(t =>
+            !!t.title.negative === negative && (t.holders.length > 1) === shared).length;
+
+        const glorySolo = count(false, false);
+        const gloryShared = count(false, true);
+        const shameSolo = count(true, false);
+        const shameShared = count(true, true);
+
+        add(plural(glorySolo, "título de glória", "títulos de glória"), glorySolo * XP_RULES.titleGlory);
+        add(plural(gloryShared, "título de glória dividido (metade)", "títulos de glória divididos (metade)"),
+            gloryShared * XP_RULES.titleGlory * XP_RULES.sharedFactor);
+        add(plural(shameSolo, "título de vergonha", "títulos de vergonha"), shameSolo * XP_RULES.titleShame);
+        add(plural(shameShared, "título de vergonha dividido (metade)", "títulos de vergonha divididos (metade)"),
+            shameShared * XP_RULES.titleShame * XP_RULES.sharedFactor);
+
+        const { badges, emblems } = earnedBadges(p);
+
+        badges.forEach(b => add(b.icon + " " + b.name + " " + b.medal, XP_RULES.badgeTier[b.tier - 1]));
+        emblems.forEach(e => add(e.icon + " " + e.name, XP_RULES.emblem));
+
+        const xp = parts.reduce((sum, part) => sum + part.xp, 0);
+        const elo = eloFor(xp);
+        const next = ELO_TIERS[ELO_TIERS.indexOf(elo) + 1] || null;
+
+        return { player: p, xp: xp, elo: elo, next: next, parts: parts };
+
+    }).sort((a, b) => b.xp - a.xp || b.player.games - a.player.games);
+
+}
+
+/* Texto do balão do elo: elo, XP e de onde vem */
+function eloTip(rank) {
+    return rank.elo.icon + " " + rank.elo.name + " · " + xpText(rank.xp) + " XP"
+        + (rank.next ? " (faltam " + xpText(rank.next.min - rank.xp) + " para " + rank.next.icon + " " + rank.next.name + ")" : " · elo máximo")
+        + (rank.parts.length ? "\n" + rank.parts.map(part => (part.xp > 0 ? "+" : "") + xpText(part.xp) + " " + part.label).join("\n") : "");
+}
+
+/* playerKey -> { badges, emblems, records, rank } (para o efeito no nick) */
 function nickClassMap(src) {
 
     const map = {};
@@ -635,6 +725,12 @@ function nickClassMap(src) {
         const entry = map[g.key] || (map[g.key] = { badges: [], emblems: [], records: [] });
         entry.records.push({ record: rec, game: g });
 
+    });
+
+    /* Elo de todo mundo (ícone do lado do nick) */
+    computeRanking(src).forEach(rank => {
+        const entry = map[rank.player.key] || (map[rank.player.key] = { badges: [], emblems: [], records: [] });
+        entry.rank = rank;
     });
 
     return map;
@@ -720,6 +816,25 @@ function decoratedNick(name, info) {
         nick = pill;
 
     });
+
+    /* Elo: ícone antes do nick, com o detalhe do XP no balão */
+    const rank = !Array.isArray(info) && info && info.rank;
+
+    if (rank) {
+
+        const wrap = document.createElement("span");
+        wrap.className = "nick-with-elo";
+
+        const elo = document.createElement("span");
+        elo.className = "nick-elo elo-" + rank.elo.id;
+        elo.textContent = rank.elo.icon;
+        elo.title = eloTip(rank);
+
+        wrap.appendChild(elo);
+        wrap.appendChild(nick);
+        nick = wrap;
+
+    }
 
     return nick;
 
@@ -1188,7 +1303,10 @@ function titleCard(result, nicks) {
 
 }
 
-/* Placar: quantos títulos da aba aberta cada jogador tem */
+/* Pódio: os 3 que mais têm títulos na aba aberta, numa linha só.
+   Mostra só a contagem e uma prévia de alguns ícones. */
+const PODIUM_PREVIEW_ICONS = 3;
+
 function hallBoard(results, nicks, negative) {
 
     const counts = {};
@@ -1209,7 +1327,7 @@ function hallBoard(results, nicks, negative) {
 
     const label = document.createElement("div");
     label.className = "hall-board-label";
-    label.textContent = negative ? "Quem mais passa vergonha" : "Quem manda na casa";
+    label.textContent = negative ? "💀 Pódio da vergonha" : "👑 Quem manda na casa";
     board.appendChild(label);
 
     if (rows.length === 0) {
@@ -1220,46 +1338,54 @@ function hallBoard(results, nicks, negative) {
         return board;
     }
 
-    const list = document.createElement("div");
-    list.className = "hall-board-list";
-
+    /* Posição com empate (mesma quantidade = mesmo lugar) */
     let place = 0;
     let lastCount = null;
 
     rows.forEach((row, i) => {
-
         if (row.titles.length !== lastCount) place = i + 1;
         lastCount = row.titles.length;
+        row.place = place;
+    });
 
-        const item = document.createElement("div");
-        item.className = "hall-board-item" + (place === 1 ? " top" : "");
-        item.title = row.titles.map(t => t.icon + " " + t.name).join("\n");
+    const medals = negative ? ["🤡", "💩", "🙈"] : ["🥇", "🥈", "🥉"];
 
-        const pos = document.createElement("span");
-        pos.className = "hall-board-pos";
-        pos.textContent = place === 1 ? (negative ? "🤡" : "👑") : place + "º";
+    const podium = document.createElement("div");
+    podium.className = "podium";
 
-        const nick = document.createElement("span");
-        nick.className = "hall-board-nick";
-        nick.appendChild(decoratedNick(row.player.name, nicks[row.player.key]));
+    rows.filter(row => row.place <= 3).slice(0, 3).forEach(row => {
+
+        const spot = document.createElement("div");
+        spot.className = "podium-spot place-" + row.place;
+        spot.title = row.titles.map(t => t.icon + " " + t.name).join("\n");
+
+        const medal = document.createElement("span");
+        medal.className = "podium-medal";
+        medal.textContent = medals[row.place - 1];
+
+        const name = document.createElement("strong");
+        name.className = "podium-name";
+        name.appendChild(decoratedNick(row.player.name, nicks[row.player.key]));
 
         const count = document.createElement("span");
-        count.className = "hall-board-count";
-        count.textContent = row.titles.length;
+        count.className = "podium-count";
+        count.textContent = row.titles.length + (row.titles.length === 1 ? " título" : " títulos");
 
-        const icons = document.createElement("span");
-        icons.className = "hall-board-icons";
-        icons.textContent = row.titles.map(t => t.icon).join(" ");
+        /* Prévia: alguns ícones e "+N" do resto */
+        const preview = document.createElement("span");
+        preview.className = "podium-preview";
+        preview.textContent = row.titles.slice(0, PODIUM_PREVIEW_ICONS).map(t => t.icon).join("")
+            + (row.titles.length > PODIUM_PREVIEW_ICONS ? " +" + (row.titles.length - PODIUM_PREVIEW_ICONS) : "");
 
-        item.appendChild(pos);
-        item.appendChild(nick);
-        item.appendChild(count);
-        item.appendChild(icons);
-        list.appendChild(item);
+        spot.appendChild(medal);
+        spot.appendChild(name);
+        spot.appendChild(count);
+        spot.appendChild(preview);
+        podium.appendChild(spot);
 
     });
 
-    board.appendChild(list);
+    board.appendChild(podium);
 
     return board;
 
@@ -1519,6 +1645,126 @@ function recordsSection(src, profiles, nicks) {
 
 }
 
+/* Ranking por XP: posição, elo, XP, barra até o próximo elo e de onde vem */
+function rankingSection(ranking) {
+
+    const wrap = document.createElement("div");
+    wrap.className = "ranking";
+
+    const head = document.createElement("h3");
+    head.className = "ach-section";
+    head.textContent = "🎖️ Ranking dos guri";
+    wrap.appendChild(head);
+
+    const intro = document.createElement("p");
+    intro.className = "hall-intro";
+    intro.textContent = "Cada um ganha XP pelo que está segurando agora: título de glória +" + XP_RULES.titleGlory
+        + ", medalhas 🥉🥈🥇 +" + XP_RULES.badgeTier.join("/+")
+        + " e emblemas +" + XP_RULES.emblem
+        + ". Título de vergonha tira " + (-XP_RULES.titleShame)
+        + ". Perdeu o título, perdeu o XP: dá para subir e cair de elo.";
+    wrap.appendChild(intro);
+
+    /* Regra do título dividido, em destaque */
+    const shared = document.createElement("p");
+    shared.className = "ranking-rule";
+    shared.textContent = "⚖️ Título dividido (empate) vale metade do XP para cada dono: +"
+        + xpText(XP_RULES.titleGlory * XP_RULES.sharedFactor) + " na glória e "
+        + xpText(XP_RULES.titleShame * XP_RULES.sharedFactor) + " na vergonha. "
+        + "Os recordes 🐐 e 🍼 não valem XP.";
+    wrap.appendChild(shared);
+
+    /* Escala dos elos */
+    const scale = document.createElement("div");
+    scale.className = "elo-scale";
+
+    ELO_TIERS.forEach(tier => {
+        const step = document.createElement("span");
+        step.className = "elo-step elo-" + tier.id;
+        step.textContent = tier.icon + " " + tier.name;
+        step.title = tier.min === -Infinity ? "Começo" : "A partir de " + tier.min + " XP";
+        scale.appendChild(step);
+    });
+
+    wrap.appendChild(scale);
+
+    const list = document.createElement("ol");
+    list.className = "ranking-list";
+
+    let place = 0;
+    let lastXp = null;
+
+    ranking.forEach((rank, i) => {
+
+        if (rank.xp !== lastXp) place = i + 1;
+        lastXp = rank.xp;
+
+        const li = document.createElement("li");
+        li.className = "ranking-row elo-" + rank.elo.id + (place === 1 ? " top" : "");
+        li.title = eloTip(rank);
+
+        const pos = document.createElement("span");
+        pos.className = "ranking-pos";
+        pos.textContent = place + "º";
+
+        const badge = document.createElement("span");
+        badge.className = "ranking-elo";
+
+        const icon = document.createElement("span");
+        icon.className = "ranking-elo-icon";
+        icon.textContent = rank.elo.icon;
+
+        const tierName = document.createElement("span");
+        tierName.textContent = rank.elo.name;
+
+        badge.appendChild(icon);
+        badge.appendChild(tierName);
+
+        const name = document.createElement("strong");
+        name.className = "ranking-name";
+        name.textContent = rank.player.name;
+
+        /* Barra até o próximo elo */
+        const progress = document.createElement("span");
+        progress.className = "ranking-progress";
+
+        const bar = document.createElement("span");
+        bar.className = "ranking-bar";
+
+        const fill = document.createElement("i");
+        const floor = rank.elo.min === -Infinity ? Math.min(0, rank.xp) : rank.elo.min;
+        fill.style.width = rank.next
+            ? Math.max(0, Math.min(100, (rank.xp - floor) / (rank.next.min - floor) * 100)) + "%"
+            : "100%";
+        bar.appendChild(fill);
+
+        const nextText = document.createElement("small");
+        nextText.textContent = rank.next
+            ? "faltam " + xpText(rank.next.min - rank.xp) + " para " + rank.next.icon + " " + rank.next.name
+            : "elo máximo";
+
+        progress.appendChild(bar);
+        progress.appendChild(nextText);
+
+        const xp = document.createElement("span");
+        xp.className = "ranking-xp";
+        xp.textContent = xpText(rank.xp) + " XP";
+
+        li.appendChild(pos);
+        li.appendChild(badge);
+        li.appendChild(name);
+        li.appendChild(progress);
+        li.appendChild(xp);
+        list.appendChild(li);
+
+    });
+
+    wrap.appendChild(list);
+
+    return wrap;
+
+}
+
 function renderAchievements(src) {
 
     const box = document.getElementById("statsAchievements");
@@ -1539,6 +1785,10 @@ function renderAchievements(src) {
     /* ----- Títulos ----- */
 
     const titles = resolveTitles(profiles);
+
+    /* ----- Ranking por XP ----- */
+
+    box.appendChild(rankingSection(computeRanking(src, profiles, titles)));
 
     const titlesHead = document.createElement("h3");
     titlesHead.className = "ach-section";
@@ -1704,7 +1954,7 @@ const FRAME_CLASSES = ["frame-lenda", "frame-bafeador", "frame-burro", "frame-du
 
 /* Etiqueta discreta com os ícones das medalhas. Passar o mouse ou tocar
    abre um balão explicando cada uma (e o combo, se tiver). */
-function medalTag(badges, emblems) {
+function medalTag(badges, emblems, rank) {
 
     emblems = emblems || [];
 
@@ -1712,7 +1962,8 @@ function medalTag(badges, emblems) {
     tag.type = "button";
     tag.className = "medal-tag";
     tag.setAttribute("aria-label", "O que significam as medalhas deste jogador");
-    tag.textContent = badges.map(b => b.icon + b.medal).concat(emblems.map(e => e.icon)).join(" ");
+    tag.textContent = (rank ? [rank.elo.icon + " " + rank.elo.name] : [])
+        .concat(badges.map(b => b.icon + b.medal), emblems.map(e => e.icon)).join(" ");
 
     const pop = document.createElement("span");
     pop.className = "medal-pop";
@@ -1729,6 +1980,11 @@ function medalTag(badges, emblems) {
         row.appendChild(small);
         pop.appendChild(row);
     };
+
+    if (rank) {
+        line(rank.elo.icon, "Elo " + rank.elo.name + " · " + xpText(rank.xp) + " XP",
+            rank.next ? "Faltam " + xpText(rank.next.min - rank.xp) + " XP para " + rank.next.icon + " " + rank.next.name : "Elo máximo");
+    }
 
     badges.forEach(b => line(b.icon, b.name + " · " + b.medal + " " + b.tierName,
         "Medalha por " + b.desc.toLowerCase()));
@@ -1776,7 +2032,7 @@ function decorateResultCard(card, playerName, info) {
     /* No sorteio valem medalhas e emblemas. Os recordes de uma partida
        aparecem só na listagem de jogadores. */
     const found = info !== undefined ? info : drawNicks[playerKey(name)];
-    const effects = found ? { badges: found.badges || [], emblems: found.emblems || [], records: [] } : null;
+    const effects = found ? { badges: found.badges || [], emblems: found.emblems || [], records: [], rank: found.rank || null } : null;
 
     text.innerHTML = "";
     const strong = document.createElement("strong");
@@ -1785,7 +2041,8 @@ function decorateResultCard(card, playerName, info) {
 
     const badges = (effects && effects.badges) || [];
     const emblems = (effects && effects.emblems) || [];
-    if (badges.length + emblems.length > 0) text.appendChild(medalTag(badges, emblems));
+    const rank = effects && effects.rank;
+    if (badges.length + emblems.length > 0 || rank) text.appendChild(medalTag(badges, emblems, rank));
 
     FRAME_CLASSES.forEach(c => card.classList.remove(c));
 
@@ -2147,7 +2404,7 @@ const ANNOUNCE_PREVIEW = false;
 let lastHolderSnap = null;
 let announcePreviewShown = false;
 
-function showAnnouncement(text, negative, note) {
+function showAnnouncement(text, negative, note, heading) {
 
     let stack = document.getElementById("announceStack");
 
@@ -2169,7 +2426,7 @@ function showAnnouncement(text, negative, note) {
     const body = document.createElement("div");
 
     const head = document.createElement("strong");
-    head.textContent = "Troca de dono!";
+    head.textContent = heading || "Troca de dono!";
     body.appendChild(head);
 
     const msg = document.createElement("div");
@@ -2238,6 +2495,44 @@ function checkOwnerChanges(src) {
     }
 
     lastHolderSnap = snap;
+
+    checkEloChanges(src);
+
+}
+
+/* Avisa quem subiu ou caiu de elo com os dados novos */
+let lastEloSnap = null;
+
+function checkEloChanges(src) {
+
+    const now = {};
+
+    computeRanking(src).forEach(rank => {
+        now[rank.player.key] = { name: rank.player.name, tier: ELO_TIERS.indexOf(rank.elo), elo: rank.elo };
+    });
+
+    if (lastEloSnap) {
+
+        Object.keys(now).forEach(key => {
+
+            const before = lastEloSnap[key];
+            const after = now[key];
+
+            if (!before || before.tier === after.tier) return;
+
+            const up = after.tier > before.tier;
+
+            showAnnouncement(
+                after.name + (up ? " subiu para " : " caiu para ") + after.elo.icon + " " + after.elo.name
+                    + " (era " + before.elo.icon + " " + before.elo.name + ")",
+                !up, null, up ? "📈 Subiu de elo!" : "📉 Caiu de elo!"
+            );
+
+        });
+
+    }
+
+    lastEloSnap = now;
 
 }
 

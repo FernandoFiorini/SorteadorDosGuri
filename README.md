@@ -107,6 +107,32 @@ Os números de KDA, ouro, dano, wards e afins vêm da Riot (veja [Dados da Riot]
 
 ### 🏆 Conquistas
 
+#### 🎖️ Ranking dos guri (XP e elo)
+
+Cada um soma XP pelo que está segurando **agora**. Perdeu o título, perdeu o XP: dá para subir e cair de elo conforme as partidas acontecem.
+
+| Fonte | XP |
+| ----- | -- |
+| Título de glória | +10 |
+| Medalha 🥉 / 🥈 / 🥇 | +5 / +10 / +20 |
+| Emblema permanente | +10 |
+| Título de vergonha | −5 |
+
+⚖️ **Título dividido (empate) vale metade do XP para cada dono**: +5 na glória e −2,5 na vergonha. Os recordes 🐐 Paulinho Molina e 🍼 Feedamento **não valem XP**; são só um indicativo na listagem de jogadores.
+
+| Elo | XP mínimo |
+| --- | --------- |
+| 🔩 Ferro | — |
+| 🟤 Bronze | 10 |
+| ⚪ Prata | 25 |
+| 🟡 Ouro | 45 |
+| 💠 Platina | 75 |
+| 💎 Diamante | 110 |
+| 🔮 Mestre | 160 |
+| ⚜️ Desafiante | 350 (quase todos os títulos, medalhas e emblemas) |
+
+O ícone do elo aparece do lado do nick (listagem de jogadores, tabela de estatísticas e sorteio), e quem está com o site aberto vê um aviso quando alguém sobe ou cai. Os valores ficam em `XP_RULES` e `ELO_TIERS`, no arquivo `js/achievements.js`.
+
 #### 👑 Títulos da casa
 
 Cada título tem um dono só: quem tem o maior número leva, e empate divide. O título troca de mão sozinho conforme as partidas acontecem.
@@ -114,7 +140,7 @@ Cada título tem um dono só: quem tem o maior número leva, e empate divide. O 
 * Duas abas: **👑 Glória** (Mata mais que a fome, Dono da lojinha de ward, Filho do vorcaro...) e **💀 Vergonha** (Assinante da tela cinza, Mais cego que não sei o que, Ward é item de luxo...).
 * Títulos agrupados por categoria (Combate, Visão e time, Objetivos, Rotina), e cada categoria pode ser minimizada.
 * Cada card mostra o dono e quem vem logo atrás, em 2º e 3º, para saber quem está na cola.
-* No topo, um placar de quem tem mais títulos.
+* No topo, um pódio com os 3 que mais têm títulos (e o pódio da vergonha na outra aba).
 * Títulos por média (KDA, farm/min, visão por partida...) exigem pelo menos 5 partidas com dados da Riot.
 
 #### 🔄 Recordes de uma partida

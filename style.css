@@ -1464,66 +1464,63 @@ body:not(.viewer) .viewer-only {
     font-size: 13px;
 }
 
-.hall-board-list {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 6px;
+/* Pódio: 3 primeiros numa linha só */
+.podium {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 8px;
 }
 
-.hall-board-item {
-    display: inline-flex;
+.podium-spot {
+    display: flex;
+    flex-direction: column;
     align-items: center;
-    gap: 8px;
+    gap: 2px;
+    min-width: 0;
+    padding: 8px 6px;
     background: #09111a;
     border: 1px solid #253648;
-    border-radius: 999px;
-    padding: 4px 12px 4px 8px;
+    border-radius: 8px;
+    text-align: center;
     cursor: default;
-    max-width: 100%;
 }
 
-.hall-board-item.top {
+.podium-spot.place-1 {
     border-color: #c8aa6e;
-    box-shadow: 0 0 10px rgba(200, 170, 110, 0.35);
+    box-shadow: 0 0 10px rgba(200, 170, 110, 0.3);
 }
 
-.hall-board.negative .hall-board-item.top {
+.hall-board.negative .podium-spot.place-1 {
     border-color: #c0392b;
-    box-shadow: 0 0 10px rgba(192, 57, 43, 0.4);
+    box-shadow: 0 0 10px rgba(192, 57, 43, 0.35);
 }
 
-.hall-board-pos {
-    color: #8e9aaa;
-    font-size: 12px;
-    min-width: 18px;
-    text-align: center;
+.podium-medal {
+    font-size: 20px;
+    line-height: 1;
 }
 
-.hall-board-nick {
-    font-weight: bold;
-}
-
-.hall-board-count {
-    font-weight: bold;
-    color: #0b1622;
-    background: #c8aa6e;
-    border-radius: 999px;
-    min-width: 22px;
-    padding: 1px 7px;
-    text-align: center;
-    font-size: 13px;
-}
-
-.hall-board.negative .hall-board-count {
-    background: #c0392b;
-    color: #fff;
-}
-
-.hall-board-icons {
-    font-size: 13px;
-    letter-spacing: 1px;
+.podium-name {
+    max-width: 100%;
     overflow: hidden;
     text-overflow: ellipsis;
+    white-space: nowrap;
+    font-size: 14px;
+}
+
+.podium-count {
+    font-size: 12px;
+    font-weight: bold;
+    color: #c8aa6e;
+}
+
+.hall-board.negative .podium-count {
+    color: #e0524d;
+}
+
+.podium-preview {
+    font-size: 12px;
+    color: #8e9aaa;
     white-space: nowrap;
 }
 
@@ -1750,10 +1747,6 @@ body:not(.viewer) .viewer-only {
 
     .hall-tab {
         max-width: none;
-    }
-
-    .hall-board-icons {
-        display: none;
     }
 
 }
@@ -3531,4 +3524,176 @@ a.changelog-link:focus-visible {
     color: #c8aa6e;
     border-color: rgba(200, 170, 110, 0.5);
     background: rgba(200, 170, 110, 0.08);
+}
+
+/* =====================================================
+   RANKING POR XP (elo)
+===================================================== */
+
+/* Cor de cada elo */
+.elo-ferro { --elo: #8a8f98; }
+.elo-bronze { --elo: #cd7f32; }
+.elo-prata { --elo: #c9d1da; }
+.elo-ouro { --elo: #ffd76a; }
+.elo-platina { --elo: #4fd1c5; }
+.elo-diamante { --elo: #7fb6ff; }
+.elo-mestre { --elo: #c084fc; }
+.elo-desafiante { --elo: #ff9f43; }
+
+/* Ícone do elo antes do nick */
+.nick-with-elo {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.nick-elo {
+    font-size: 0.85em;
+    line-height: 1;
+    cursor: help;
+    filter: drop-shadow(0 0 3px var(--elo));
+}
+
+.ranking {
+    margin-bottom: 24px;
+}
+
+/* Escala com todos os elos */
+.elo-scale {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-bottom: 12px;
+}
+
+.elo-step {
+    font-size: 11px;
+    color: var(--elo);
+    border: 1px solid var(--elo);
+    border-radius: 999px;
+    padding: 2px 9px;
+    background: rgba(255, 255, 255, 0.03);
+    cursor: help;
+}
+
+.ranking-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.ranking-row {
+    display: grid;
+    grid-template-columns: 34px 130px minmax(0, 1fr) minmax(120px, 1.4fr) 70px;
+    align-items: center;
+    gap: 10px;
+    padding: 8px 12px;
+    background: #09111a;
+    border: 1px solid #253648;
+    border-left: 3px solid var(--elo);
+    border-radius: 8px;
+    cursor: default;
+}
+
+.ranking-row.top {
+    background: linear-gradient(90deg, rgba(200, 170, 110, 0.12), #09111a 60%);
+    border-color: #c8aa6e;
+    border-left-color: var(--elo);
+}
+
+.ranking-pos {
+    color: #8e9aaa;
+    font-weight: bold;
+    font-variant-numeric: tabular-nums;
+}
+
+.ranking-row.top .ranking-pos {
+    color: #c8aa6e;
+}
+
+.ranking-elo {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    color: var(--elo);
+    font-weight: bold;
+    font-size: 13px;
+}
+
+.ranking-elo-icon {
+    font-size: 18px;
+    filter: drop-shadow(0 0 4px var(--elo));
+}
+
+.ranking-name {
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.ranking-progress {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+    min-width: 0;
+}
+
+.ranking-bar {
+    height: 6px;
+    border-radius: 999px;
+    background: #1a2836;
+    overflow: hidden;
+}
+
+.ranking-bar > i {
+    display: block;
+    height: 100%;
+    background: var(--elo);
+    border-radius: inherit;
+}
+
+.ranking-progress small {
+    color: #687789;
+    font-size: 11px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.ranking-xp {
+    text-align: right;
+    font-weight: bold;
+    color: #f0e6d2;
+    font-variant-numeric: tabular-nums;
+}
+
+@media (max-width: 600px) {
+
+    /* Celular: posição, nome e XP em cima; elo embaixo do nome; barra no fim */
+    .ranking-row {
+        grid-template-columns: 30px minmax(0, 1fr) auto;
+        row-gap: 4px;
+    }
+
+    .ranking-pos { grid-column: 1; grid-row: 1; }
+    .ranking-name { grid-column: 2; grid-row: 1; }
+    .ranking-xp { grid-column: 3; grid-row: 1; }
+    .ranking-elo { grid-column: 2; grid-row: 2; }
+    .ranking-progress { grid-column: 1 / -1; grid-row: 3; }
+
+}
+
+/* Regra do título dividido, em destaque no ranking */
+.ranking-rule {
+    font-size: 12px;
+    color: #f0e6d2;
+    background: rgba(200, 170, 110, 0.08);
+    border: 1px solid rgba(200, 170, 110, 0.35);
+    border-radius: 8px;
+    padding: 6px 10px;
+    margin: -4px 0 12px;
 }
