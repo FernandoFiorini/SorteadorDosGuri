@@ -186,6 +186,15 @@ function playerStats(p) {
 
 }
 
+/* Recriação (remake): jogo que acabou antes de 5 minutos não conta em
+   nada; o sorteio fica como "anulada" (🚫 Não deu jogo) */
+const REMAKE_MAX_SECONDS = 5 * 60;
+
+function pairResult(pair) {
+    if ((pair.game.info.gameDuration || 0) < REMAKE_MAX_SECONDS) return "anulada";
+    return pair.win ? "vitoria" : "derrota";
+}
+
 function gameRecord(game, sorteioId) {
 
     const players = {};
@@ -212,5 +221,7 @@ module.exports = {
     makePlayerKey,
     toGame,
     pairUp,
-    gameRecord
+    gameRecord,
+    pairResult,
+    REMAKE_MAX_SECONDS
 };

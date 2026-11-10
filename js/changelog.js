@@ -29,6 +29,7 @@ const CHANGELOG = [
             ["ajuste", "Vitória e derrota não são mais marcadas à mão: vêm sozinhas ao atualizar as partidas. Só o \"🚫 Não deu jogo\" continua manual."],
             ["melhoria", "🔔 Somzinho de notificação quando chega mensagem nova no chat (respeita o botão de som)."],
             ["melhoria", "🎬 Canal do Rony nos clipes e no rodapé."],
+            ["ajuste", "Recriação (jogo com menos de 5 minutos) não conta em nada: vira \"🚫 Não deu jogo\" sozinha ao atualizar as partidas."],
             ["som", "Nardi grito louco, Vamo eu e tu com o mestre e Havan é do Brasil."]
         ]
     },

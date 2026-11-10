@@ -28,7 +28,7 @@ const admin = require("firebase-admin");
 
 const {
     QUEUE_SWIFTPLAY, COOLDOWN_MS, PLAYERS,
-    parseAliases, makePlayerKey, toGame, pairUp, gameRecord
+    parseAliases, makePlayerKey, toGame, pairUp, gameRecord, pairResult
 } = require("./ligacao");
 
 const DIR = __dirname;
@@ -257,7 +257,7 @@ async function main() {
     console.log("Resultados que mudam: " + conflicts.length + " | preenchidos: " + filled.length);
 
     conflicts.forEach(p => console.log(
-        "  MUDA  " + when(p.match.time) + "  " + names(p.match) + "  " + p.match.resultado + " -> " + (p.win ? "vitoria" : "derrota")
+        "  MUDA  " + when(p.match.time) + "  " + names(p.match) + "  " + p.match.resultado + " -> " + pairResult(p)
     ));
 
     pairs.filter(p => p.exact < p.match.entries.length).forEach(p => console.log(
@@ -297,7 +297,7 @@ async function main() {
     pairs.forEach(pair => {
 
         const id = pair.match.id;
-        const resultado = pair.win ? "vitoria" : "derrota";
+        const resultado = pairResult(pair);
 
         updates["global/riot/" + pair.game.id] = gameRecord(pair.game, id);
 
@@ -325,7 +325,7 @@ async function main() {
 
     const wrong = pairs.filter(p =>
         after[p.match.id].riotMatchId !== p.game.id
-        || after[p.match.id].resultado !== (p.win ? "vitoria" : "derrota")
+        || after[p.match.id].resultado !== pairResult(p)
         || !savedRiot[p.game.id]
     );
 

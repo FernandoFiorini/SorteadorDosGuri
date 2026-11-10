@@ -101,7 +101,7 @@ Tudo que é sorteado vira prova contra você. As estatísticas juntam as partida
 * **🛡️ Campeões**: quantas vezes saiu, 👍/👎 da galera, resorteios e desempenho.
 * **🏆 Conquistas**: títulos, recordes e medalhas (veja abaixo).
 
-Depois da partida, marque **Vitória**, **Derrota** ou **🚫 Não deu jogo**. Partida marcada como "Não deu jogo" some de todas as estatísticas. Partida sem resultado conta no total, mas não em vitórias e derrotas.
+Vitória e derrota chegam sozinhas ao clicar em **🔄 Atualizar partidas**. Se a partida não rolou, marque **🚫 Não deu jogo**: ela some de todas as estatísticas. Recriação (jogo que acabou antes de 5 minutos) vira "Não deu jogo" automaticamente. Partida sem resultado conta no total, mas não em vitórias e derrotas.
 
 Os números de KDA, ouro, dano, wards e afins vêm da Riot (veja [Dados da Riot](#6-dados-da-riot-opcional)). Depois de jogar, aperte **🔄 Atualizar partidas** nas estatísticas: a partida é ligada ao sorteio e o resultado é marcado sozinho.
 

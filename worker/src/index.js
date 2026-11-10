@@ -15,7 +15,7 @@ import ligacao from "../../scripts/coleta/ligacao.js";
 
 const {
     QUEUE_SWIFTPLAY, COOLDOWN_MS, PLAYERS,
-    parseAliases, makePlayerKey, toGame, pairUp, gameRecord
+    parseAliases, makePlayerKey, toGame, pairUp, gameRecord, pairResult
 } = ligacao;
 
 const DATABASE_URL = "https://sorteador-dos-guri-default-rtdb.firebaseio.com";
@@ -246,7 +246,7 @@ async function collect(env, firebase, now) {
     pairs.forEach(pair => {
 
         const id = pair.match.id;
-        const resultado = pair.win ? "vitoria" : "derrota";
+        const resultado = pairResult(pair);
 
         updates["global/riot/" + pair.game.id] = gameRecord(pair.game, id);
 
