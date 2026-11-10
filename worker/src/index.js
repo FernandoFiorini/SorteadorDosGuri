@@ -337,8 +337,8 @@ async function latestVideos(request, ctx) {
             .sort((a, b) => b.publicado.localeCompare(a.publicado))
             .slice(0, VIDEOS_LIMIT)
     }))
-        .filter(c => c.videos.length > 0)
-        .sort((a, b) => b.videos[0].publicado.localeCompare(a.videos[0].publicado));
+        /* Ordem fixa da lista YOUTUBE_CHANNELS (Fer, Valde, Rony) */
+        .filter(c => c.videos.length > 0);
 
     const response = new Response(JSON.stringify({ status: "ok", canais: canais }), {
         headers: Object.assign({
