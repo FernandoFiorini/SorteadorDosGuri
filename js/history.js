@@ -125,28 +125,7 @@ function renderMatchHistory() {
 
         });
 
-        /* Host pode marcar vitória/derrota de partidas anteriores */
-        if (!IS_VIEWER && liveReady && match.id && saved) {
-
-            const actions = document.createElement("div");
-            actions.className = "history-actions";
-
-            [["vitoria", "✅ Vitória"], ["derrota", "❌ Derrota"], ["anulada", "🚫 Não deu jogo"]].forEach(([value, label]) => {
-
-                const button = document.createElement("button");
-                button.type = "button";
-                button.className = "mini-btn" + (res === value ? " on-" + value : "");
-                button.textContent = label;
-                button.onclick = () => setMatchResult(match.id, value);
-
-                actions.appendChild(button);
-
-            });
-
-            item.appendChild(actions);
-
-        }
-
+        /* O resultado vem sozinho ao atualizar as partidas: o histórico só mostra */
         container.appendChild(item);
 
     });

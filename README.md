@@ -1,6 +1,8 @@
-# 🎲 LoL Randomizer — Sorteador dos Guri
+# 🧉 Sorteador dos Guri
 
 ### Quer perder neurônio, é aqui mesmo.
+
+👉 **Acesse:** https://fernandofiorini.github.io/SorteadorDosGuri/
 
 Cansou de jogar sempre com os mesmos campeões? Só escuta que teu amigo fala, jogo muito com esse boneco?
 
@@ -43,11 +45,31 @@ Ative essa opção para impedir que o mesmo campeão apareça mais de uma vez no
 
 Cinco jogadores. Cinco campeões diferentes. Cinco novas maneiras de perder a partida.
 
+Com **"Não repetir campeões já sorteados"**, a lista fica salva no navegador entre um sorteio e outro: ninguém pega o mesmo boneco até a lista ser resetada.
+
+### 🧪 Listas temáticas (pools)
+
+Marque uma ou mais listas prontas (Veneno, Sangramento, Fogo, Tankudini, Velocidade...) e o sorteio usa só os campeões delas.
+
+Para criar uma lista nova, adicione um item em `championPools`, no arquivo `js/pools.js`.
+
+### 🔁 Resortear e entrar no meio
+
+* **🔄 Resortear**: troca só o campeão de uma lane, sem mexer no resto.
+* **➕ Alguém quer entrar no time?**: sorteia só o jogador novo, numa lane livre, sem refazer o sorteio dos outros.
+
 ### 🔊 Efeitos sonoros personalizados
 
 Cada lane sorteia também um áudio aleatório dentre os presentes no projeto
 
 **VAI SER UMA LOUCURA**
+
+Para adicionar um áudio: coloque o `.mp3` na pasta do site e acrescente uma linha em `soundList`, no arquivo `js/sounds.js`. Para transformar um clipe de vídeo em MP3 sem instalar nada (usa o conversor do próprio Windows):
+
+```powershell
+powershell -NoProfile -ExecutionPolicy Bypass -File scripts\audio\converter-mp3.ps1 `
+    -InPath "C:\caminho\completo\clip.mp4" -OutPath "C:\caminho\completo\nome.mp3"
+```
 
 ### 📡 Sorteio ao vivo
 
@@ -57,6 +79,8 @@ Quer fazer o sorteio com todo mundo acompanhando, sem compartilhar a tela do Dis
 * Compartilhamento de link para espectadores.
 * Atualização dos resultados em tempo real.
 * Animação dos resultados também para quem está assistindo.
+* **👍 / 👎** em cada campeão sorteado, para a galera votar se o boneco presta.
+* **💬 Chat da sala** numa janelinha no canto inferior direito. Minimizado, mostra quantas mensagens não foram lidas (e o número aparece no título da aba).
 
 Agora todos podem testemunhar a loucura acontecendo.
 
@@ -79,7 +103,7 @@ Tudo que é sorteado vira prova contra você. As estatísticas juntam as partida
 
 Depois da partida, marque **Vitória**, **Derrota** ou **🚫 Não deu jogo**. Partida marcada como "Não deu jogo" some de todas as estatísticas. Partida sem resultado conta no total, mas não em vitórias e derrotas.
 
-Os números de KDA, ouro, dano, wards e afins vêm da Riot (veja [Dados da Riot](#6-dados-da-riot-opcional)).
+Os números de KDA, ouro, dano, wards e afins vêm da Riot (veja [Dados da Riot](#6-dados-da-riot-opcional)). Depois de jogar, aperte **🔄 Atualizar partidas** nas estatísticas: a partida é ligada ao sorteio e o resultado é marcado sozinho.
 
 ### 🏆 Conquistas
 
@@ -143,6 +167,15 @@ Os efeitos dos recordes ficam por fora do nick e combinam com os das medalhas: d
 
 Para criar uma conquista nova, basta adicionar um item em `ACHIEVEMENT_TITLES`, `ACHIEVEMENT_BADGES` (com níveis) ou `EMBLEM_BADGES` (emblemas), no arquivo `js/achievements.js`. Os pesos da nota dos recordes ficam em `RECORD_METRICS`.
 
+### 🎬 Clipes da gurizada
+
+No fim da página aparecem os 5 últimos vídeos de cada canal do grupo, com thumb e rolagem horizontal, e o rodapé tem os links dos canais:
+
+* [Canal do Fer](https://www.youtube.com/@fernandofiorini3240)
+* [Canal do Valde](https://www.youtube.com/@magrexxx)
+
+A lista se atualiza sozinha (pode levar até 30 minutos para um vídeo novo aparecer). Para trocar ou adicionar canais, edite `YOUTUBE_CHANNELS` em `worker/src/index.js` e publique o Worker de novo.
+
 ### 💾 Configurações salvas
 
 As preferências e o histórico ficam armazenados no navegador usando `localStorage`.
@@ -161,8 +194,9 @@ Feche o site, volte amanhã e continue sua jornada rumo a desgraça.
 | Firebase Authentication    | Autenticação anônima para a transmissão        |
 | Firebase Realtime Database | Sorteios ao vivo, partidas, votos e conquistas |
 | Riot API + Cloudflare Worker | KDA, ouro, dano, wards e resultado das partidas |
+| Feed do YouTube (via Worker) | Últimos clipes dos canais do grupo           |
 | Data Dragon                | Imagens dos campeões do League of Legends      |
-| LocalStorage               | Preferências, exclusões, rotação e histórico   |
+| LocalStorage               | Preferências, exclusões, rotação, histórico e chat |
 
 É abrir o navegador e aceitar seu destino.
 
@@ -170,23 +204,29 @@ Feche o site, volte amanhã e continue sua jornada rumo a desgraça.
 
 ## 🚀 Como executar
 
+Só quer jogar? Use o site publicado: https://fernandofiorini.github.io/SorteadorDosGuri/
+
 ### 1. Clone o repositório
 
 ```bash
-git clone https://github.com/SEU-USUARIO/SEU-REPOSITORIO.git
+git clone https://github.com/FernandoFiorini/SorteadorDosGuri.git
 ```
 
 ### 2. Entre na pasta
 
 ```bash
-cd SEU-REPOSITORIO
+cd SorteadorDosGuri
 ```
 
-### 3. Abra o projeto
+### 3. Rode o site localmente
 
-Abra o arquivo HTML principal diretamente no navegador.
+```bash
+npx serve .
+```
 
-Pronto! Configure os jogadores, escolha as lanes e clique em **Sortear**.
+Abra `http://localhost:3000`. Pronto! Configure os jogadores, escolha as lanes e clique em **Sortear**.
+
+Em `localhost` o Firebase fica desligado (o sorteio funciona, mas sem sala ao vivo, chat e estatísticas). Veja o passo 5 para testar com o banco.
 
 ### 4. Configure a transmissão ao vivo (opcional)
 
@@ -235,6 +275,8 @@ npx wrangler deploy
 ```
 
 Depois, coloque o endereço do Worker em `RIOT_WORKER_URL`, no arquivo `js/config.js`, e publique o site.
+
+O mesmo Worker também serve os últimos clipes do YouTube (rota `GET /videos`). Sempre que mudar algo em `worker/src/index.js`, rode `npx wrangler deploy` de novo. Para só trocar a chave da Riot, basta o `wrangler secret put RIOT_API_KEY` (não precisa de deploy).
 
 Para buscar partidas mais antigas pelo seu PC, use `scripts/coleta`. Sem `--gravar`, ele só simula:
 

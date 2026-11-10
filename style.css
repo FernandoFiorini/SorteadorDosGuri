@@ -516,19 +516,6 @@ header p {
     background: rgba(155, 167, 181, 0.15);
 }
 
-.history-actions {
-    margin-top: 8px;
-    display: flex;
-    gap: 8px;
-    flex-wrap: wrap;
-}
-
-.history-actions .mini-btn {
-    margin-left: 0;
-    padding: 5px 10px;
-    font-size: 12px;
-}
-
 .mini-btn.on-vitoria {
     border-color: #3ecf72;
     color: #3ecf72;
@@ -3368,4 +3355,163 @@ details.ach-player > summary:hover {
         display: none;
     }
 
+}
+
+/* =====================================================
+   NOVIDADES (link discreto no rodapé + janelinha)
+===================================================== */
+
+.rodape a.changelog-link {
+    color: #5b6878;
+    font-weight: normal;
+    font-size: 12px;
+}
+
+.rodape a.changelog-link:hover {
+    color: #c8aa6e;
+}
+
+.changelog-dialog {
+    width: min(520px, calc(100vw - 32px));
+    max-height: min(70vh, 600px);
+    padding: 0;
+    background: #0d1824;
+    color: #f5f5f5;
+    border: 1px solid #c8aa6e;
+    border-radius: 12px;
+    box-shadow: 0 16px 40px rgba(0, 0, 0, 0.6);
+    overflow: hidden;
+}
+
+.changelog-dialog[open] {
+    display: flex;
+    flex-direction: column;
+}
+
+.changelog-dialog::backdrop {
+    background: rgba(3, 8, 14, 0.7);
+}
+
+.changelog-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px 16px;
+    border-bottom: 1px solid #253648;
+    color: #c8aa6e;
+}
+
+.changelog-close {
+    background: none;
+    border: none;
+    color: #8e9aaa;
+    font-size: 15px;
+    cursor: pointer;
+    padding: 2px 6px;
+    border-radius: 6px;
+}
+
+.changelog-close:hover {
+    color: #fff;
+    background: rgba(255, 255, 255, 0.08);
+}
+
+.changelog-list {
+    overflow-y: auto;
+    padding: 6px 16px 16px;
+}
+
+.changelog-day {
+    padding: 12px 0;
+    border-bottom: 1px solid #1a2836;
+}
+
+.changelog-day:last-child {
+    border-bottom: none;
+}
+
+.changelog-day-head {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 4px 10px;
+    margin-bottom: 8px;
+}
+
+.changelog-date {
+    font-size: 12px;
+    color: #5b6878;
+    font-variant-numeric: tabular-nums;
+}
+
+.changelog-day h4 {
+    margin: 0;
+    font-size: 14px;
+    color: #f0e6d2;
+}
+
+/* Atualização mais recente em destaque */
+.changelog-day.latest h4 {
+    color: #c8aa6e;
+}
+
+.changelog-day.latest .changelog-date::after {
+    content: " · mais recente";
+    color: #c8aa6e;
+}
+
+.changelog-day ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    color: #c9d3de;
+    font-size: 13px;
+    line-height: 1.45;
+}
+
+.changelog-day li {
+    display: flex;
+    align-items: baseline;
+    gap: 8px;
+}
+
+/* Etiqueta colorida do tipo de mudança */
+.changelog-tag {
+    flex: none;
+    min-width: 66px;
+    text-align: center;
+    font-size: 10px;
+    font-weight: bold;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    padding: 2px 6px;
+    border-radius: 999px;
+    border: 1px solid;
+}
+
+.changelog-tag.novo {
+    color: #5ff2a0;
+    border-color: rgba(95, 242, 160, 0.5);
+    background: rgba(95, 242, 160, 0.08);
+}
+
+.changelog-tag.melhoria {
+    color: #7fb6ff;
+    border-color: rgba(127, 182, 255, 0.5);
+    background: rgba(127, 182, 255, 0.08);
+}
+
+.changelog-tag.ajuste {
+    color: #9ba7b5;
+    border-color: rgba(155, 167, 181, 0.45);
+    background: rgba(155, 167, 181, 0.08);
+}
+
+.changelog-tag.som {
+    color: #c8aa6e;
+    border-color: rgba(200, 170, 110, 0.5);
+    background: rgba(200, 170, 110, 0.08);
 }

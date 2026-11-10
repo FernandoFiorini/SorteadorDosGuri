@@ -347,12 +347,22 @@
             </div>
 
             <p>Desenvolvido por <a href="https://github.com/FernandoFiorini" target="_blank"
-                    rel="noopener noreferrer">Fernando Fiorini</a></p>
+                    rel="noopener noreferrer">Fernando Fiorini</a>
+                · <a href="#" id="changelogOpen" class="changelog-link">📝 novidades</a></p>
 
             <p>Sorteador dos guri isn’t endorsed by Riot Games and doesn’t reflect the views or opinions of Riot Games
                 or anyone officially involved in producing or managing Riot Games properties. Riot Games, and all
                 associated properties are trademarks or registered trademarks of Riot Games, Inc.</p>
         </footer>
+
+        <!-- NOVIDADES (abre pelo link discreto do rodapé) -->
+        <dialog id="changelogDialog" class="changelog-dialog" aria-labelledby="changelogTitle">
+            <div class="changelog-head">
+                <strong id="changelogTitle">📝 Novidades</strong>
+                <button type="button" id="changelogClose" class="changelog-close" aria-label="Fechar">✕</button>
+            </div>
+            <div id="changelogList" class="changelog-list"></div>
+        </dialog>
 
     </div>
 
@@ -376,6 +386,7 @@
     <script src="js/achievements.js?v=15"></script>
     <script src="js/chat.js?v=15"></script>
     <script src="js/videos.js?v=15"></script>
+    <script src="js/changelog.js?v=15"></script>
     <script src="js/screen.js?v=15"></script>
     <script src="js/viewer.js?v=15"></script>
     <script src="js/ui.js?v=15"></script>
