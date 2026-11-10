@@ -2429,31 +2429,51 @@ function checkOwnerChanges(src) {
 
 }
 
-/* Avisa quem subiu ou caiu de elo com os dados novos */
-let lastEloSnap = null;
+/* Avisa quem subiu ou caiu de elo. O último elo visto fica salvo no
+   navegador, então cada subida/queda aparece uma vez só (e não a cada
+   vez que o site abre). Espera os dados pararem de chegar antes de
+   comparar, para não avisar com dados pela metade. */
+const ELO_SEEN_KEY = "sorteador.eloVisto";
+let eloCheckTimer = null;
+
+function readEloSeen() {
+    try { return JSON.parse(localStorage.getItem(ELO_SEEN_KEY) || "null"); } catch (e) { return null; }
+}
+
+function saveEloSeen(map) {
+    try { localStorage.setItem(ELO_SEEN_KEY, JSON.stringify(map)); } catch (e) { }
+}
 
 function checkEloChanges(src) {
+    clearTimeout(eloCheckTimer);
+    eloCheckTimer = setTimeout(() => compareElo(src), 3000);
+}
 
+function compareElo(src) {
+
+    const seen = readEloSeen();
     const now = {};
 
     computeRanking(src).forEach(rank => {
-        now[rank.player.key] = { name: rank.player.name, tier: ELO_TIERS.indexOf(rank.elo), elo: rank.elo };
+        now[rank.player.key] = rank.elo.id;
     });
 
-    if (lastEloSnap) {
+    /* Primeira visita neste navegador: só guarda, sem avisar */
+    if (seen) {
 
-        Object.keys(now).forEach(key => {
+        computeRanking(src).forEach(rank => {
 
-            const before = lastEloSnap[key];
-            const after = now[key];
+            const beforeId = seen[rank.player.key];
+            if (!beforeId || beforeId === rank.elo.id) return;
 
-            if (!before || before.tier === after.tier) return;
+            const before = ELO_TIERS.find(t => t.id === beforeId);
+            if (!before) return;
 
-            const up = after.tier > before.tier;
+            const up = ELO_TIERS.indexOf(rank.elo) > ELO_TIERS.indexOf(before);
 
             showAnnouncement(
-                after.name + (up ? " subiu para " : " caiu para ") + after.elo.icon + " " + after.elo.name
-                    + " (era " + before.elo.icon + " " + before.elo.name + ")",
+                rank.player.name + (up ? " subiu para " : " caiu para ") + rank.elo.icon + " " + rank.elo.name
+                    + " (era " + before.icon + " " + before.name + ")",
                 !up, null, up ? "📈 Subiu de elo!" : "📉 Caiu de elo!"
             );
 
@@ -2461,7 +2481,7 @@ function checkEloChanges(src) {
 
     }
 
-    lastEloSnap = now;
+    saveEloSeen(Object.assign({}, seen || {}, now));
 
 }
 

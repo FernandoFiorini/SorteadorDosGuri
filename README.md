@@ -199,6 +199,7 @@ No fim da página aparecem os 5 últimos vídeos de cada canal do grupo, com thu
 
 * [Canal do Fer](https://www.youtube.com/@fernandofiorini3240)
 * [Canal do Valde](https://www.youtube.com/@magrexxx)
+* [Canal do Rony](https://www.youtube.com/@ronnyplays6798)
 
 A lista se atualiza sozinha (pode levar até 30 minutos para um vídeo novo aparecer). Para trocar ou adicionar canais, edite `YOUTUBE_CHANNELS` em `worker/src/index.js` e publique o Worker de novo.
 

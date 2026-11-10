@@ -281,7 +281,8 @@ async function collect(env, firebase, now) {
    ler o feed direto, então o Worker busca e repassa) */
 const YOUTUBE_CHANNELS = [
     { nome: "Fer", id: "UCw3J4r_bVhrVJfyq_YXJt5Q" },
-    { nome: "Valde", id: "UCKu-2Rk1VJqnZEVi621jqxQ" }
+    { nome: "Valde", id: "UCKu-2Rk1VJqnZEVi621jqxQ" },
+    { nome: "Rony", id: "UC-3SkMLpSDKfLSamF4t70Zg" }
 ];
 
 const VIDEOS_LIMIT = 5;

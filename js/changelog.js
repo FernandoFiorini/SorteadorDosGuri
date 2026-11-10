@@ -27,6 +27,7 @@ const CHANGELOG = [
             ["melhoria", "Categorias de títulos podem ser minimizadas."],
             ["melhoria", "Pódio com os 3 que mais têm títulos, na glória e na vergonha."],
             ["ajuste", "Vitória e derrota não são mais marcadas à mão: vêm sozinhas ao atualizar as partidas. Só o \"🚫 Não deu jogo\" continua manual."],
+            ["melhoria", "🎬 Canal do Rony nos clipes e no rodapé."],
             ["som", "Nardi grito louco, Vamo eu e tu com o mestre e Havan é do Brasil."]
         ]
     },
