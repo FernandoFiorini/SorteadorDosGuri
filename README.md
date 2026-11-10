@@ -68,6 +68,58 @@ Para documentar a rotação de campeões da equipe.
 
 Ou para provar que o Pitty caiu de Suporte sete vezes e continua reclamando.
 
+### 📊 Estatísticas
+
+Tudo que é sorteado vira prova contra você. As estatísticas juntam as partidas de todas as salas e se dividem em abas:
+
+* **👥 Jogadores**: partidas, vitórias, derrotas, win%, KDA, ouro, dano, farm, visão, campeão mais sorteado e lane mais jogada.
+* **⚔️ Lanes**: win% de cada lane, para descobrir qual delas é amaldiçoada.
+* **🛡️ Campeões**: quantas vezes saiu, 👍/👎 da galera, resorteios e desempenho.
+* **🏆 Conquistas**: títulos, recordes e medalhas (veja abaixo).
+
+Depois da partida, marque **Vitória**, **Derrota** ou **🚫 Não deu jogo**. Partida marcada como "Não deu jogo" some de todas as estatísticas. Partida sem resultado conta no total, mas não em vitórias e derrotas.
+
+Os números de KDA, ouro, dano, wards e afins vêm da Riot (veja [Dados da Riot](#6-dados-da-riot-opcional)).
+
+### 🏆 Conquistas
+
+#### 👑 Títulos da casa
+
+Cada título tem um dono só: quem tem o maior número leva, e empate divide. O título troca de mão sozinho conforme as partidas acontecem.
+
+* Duas abas: **👑 Glória** (Mata mais que a fome, Dono da lojinha de ward, Filho do vorcaro...) e **💀 Vergonha** (Assinante da tela cinza, Mais cego que não sei o que, Ward é item de luxo...).
+* Títulos agrupados por categoria (Combate, Visão e time, Objetivos, Rotina), e cada categoria pode ser minimizada.
+* Cada card mostra o dono e quem vem logo atrás, em 2º e 3º, para saber quem está na cola.
+* No topo, um placar de quem tem mais títulos.
+* Títulos por média (KDA, farm/min, visão por partida...) exigem pelo menos 5 partidas com dados da Riot.
+
+#### 🔄 Recordes de uma partida
+
+Duas medalhas que trocam de dono quando alguém faz uma partida melhor (ou pior) que a do recordista. Cada atuação ganha uma nota de 0 a 10 comparando KDA, mortes, ouro/min, dano/min, participação nos abates e visão/min com todas as partidas do grupo. Só contam partidas ligadas à Riot, com 15 minutos ou mais.
+
+| Recorde | Quem leva | Efeito no nick |
+| ------- | --------- | -------------- |
+| 🐐 Melhor Paulinho Molina já registrado | Maior nota numa partida só | Pílula azul brilhante com a cabra pulando |
+| 🍼 Maior feedamento já registrado | Menor nota numa partida só | Pílula verde de enjoo, com a mamadeira tremendo |
+
+#### 🎖️ Medalhas (badges)
+
+Metas pessoais: cada um desbloqueia a sua, e a recompensa é um efeito no nick **em todo o site** (títulos, tabelas e listas).
+
+| Medalha | Meta | Efeito no nick |
+| ------- | ---- | -------------- |
+| 👑 Lenda dos guri | Jogar 100 partidas | Dourado, com brilho passando |
+| 🏆 Bafeador supremo | Ganhar 100 partidas | Verde, pulsando |
+| 🫏 Mais burro já registrado | Perder 100 partidas | Palhaço, trocando de cor e balançando |
+| 🔥 Combo de 2 | Ter 2 medalhas quaisquer | Nick em chamas |
+| ✨ Combo supremo | Ter as 3 medalhas | Ouro maciço, com reflexo, halo e estrelas |
+
+Em **Medalhas por jogador**, cada um tem uma linha com o progresso de cada medalha (anéis), os títulos que tem agora e os recordes que está segurando. Clique na linha para ver os detalhes.
+
+Os efeitos dos recordes ficam por fora do nick e combinam com os das medalhas: dá para ser Lenda dos guri e Maior feedamento ao mesmo tempo.
+
+Para criar uma conquista nova, basta adicionar um item em `ACHIEVEMENT_TITLES` ou `ACHIEVEMENT_BADGES`, no arquivo `js/achievements.js`. Os pesos da nota dos recordes ficam em `RECORD_METRICS`.
+
 ### 💾 Configurações salvas
 
 As preferências e o histórico ficam armazenados no navegador usando `localStorage`.
@@ -84,7 +136,8 @@ Feche o site, volte amanhã e continue sua jornada rumo a desgraça.
 | CSS3                       | Interface, layout responsivo e animações       |
 | JavaScript                 | Lógica de sorteio e gerenciamento das partidas |
 | Firebase Authentication    | Autenticação anônima para a transmissão        |
-| Firebase Realtime Database | Sincronização dos sorteios ao vivo             |
+| Firebase Realtime Database | Sorteios ao vivo, partidas, votos e conquistas |
+| Riot API + Cloudflare Worker | KDA, ouro, dano, wards e resultado das partidas |
 | Data Dragon                | Imagens dos campeões do League of Legends      |
 | LocalStorage               | Preferências, exclusões, rotação e histórico   |
 
@@ -142,6 +195,8 @@ npx serve .
 Abra `http://localhost:3000/?emulador=1`. O link da sala copiado já leva o `&emulador=1` para os espectadores (use uma aba anônima).
 Os dados podem ser vistos em `http://127.0.0.1:4000` e somem ao fechar o emulador.
 
+No `localhost` o Firebase fica desligado por padrão, para não gravar nada no banco real sem querer. Para ver as estatísticas e conquistas com os dados de verdade, abra `http://localhost:3000/?firebase=on`. Nesse modo você está no banco real: olhar não grava nada, mas evite sortear ou marcar resultados enquanto testa.
+
 ### 6. Dados da Riot (opcional)
 
 Partidas de Swiftplay são ligadas aos sorteios para trazer KDA, gold, dano e outros números. Qualquer pessoa pode atualizar pelo botão nas estatísticas, com cooldown global de 1 minuto. As chaves ficam no Cloudflare Worker da pasta `worker/`, nunca no site.
@@ -193,15 +248,15 @@ Os segredos ficam em `scripts/coleta/.secrets/` (`riot.key` e `firebase-admin.js
 
 ## 🗺️ Roadmap — Ideias para futuras torturas
 
-* [ ] Estatísticas de vitórias e derrotas por jogador.
-* [ ] Ranking oficial de quem mais entrega a partida.
-* [ ] Histórico de campeões mais sorteados.
+* [x] Estatísticas de vitórias e derrotas por jogador.
+* [x] Ranking oficial de quem mais entrega a partida (🍼 Maior feedamento já registrado).
+* [x] Histórico de campeões mais sorteados.
 * [ ] Modo desafio: campeões aleatórios com builds aleatórias.
 * [ ] Sistema de punições para quem reclamar do resultado.
 * [ ] Integração com Discord para anunciar os sorteios.
 * [ ] Detector automático de desculpas esfarrapadas.
 
-*As funcionalidades acima são ideias futuras, não recursos já implementados.*
+*Os itens marcados já existem; os demais ainda são ideias futuras.*
 
 ---
 
