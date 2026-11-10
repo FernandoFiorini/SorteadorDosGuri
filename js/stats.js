@@ -514,7 +514,7 @@ function renderStats() {
 
     if (onAchievements) {
         document.getElementById("statsInfo").textContent =
-            "Títulos vão para quem lidera cada categoria (empate divide). Medalhas são metas pessoais: veja abaixo como ganhar cada uma e quanto falta para cada jogador.";
+            "Títulos vão para quem lidera cada categoria (empate divide). Medalhas são metas pessoais: veja acima como ganhar cada uma e quanto falta para cada jogador.";
         renderAchievements(isGlobal ? globalData : statsData);
         return;
     }

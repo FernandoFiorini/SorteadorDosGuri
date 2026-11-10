@@ -428,14 +428,141 @@ function earnedBadges(profile) {
 
 }
 
-/* playerKey -> medalhas do jogador (para o efeito no nick) */
+/* ---------- RECORDES DE UMA PARTIDA (medalhas que trocam de dono) ----------
+
+   Cada partida ligada à Riot ganha uma nota de 0 a 10 para cada jogador,
+   comparando com todas as partidas já registradas do grupo:
+   KDA, mortes, ouro/min, dano/min, participação em abates e visão/min.
+   A maior nota da história é o Paulinho Molina; a menor, o Feedamento.
+   Quando alguém faz uma partida melhor (ou pior), a medalha muda de dono. */
+
+const GAME_RECORDS = [
+    {
+        id: "paulinho", best: true,
+        icon: "🐐", name: "Melhor Paulinho Molina já registrado",
+        desc: "Maior nota numa partida só (KDA, ouro, dano, participação e visão)",
+        nick: "rec-paulinho", effect: "nick em pílula azul brilhante com 🐐, enquanto ninguém fizer uma partida melhor"
+    },
+    {
+        id: "feed", best: false,
+        icon: "🍼", name: "Maior feedamento já registrado",
+        desc: "Menor nota numa partida só (KDA, ouro, dano, participação e visão)",
+        nick: "rec-feed", effect: "nick verde de enjoo com 🍼, até alguém feedar mais"
+    }
+];
+
+/* Partidas muito curtas (remake, surrender cedo) não contam */
+const RECORD_MIN_SECONDS = 15 * 60;
+
+/* Peso de cada número na nota (sinal negativo = quanto menos, melhor) */
+const RECORD_METRICS = [
+    { weight: 1.5, value: g => Math.log1p((g.kills + g.assists) / Math.max(1, g.deaths)) },
+    { weight: 1, value: g => -g.deaths },
+    { weight: 1, value: g => g.goldPerMin },
+    { weight: 1, value: g => g.damagePerMin },
+    { weight: 1, value: g => g.killParticipation },
+    { weight: 0.5, value: g => g.visionPerMin }
+];
+
+/* Todas as atuações (jogador x partida) com nota */
+function computeGameRecords(src) {
+
+    const games = [];
+
+    Object.values(src.partidas || {}).forEach(match => {
+
+        if (!match || match.resultado === "anulada") return;
+
+        const game = match.riotMatchId && (src.riot || {})[match.riotMatchId];
+
+        if (!game || !game.players || (game.duration || 0) < RECORD_MIN_SECONDS) return;
+
+        const minutes = game.duration / 60;
+
+        Object.keys(game.players).forEach(key => {
+
+            const s = game.players[key];
+
+            if (!s) return;
+
+            games.push({
+                key: key,
+                time: game.start || match.time || 0,
+                champion: s.champion,
+                win: !!s.win,
+                kills: s.kills || 0,
+                deaths: s.deaths || 0,
+                assists: s.assists || 0,
+                goldPerMin: s.goldPerMin || (s.gold || 0) / minutes,
+                damagePerMin: s.damagePerMin || (s.damage || 0) / minutes,
+                killParticipation: s.killParticipation || 0,
+                visionPerMin: (s.vision || 0) / minutes
+            });
+
+        });
+
+    });
+
+    if (games.length < 2) return { games: games, holders: {} };
+
+    /* Nota = média ponderada de quantos desvios cada número está da média do grupo */
+    const scale = RECORD_METRICS.map(m => {
+        const values = games.map(m.value);
+        const mean = values.reduce((a, b) => a + b, 0) / values.length;
+        const sd = Math.sqrt(values.reduce((a, b) => a + (b - mean) ** 2, 0) / values.length) || 1;
+        return { mean, sd };
+    });
+
+    const totalWeight = RECORD_METRICS.reduce((a, m) => a + m.weight, 0);
+
+    games.forEach(g => {
+        const z = RECORD_METRICS.reduce((sum, m, i) =>
+            sum + m.weight * (m.value(g) - scale[i].mean) / scale[i].sd, 0) / totalWeight;
+        g.score = Math.max(0, Math.min(10, 5 + 2.5 * z));
+    });
+
+    /* Empate fica com quem fez primeiro: o recorde só muda se for superado */
+    const sorted = games.slice().sort((a, b) => b.score - a.score || a.time - b.time);
+    const worst = games.slice().sort((a, b) => a.score - b.score || a.time - b.time);
+
+    return {
+        games: games,
+        holders: { paulinho: sorted[0], feed: worst[0] }
+    };
+
+}
+
+/* Texto curto de uma atuação: campeão, K/D/A, nota */
+function recordLine(g) {
+
+    const champ = championNames[riotChampionId(g.champion)] || g.champion;
+
+    return champ + " · " + g.kills + "/" + g.deaths + "/" + g.assists
+        + " · nota " + formatNumber(g.score, 1);
+
+}
+
+/* playerKey -> { badges, records } (para o efeito no nick) */
 function nickClassMap(src) {
 
     const map = {};
 
     computePlayerProfiles(src).forEach(p => {
         const badges = earnedBadges(p);
-        if (badges.length > 0) map[p.key] = badges;
+        if (badges.length > 0) map[p.key] = { badges: badges, records: [] };
+    });
+
+    const { holders } = computeGameRecords(src);
+
+    GAME_RECORDS.forEach(rec => {
+
+        const g = holders[rec.id];
+
+        if (!g) return;
+
+        const entry = map[g.key] || (map[g.key] = { badges: [], records: [] });
+        entry.records.push({ record: rec, game: g });
+
     });
 
     return map;
@@ -466,9 +593,39 @@ function nickStyle(badges) {
 
 }
 
-/* Nome do jogador com o efeito das medalhas, se tiver.
-   O tooltip explica de onde vem o efeito. */
-function decoratedNick(name, badges) {
+/* Nome do jogador com o efeito das medalhas e dos recordes, se tiver.
+   "info" é a lista de medalhas ou o { badges, records } de nickClassMap. */
+function decoratedNick(name, info) {
+
+    const badges = Array.isArray(info) ? info : (info && info.badges) || [];
+    const records = (!Array.isArray(info) && info && info.records) || [];
+
+    let nick = badgeNick(name, badges);
+
+    /* Cada recorde embrulha o nick numa pílula com o ícone */
+    records.forEach(({ record, game }) => {
+
+        const pill = document.createElement("span");
+        pill.className = "nick-record " + record.nick;
+        pill.title = record.icon + " " + record.name
+            + (game && game.score !== undefined ? "\n" + recordLine(game) : "")
+            + (nick.title ? "\n" + nick.title : "");
+
+        const icon = document.createElement("span");
+        icon.className = "nick-record-icon";
+        icon.textContent = record.icon;
+
+        pill.appendChild(icon);
+        pill.appendChild(nick);
+        nick = pill;
+
+    });
+
+    return nick;
+
+}
+
+function badgeNick(name, badges) {
 
     const style = nickStyle(badges);
 
@@ -997,6 +1154,165 @@ function renderHall(hall, titles, nicks) {
 
 }
 
+/* Detalhes de uma atuação, em pedacinhos */
+function recordStats(g) {
+
+    const date = new Date(g.time).toLocaleDateString("pt-BR");
+
+    return [
+        g.kills + "/" + g.deaths + "/" + g.assists,
+        formatNumber(g.goldPerMin, 0) + " ouro/min",
+        formatNumber(g.damagePerMin, 0) + " dano/min",
+        formatNumber(g.killParticipation * 100, 0) + "% part.",
+        formatNumber(g.visionPerMin, 1) + " visão/min",
+        (g.win ? "vitória" : "derrota") + " em " + date
+    ];
+
+}
+
+/* Os dois recordes que trocam de dono */
+function recordsSection(src, profiles, nicks) {
+
+    const wrap = document.createElement("div");
+
+    const head = document.createElement("h3");
+    head.className = "ach-section";
+    head.textContent = "🔄 Recordes de uma partida";
+    wrap.appendChild(head);
+
+    const intro = document.createElement("p");
+    intro.className = "hall-intro";
+    intro.textContent = "Cada atuação ganha uma nota de 0 a 10 comparando KDA, mortes, ouro, dano, participação nos abates e visão com todas as partidas do grupo (só partidas ligadas à Riot, com 15 min ou mais). A medalha troca de dono quando alguém faz uma partida melhor, ou pior, e muda o nick de quem está com ela.";
+    wrap.appendChild(intro);
+
+    const { games, holders } = computeGameRecords(src);
+    const names = {};
+    profiles.forEach(p => { names[p.key] = p.name; });
+
+    const grid = document.createElement("div");
+    grid.className = "record-grid";
+
+    GAME_RECORDS.forEach(rec => {
+
+        const card = document.createElement("div");
+        card.className = "record-card " + rec.nick;
+
+        const top = document.createElement("div");
+        top.className = "record-top";
+
+        const icon = document.createElement("span");
+        icon.className = "record-icon";
+        icon.textContent = rec.icon;
+
+        const text = document.createElement("div");
+
+        const name = document.createElement("div");
+        name.className = "record-name";
+        name.textContent = rec.name;
+
+        const desc = document.createElement("div");
+        desc.className = "record-desc";
+        desc.textContent = rec.desc;
+
+        text.appendChild(name);
+        text.appendChild(desc);
+        top.appendChild(icon);
+        top.appendChild(text);
+        card.appendChild(top);
+
+        const g = holders[rec.id];
+
+        if (!g) {
+            const none = document.createElement("div");
+            none.className = "record-empty";
+            none.textContent = "Ainda não tem partidas da Riot suficientes.";
+            card.appendChild(none);
+            grid.appendChild(card);
+            return;
+        }
+
+        const owner = document.createElement("div");
+        owner.className = "record-owner";
+
+        const who = document.createElement("span");
+        who.className = "record-who";
+        who.appendChild(decoratedNick(names[g.key] || g.key, nicks[g.key]));
+
+        const champ = document.createElement("span");
+        champ.className = "record-champ";
+        champ.textContent = "de " + (championNames[riotChampionId(g.champion)] || g.champion);
+
+        const score = document.createElement("span");
+        score.className = "record-score";
+        score.textContent = formatNumber(g.score, 1);
+        score.title = "Nota de 0 a 10";
+
+        owner.appendChild(who);
+        owner.appendChild(champ);
+        owner.appendChild(score);
+        card.appendChild(owner);
+
+        const stats = document.createElement("div");
+        stats.className = "record-stats";
+
+        recordStats(g).forEach(t => {
+            const s = document.createElement("span");
+            s.textContent = t;
+            stats.appendChild(s);
+        });
+
+        card.appendChild(stats);
+
+        /* Quem chegou mais perto de tomar o recorde */
+        const next = games
+            .filter(x => x !== g)
+            .sort((a, b) => rec.best ? b.score - a.score : a.score - b.score)
+            .slice(0, 2);
+
+        if (next.length > 0) {
+
+            const list = document.createElement("ol");
+            list.className = "tcard-chasers record-chasers";
+
+            next.forEach((x, i) => {
+
+                const li = document.createElement("li");
+
+                const pos = document.createElement("span");
+                pos.className = "tcard-pos";
+                pos.textContent = (i + 2) + "º";
+
+                const nick = document.createElement("span");
+                nick.className = "tcard-chaser";
+                nick.textContent = (names[x.key] || x.key) + " · "
+                    + (championNames[riotChampionId(x.champion)] || x.champion)
+                    + " " + x.kills + "/" + x.deaths + "/" + x.assists;
+
+                const val = document.createElement("span");
+                val.className = "tcard-chaser-value";
+                val.textContent = "nota " + formatNumber(x.score, 1);
+
+                li.appendChild(pos);
+                li.appendChild(nick);
+                li.appendChild(val);
+                list.appendChild(li);
+
+            });
+
+            card.appendChild(list);
+
+        }
+
+        grid.appendChild(card);
+
+    });
+
+    wrap.appendChild(grid);
+
+    return wrap;
+
+}
+
 function renderAchievements(src) {
 
     const box = document.getElementById("statsAchievements");
@@ -1033,6 +1349,10 @@ function renderAchievements(src) {
     box.appendChild(hall);
 
     renderHall(hall, titles, nicks);
+
+    /* ----- Recordes de uma partida ----- */
+
+    box.appendChild(recordsSection(src, profiles, nicks));
 
     /* ----- Medalhas por jogador ----- */
 
@@ -1090,6 +1410,15 @@ function renderAchievements(src) {
                 icon.textContent = title.icon;
                 icon.title = title.name + "\n" + title.desc + " — " + title.show(best, holders)
                     + (holders.length > 1 ? " (dividido)" : "");
+                icons.appendChild(icon);
+            });
+
+            /* Recordes de uma partida que estão com ele agora */
+            ((nicks[p.key] && nicks[p.key].records) || []).forEach(({ record, game }) => {
+                const icon = document.createElement("span");
+                icon.className = "title-icon record " + record.nick;
+                icon.textContent = record.icon;
+                icon.title = record.name + "\n" + recordLine(game);
                 icons.appendChild(icon);
             });
 
