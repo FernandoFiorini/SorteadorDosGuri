@@ -30,6 +30,7 @@ const soundList = [
     { name: "Risada louca nardi", file: "risadaloucanardi.mp3" },
     { name: "Nardi grito louco", file: "nardigritolouco.mp3" },
     { name: "Vamo eu e tu com o mestre", file: "vamoeuetucommestre.mp3" },
+    { name: "Havan e do Brasil", file: "havanedobrasil.mp3" },
 
 ];
 
