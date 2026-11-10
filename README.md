@@ -185,7 +185,7 @@ Se a pessoa tem mais de uma medalha (sem combo), vale o efeito da de maior níve
 | 🎲 Pool infinita | Jogar com 50 campeões diferentes |
 | 🖐️ Pentakill | Fazer um pentakill (fica para sempre) |
 
-No sorteio, o card mostra o nick com o efeito, uma moldura no nível da medalha e uma etiqueta com os ícones: passando o mouse (ou tocando) aparece o que cada um significa.
+No sorteio, o card mostra só o nick com o efeito e uma moldura no nível da medalha, sem ícones. Elo, emblemas e recordes aparecem na listagem de jogadores.
 
 Em **Medalhas por jogador**, cada um tem uma linha com o progresso de cada medalha (anéis), os títulos que tem agora e os recordes que está segurando. Clique na linha para ver os detalhes.
 

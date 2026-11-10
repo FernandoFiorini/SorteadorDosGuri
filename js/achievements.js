@@ -1952,71 +1952,6 @@ function frameClass(info) {
 const FRAME_CLASSES = ["frame-lenda", "frame-bafeador", "frame-burro", "frame-duo", "frame-trio",
     "ftier-1", "ftier-2", "ftier-3"];
 
-/* Etiqueta discreta com os ícones das medalhas. Passar o mouse ou tocar
-   abre um balão explicando cada uma (e o combo, se tiver). */
-function medalTag(badges, emblems, rank) {
-
-    emblems = emblems || [];
-
-    const tag = document.createElement("button");
-    tag.type = "button";
-    tag.className = "medal-tag";
-    tag.setAttribute("aria-label", "O que significam as medalhas deste jogador");
-    tag.textContent = (rank ? [rank.elo.icon + " " + rank.elo.name] : [])
-        .concat(badges.map(b => b.icon + b.medal), emblems.map(e => e.icon)).join(" ");
-
-    const pop = document.createElement("span");
-    pop.className = "medal-pop";
-    pop.setAttribute("role", "tooltip");
-
-    const line = (icon, name, text) => {
-        const row = document.createElement("span");
-        row.className = "medal-pop-row";
-        const strong = document.createElement("strong");
-        strong.textContent = icon + " " + name;
-        const small = document.createElement("small");
-        small.textContent = text;
-        row.appendChild(strong);
-        row.appendChild(small);
-        pop.appendChild(row);
-    };
-
-    if (rank) {
-        line(rank.elo.icon, "Elo " + rank.elo.name + " · " + xpText(rank.xp) + " XP",
-            rank.next ? "Faltam " + xpText(rank.next.min - rank.xp) + " XP para " + rank.next.icon + " " + rank.next.name : "Elo máximo");
-    }
-
-    badges.forEach(b => line(b.icon, b.name + " · " + b.medal + " " + b.tierName,
-        "Medalha por " + b.desc.toLowerCase()));
-
-    const golds = badges.filter(b => b.tier === 3).length;
-
-    if (golds >= 2) {
-        const combo = BADGE_COMBO_EFFECTS[Math.min(golds, 3)];
-        line(combo.icon, golds >= 3 ? "Combo supremo" : "Combo de 2",
-            "Juntou " + golds + " medalhas no Ouro: " + combo.effect.replace(" no site", ""));
-    }
-
-    emblems.forEach(e => line(e.icon, e.name, "Emblema por " + e.desc.toLowerCase()));
-
-    tag.appendChild(pop);
-
-    /* Toque no celular: abre e fecha; tocar fora fecha */
-    tag.addEventListener("click", e => {
-        e.stopPropagation();
-        const open = !tag.classList.contains("open");
-        document.querySelectorAll(".medal-tag.open").forEach(t => t.classList.remove("open"));
-        tag.classList.toggle("open", open);
-    });
-
-    return tag;
-
-}
-
-document.addEventListener("click", () => {
-    document.querySelectorAll(".medal-tag.open").forEach(t => t.classList.remove("open"));
-});
-
 /* Aplica nick e moldura num card já revelado */
 function decorateResultCard(card, playerName, info) {
 
@@ -2029,20 +1964,15 @@ function decorateResultCard(card, playerName, info) {
 
     if (!name || !text || card.querySelector(".dice:not([style*='none'])")) return;
 
-    /* No sorteio valem medalhas e emblemas. Os recordes de uma partida
-       aparecem só na listagem de jogadores. */
+    /* No sorteio fica limpo: só o nick com o efeito da medalha e a moldura.
+       Nada de ícones (emblemas, elo, etiqueta); isso fica na listagem de jogadores. */
     const found = info !== undefined ? info : drawNicks[playerKey(name)];
-    const effects = found ? { badges: found.badges || [], emblems: found.emblems || [], records: [], rank: found.rank || null } : null;
+    const effects = found ? { badges: found.badges || [], emblems: [], records: [] } : null;
 
     text.innerHTML = "";
     const strong = document.createElement("strong");
     strong.appendChild(decoratedNick(name, effects));
     text.appendChild(strong);
-
-    const badges = (effects && effects.badges) || [];
-    const emblems = (effects && effects.emblems) || [];
-    const rank = effects && effects.rank;
-    if (badges.length + emblems.length > 0 || rank) text.appendChild(medalTag(badges, emblems, rank));
 
     FRAME_CLASSES.forEach(c => card.classList.remove(c));
 
@@ -2104,8 +2034,7 @@ function renderFramePreview() {
 
     samples.push(
         { label: "🔥 2 medalhas no Ouro", name: "Combo", info: { badges: golds.slice(0, 2), emblems: [], records: [] } },
-        { label: "✨ 3 medalhas no Ouro", name: "Supremo", info: { badges: golds, emblems: [], records: [] } },
-        { label: "📌 Emblemas", name: "Emblemas", info: { badges: [], emblems: EMBLEM_BADGES.slice(), records: [] } }
+        { label: "✨ 3 medalhas no Ouro", name: "Supremo", info: { badges: golds, emblems: [], records: [] } }
     );
 
     /* Fica recolhido: é só uma info de quem quiser ver o que dá para conquistar */

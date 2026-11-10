@@ -20,7 +20,7 @@ const CHANGELOG = [
             ["novo", "Medalhas com níveis 🥉 Bronze (25), 🥈 Prata (50) e 🥇 Ouro (100). Combos só valem com medalhas no Ouro."],
             ["novo", "Emblemas permanentes: 🌍 Rodou o mapa, 🎲 Pool infinita e 🖐️ Pentakill."],
             ["novo", "Recordes de uma partida: 🐐 Melhor Paulinho Molina e 🍼 Maior feedamento já registrado, com nota de 0 a 10."],
-            ["novo", "No sorteio, quem tem medalha aparece com nick especial, moldura no card e uma etiqueta explicando cada uma."],
+            ["novo", "No sorteio, quem tem medalha aparece com o nick especial e uma moldura no card (sem ícones, para não poluir)."],
             ["novo", "Resumo da partida (nota de cada um, MVP e pior), linha do tempo dos títulos e aviso quando um título troca de dono."],
             ["novo", "📝 Patch Notes: o histórico de atualizações do site."],
             ["melhoria", "Topo do site com o nome \"Sorteador dos guri\" e a cuia de chimarrão."],
