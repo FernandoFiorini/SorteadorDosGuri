@@ -69,6 +69,25 @@ function teamContext(p, info) {
 
 }
 
+function lobbyEntry(o) {
+    return {
+        c: o.championName,
+        p: o.teamPosition || o.individualPosition || "",
+        t: o.teamId,
+        k: o.kills || 0,
+        d: o.deaths || 0,
+        a: o.assists || 0,
+        g: o.goldEarned || 0,
+        dmg: o.totalDamageDealtToChampions || 0,
+        v: o.visionScore || 0,
+        cs: (o.totalMinionsKilled || 0) + (o.neutralMinionsKilled || 0),
+        cc: o.timeCCingOthers || 0,
+        hs: (o.totalHealsOnTeammates || 0) + (o.totalDamageShieldedOnTeammates || 0),
+        tk: o.totalDamageTaken || 0,
+        w: o.wardsPlaced || 0
+    };
+}
+
 function flexPlayer(p, info) {
 
     const c = p.challenges || {};
@@ -119,7 +138,10 @@ function flexRecord(id, info, puuids) {
     const players = {};
 
     info.participants.forEach(p => {
-        if (owners[p.puuid]) players[owners[p.puuid]] = flexPlayer(p, info);
+        if (owners[p.puuid]) {
+            players[owners[p.puuid]] = flexPlayer(p, info);
+            players[owners[p.puuid]].slot = info.participants.indexOf(p);
+        }
     });
 
     if (Object.keys(players).length === 0) return null;
@@ -128,7 +150,9 @@ function flexRecord(id, info, puuids) {
         start: info.gameStartTimestamp || info.gameCreation || 0,
         duration,
         version: (info.gameVersion || "").split(".").slice(0, 2).join("."),
-        players
+        players,
+        /* Os 10 da partida, resumidos: a nota compara só dentro da partida */
+        lobby: info.participants.map(lobbyEntry)
     };
 
 }

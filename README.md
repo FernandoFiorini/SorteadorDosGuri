@@ -319,7 +319,7 @@ Os segredos ficam em `scripts/coleta/.secrets/` (`riot.key` e `firebase-admin.js
 
 `flex.html` não tem link no site: abra direto pelo endereço (`/flex.html`). Mostra as partidas de Ranked Flex do Fer e do Rony: resumo, pontos fortes e o que melhorar, sugestão de pick (lanes e classes que funcionam, campeões para continuar, parecidos para experimentar e o que evitar), derrotas "de tabela" (você fez sua parte e o time não: ganhou a lane, KDA acima do time ou nota boa) que não pesam contra o campeão, por lane, por campeão, melhores e piores partidas e a aba da dupla.
 
-Os dados ficam em `privado/flex` no Firebase, que o site não lê direto. A página pega pelo Worker (`GET /flex`), e o botão "🔄 Atualizar" dela chama `POST /flex/atualizar`, que busca até 20 partidas novas por clique. A nota de cada partida (`js/flex-score.js`) compara só com partidas da mesma lane, e o suporte tem pesos próprios (visão, participação e o melhor estilo entre cura/escudo, tank ou dano). Os recordes do sorteador seguem com a nota simples, porque lá o campeão é sorteado.
+Os dados ficam em `privado/flex` no Firebase, que o site não lê direto. A página pega pelo Worker (`GET /flex`), e o botão "🔄 Atualizar" dela chama `POST /flex/atualizar`, que busca até 20 partidas novas por clique. A nota de cada partida (`js/flex-score.js`) olha só o que aconteceu nela, comparando com o oponente direto de lane (suporte contra suporte, mid contra mid): KDA, mortes, participação nos abates, ouro, dano, farm e visão. O histórico não influencia. O suporte tem pesos próprios (visão, participação e o estilo em que se destacou: cura/escudo, tank ou dano). Os recordes do sorteador seguem com a nota simples, porque lá o campeão é sorteado.
 
 Para puxar a temporada inteira pelo PC:
 

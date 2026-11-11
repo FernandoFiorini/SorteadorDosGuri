@@ -102,6 +102,7 @@ function gamesOf(key) {
                 start: g.start,
                 duration: g.duration,
                 together: !!g.players[other],
+                lobby: g.lobby || null,
                 csMin: s.cs / minutes,
                 goldMin: s.gold / minutes,
                 dmgMin: s.damage / minutes,
@@ -143,10 +144,10 @@ function summarize(list) {
 
 }
 
-/* Nota de 0 a 10 de cada partida, comparando com as outras partidas do
-   mesmo jogador na mesma lane (a conta fica em js/flex-score.js) */
+/* Nota de 0 a 10 de cada partida, olhando só o que aconteceu nela
+   (a conta fica em js/flex-score.js) */
 function scoreGames(list) {
-    scorePerformances(list, 2.2);
+    scorePerformances(list);
     list.forEach(markTeamContext);
 }
 
@@ -584,7 +585,7 @@ function gameLine(g, extra) {
     row.appendChild(info);
 
     const score = el("span", "flex-score", fmt(g.score, 1));
-    score.title = "Nota da partida (comparada com as suas outras na mesma lane)";
+    score.title = "Nota da partida: só o que aconteceu nela, contra o seu oponente de lane (5 = empate)";
     row.appendChild(score);
 
     if (g.tabela || g.carried) {
