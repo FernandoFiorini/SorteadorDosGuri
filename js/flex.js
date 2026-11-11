@@ -36,6 +36,9 @@ let flexTab = "fer";
 
 /* Nome bonito do campeão ("MonkeyKing" -> "Wukong"), vindo do Data Dragon */
 let champNames = {};
+
+/* Classes, atributos e alcance de cada campeão (para a sugestão de pick) */
+let champData = {};
 const champName = id => champNames[id] || id;
 
 /* -------------------- Utilidades -------------------- */
@@ -102,7 +105,13 @@ function gamesOf(key) {
                 csMin: s.cs / minutes,
                 goldMin: s.gold / minutes,
                 dmgMin: s.damage / minutes,
-                visionMin: s.vision / minutes
+                visionMin: s.vision / minutes,
+                /* Campos usados pela nota (js/flex-score.js) */
+                kp: s.killParticipation || 0,
+                wardsMin: (s.wardsPlaced || 0) / minutes,
+                healShieldMin: (s.healShield || 0) / minutes,
+                ccMin: (s.ccTime || 0) / minutes,
+                takenMin: (s.damageTaken || 0) / minutes
             });
         });
 
@@ -134,34 +143,10 @@ function summarize(list) {
 
 }
 
-/* Nota de 0 a 10 de cada partida, comparando com as outras do mesmo jogador */
-const SCORE_METRICS = [
-    { weight: 1.5, value: g => Math.log1p(kdaValue(g.kills, g.deaths, g.assists)) },
-    { weight: 1, value: g => -g.deaths },
-    { weight: 1, value: g => g.killParticipation },
-    { weight: 1, value: g => g.damageShare },
-    { weight: 1, value: g => g.goldMin },
-    { weight: 0.5, value: g => g.visionMin }
-];
-
+/* Nota de 0 a 10 de cada partida, comparando com as outras partidas do
+   mesmo jogador na mesma lane (a conta fica em js/flex-score.js) */
 function scoreGames(list) {
-
-    if (list.length === 0) return;
-
-    const stats = SCORE_METRICS.map(m => {
-        const values = list.map(m.value);
-        const mean = values.reduce((s, v) => s + v, 0) / values.length;
-        const sd = Math.sqrt(values.reduce((s, v) => s + (v - mean) ** 2, 0) / values.length) || 1;
-        return { mean, sd };
-    });
-
-    const totalWeight = SCORE_METRICS.reduce((s, m) => s + m.weight, 0);
-
-    list.forEach(g => {
-        const z = SCORE_METRICS.reduce((s, m, i) => s + m.weight * (m.value(g) - stats[i].mean) / stats[i].sd, 0) / totalWeight;
-        g.score = Math.max(0, Math.min(10, 5 + z * 2.2));
-    });
-
+    scorePerformances(list, 2.2);
 }
 
 function groupBy(list, keyFn) {
@@ -528,7 +513,7 @@ function gameLine(g, extra) {
     row.appendChild(info);
 
     const score = el("span", "flex-score", fmt(g.score, 1));
-    score.title = "Nota da partida (comparada com as suas outras)";
+    score.title = "Nota da partida (comparada com as suas outras na mesma lane)";
     row.appendChild(score);
 
     if (extra) row.appendChild(el("span", "flex-game-tag", extra));
@@ -609,6 +594,7 @@ function renderPlayer(key) {
 
     content.appendChild(summaryCard(list));
     content.appendChild(insightsCard(list));
+    content.appendChild(picksCard(list));
     content.appendChild(laneCard(list));
     content.appendChild(champCard(list));
     content.appendChild(bestWorstCard(list));
@@ -702,6 +688,7 @@ function renderDuo() {
             })));
 
     content.appendChild(comboCard);
+    content.appendChild(duoPicksCard(pairs));
 
     /* Duplas de campeões */
     const champPairs = groupBy(pairs, p => p.fer.champion + "|" + p.rony.champion);
@@ -723,6 +710,270 @@ function renderDuo() {
             })));
 
     content.appendChild(champCardBox);
+
+}
+
+/* -------------------- Sugestão de pick -------------------- */
+
+/* Classes do Data Dragon */
+const CLASS_INFO = {
+    Assassin: { name: "Assassino", icon: "🗡️" },
+    Fighter: { name: "Lutador", icon: "🪓" },
+    Mage: { name: "Mago", icon: "🔮" },
+    Marksman: { name: "Atirador", icon: "🏹" },
+    Support: { name: "Suporte", icon: "💚" },
+    Tank: { name: "Tanque", icon: "🛡️" }
+};
+
+/* Classes que fazem sentido em cada lane (classe principal do campeão) */
+const LANE_CLASSES = {
+    TOP: ["Fighter", "Tank"],
+    JUNGLE: ["Fighter", "Assassin", "Tank"],
+    MIDDLE: ["Mage", "Assassin"],
+    BOTTOM: ["Marksman"],
+    UTILITY: ["Support", "Tank", "Mage"]
+};
+
+/* Quanto uma partida "deu certo": metade vitória, metade nota */
+const gameRating = g => 0.5 * (g.win ? 1 : 0) + 0.5 * (g.score / 10);
+
+/* Média puxada para 0,5 quando há poucas partidas (1 jogo não vira certeza) */
+function smoothRating(games, weight = 3) {
+    return (games.reduce((s, g) => s + gameRating(g), 0) + 0.5 * weight) / (games.length + weight);
+}
+
+const className = tag => (CLASS_INFO[tag] || { name: tag }).name;
+const classIcon = tag => (CLASS_INFO[tag] || { icon: "❔" }).icon;
+const mainClass = id => champData[id] && champData[id].tags[0];
+
+/* "Perfil" do campeão: classes, atributos e se é de longe ou de perto */
+function champVector(id) {
+    const d = champData[id];
+    if (!d) return null;
+    const v = {};
+    d.tags.forEach((t, i) => { v["t" + t] = i === 0 ? 1 : 0.5; });
+    v.atk = (d.info.attack || 0) / 10 * 0.6;
+    v.def = (d.info.defense || 0) / 10 * 0.6;
+    v.mag = (d.info.magic || 0) / 10 * 0.6;
+    v.rng = d.ranged ? 0.7 : 0;
+    return v;
+}
+
+function similarity(a, b) {
+    const va = champVector(a);
+    const vb = champVector(b);
+    if (!va || !vb) return 0;
+    const keys = new Set(Object.keys(va).concat(Object.keys(vb)));
+    let dot = 0, na = 0, nb = 0;
+    keys.forEach(k => {
+        const x = va[k] || 0, y = vb[k] || 0;
+        dot += x * y; na += x * x; nb += y * y;
+    });
+    return dot / Math.sqrt(na * nb || 1);
+}
+
+/* A classe da Riot não diz quem é da selva (Riven e Kayn são "lutador").
+   Então a selva tem lista própria, e esses não são sugeridos nas lanes. */
+const JUNGLERS = new Set([
+    "Amumu", "Belveth", "Briar", "Diana", "Ekko", "Elise", "Evelynn", "Fiddlesticks",
+    "Gragas", "Graves", "Hecarim", "Ivern", "JarvanIV", "Jax", "Karthus", "Kayn",
+    "Khazix", "Kindred", "LeeSin", "Lillia", "MasterYi", "MonkeyKing", "Nidalee",
+    "Nocturne", "Nunu", "Poppy", "Rammus", "RekSai", "Rengar", "Sejuani", "Shaco",
+    "Shyvana", "Skarner", "Talon", "Taliyah", "Trundle", "Udyr", "Vi", "Viego",
+    "Volibear", "Warwick", "XinZhao", "Zac"
+]);
+
+const JUNGLE_ONLY = new Set([
+    "Belveth", "Briar", "Elise", "Evelynn", "Hecarim", "Ivern", "JarvanIV", "Kayn",
+    "Khazix", "Kindred", "LeeSin", "Lillia", "MasterYi", "Nidalee", "Nocturne",
+    "Nunu", "Rammus", "RekSai", "Rengar", "Sejuani", "Shaco", "Shyvana", "Skarner",
+    "Udyr", "Vi", "Viego", "Warwick", "XinZhao", "Zac"
+]);
+
+function fitsLane(id, lane) {
+    if (lane === "JUNGLE") return JUNGLERS.has(id);
+    const tag = mainClass(id);
+    return !!tag && !JUNGLE_ONLY.has(id) && (LANE_CLASSES[lane] || []).includes(tag);
+}
+
+/* O que os dois campeões têm em comum, para explicar a sugestão */
+function similarityReason(id, seed) {
+    const a = champData[id], b = champData[seed];
+    if (!a || !b) return "";
+    const shared = a.tags.filter(t => b.tags.includes(t)).map(t => className(t).toLowerCase());
+    const range = a.ranged === b.ranged ? (a.ranged ? "de longe" : "corpo a corpo") : null;
+    return [shared.join(" e "), range].filter(Boolean).join(", ");
+}
+
+function pickSuggestions(list) {
+
+    const lanes = groupBy(list.filter(g => FLEX_LANES[g.position]), g => g.position);
+
+    const laneRank = Object.keys(lanes)
+        .map(pos => ({ pos, games: lanes[pos], rating: smoothRating(lanes[pos]) }))
+        /* Lanes com poucas partidas vão para o fim, mesmo com bom resultado */
+        .sort((a, b) => (b.games.length >= FLEX_MIN_SAMPLE) - (a.games.length >= FLEX_MIN_SAMPLE) || b.rating - a.rating);
+
+    const byClass = groupBy(list.filter(g => mainClass(g.champion)), g => mainClass(g.champion));
+
+    const classRank = Object.keys(byClass)
+        .map(tag => ({ tag, games: byClass[tag], rating: smoothRating(byClass[tag]) }))
+        .sort((a, b) => b.rating - a.rating);
+
+    const classRating = {};
+    classRank.forEach(c => { classRating[c.tag] = c.rating; });
+
+    const byChamp = groupBy(list, g => g.champion);
+
+    const champRank = Object.keys(byChamp)
+        .map(id => {
+            const games = byChamp[id];
+            const pos = groupBy(games, g => g.position);
+            return {
+                id, games,
+                rating: smoothRating(games, 2),
+                lane: Object.keys(pos).sort((a, b) => pos[b].length - pos[a].length)[0]
+            };
+        })
+        .sort((a, b) => b.rating - a.rating);
+
+    const comfort = champRank.filter(c => c.rating >= 0.55).slice(0, 5);
+    const avoid = champRank.filter(c => c.games.length >= 2 && c.rating < 0.45).slice(-3).reverse();
+
+    /* Campeões novos parecidos com o que deu certo, nas melhores lanes */
+    /* Só lanes com partidas suficientes viram recomendação */
+    const solidLanes = laneRank.filter(l => l.games.length >= FLEX_MIN_SAMPLE);
+
+    const tryNew = solidLanes.slice(0, 2).map(lane => {
+
+        const seeds = champRank.filter(c => c.games.some(g => g.position === lane.pos) && c.rating >= 0.52);
+
+        /* Sem nada que deu certo nessa lane: usa o que deu certo em geral */
+        const base = seeds.length ? seeds : champRank.filter(c => c.rating >= 0.52);
+
+        const picks = Object.keys(champData)
+            .filter(id => fitsLane(id, lane.pos) && !byChamp[id])
+            .map(id => {
+                let best = null;
+                base.forEach(seed => {
+                    if (seed.id === id) return;
+                    const value = similarity(id, seed.id) * (0.5 + seed.rating);
+                    if (!best || value > best.value) best = { value, seed: seed.id };
+                });
+                const bonus = 0.15 * ((classRating[mainClass(id)] || 0.5) - 0.5);
+                return best && { id, seed: best.seed, value: best.value + bonus };
+            })
+            .filter(Boolean)
+            .sort((a, b) => b.value - a.value)
+            .slice(0, 4);
+
+        return { lane, picks };
+
+    }).filter(x => x.picks.length);
+
+    return { laneRank, classRank, comfort, avoid, tryNew, bestLane: solidLanes[0] && solidLanes[0].pos };
+
+}
+
+function chip(content, sub, kind) {
+    const c = el("div", "flex-chip" + (kind ? " " + kind : ""));
+    if (typeof content === "string") c.appendChild(el("strong", null, content));
+    else c.appendChild(content);
+    if (sub) c.appendChild(el("span", null, sub));
+    return c;
+}
+
+function champChip(id, sub, kind) {
+    const head = el("strong", "flex-champ");
+    head.appendChild(champIcon(id));
+    head.appendChild(document.createTextNode(champName(id)));
+    return chip(head, sub, kind);
+}
+
+function wrText(games) {
+    const wins = games.filter(g => g.win).length;
+    return pct(wins / games.length) + " em " + games.length + " jogo" + (games.length > 1 ? "s" : "");
+}
+
+function picksCard(list) {
+
+    const box = card("🎯 Sugestão de pick");
+
+    if (Object.keys(champData).length === 0) {
+        box.appendChild(el("p", "flex-muted", "Não deu para carregar a lista de campeões agora. Tente recarregar a página."));
+        return box;
+    }
+
+    const s = pickSuggestions(list);
+
+    const section = (title, chips) => {
+        if (!chips.length) return;
+        box.appendChild(el("h3", "flex-pick-h", title));
+        const row = el("div", "flex-chips");
+        chips.forEach(c => row.appendChild(c));
+        box.appendChild(row);
+    };
+
+    section("🗺️ Lanes", s.laneRank.map((l, i) =>
+        chip(laneIcon(l.pos) + " " + laneName(l.pos), wrText(l.games), l.pos === s.bestLane ? "best" : l.rating < 0.45 ? "weak" : "")));
+
+    section("🧬 Classes que funcionam", s.classRank.map((c, i) =>
+        chip(classIcon(c.tag) + " " + className(c.tag), wrText(c.games), i === 0 ? "best" : c.rating < 0.45 ? "weak" : "")));
+
+    section("✅ Continue jogando", s.comfort.map(c =>
+        champChip(c.id, laneName(c.lane) + " · " + wrText(c.games), "best")));
+
+    s.tryNew.forEach(t => section("🆕 Experimente de " + laneName(t.lane.pos),
+        t.picks.map(p => {
+            const why = similarityReason(p.id, p.seed);
+            return champChip(p.id, "parecido com " + champName(p.seed) + (why ? " (" + why + ")" : ""));
+        })));
+
+    section("⚠️ Melhor evitar por enquanto", s.avoid.map(c =>
+        champChip(c.id, laneName(c.lane) + " · " + wrText(c.games), "weak")));
+
+    box.appendChild(el("p", "flex-note",
+        "Cada partida vale metade pela vitória e metade pela nota. Com poucas partidas o resultado é puxado para o meio, então 1 vitória sozinha não vira certeza. Os parecidos saem da classe, dos atributos e do alcance do campeão."));
+
+    return box;
+
+}
+
+/* Sugestão para a dupla: combinações de lane e de classe */
+function duoPicksCard(pairs) {
+
+    const box = card("🎯 Sugestão para a dupla");
+
+    const rate = list => smoothRating(list.map(p => ({ win: p.fer.win, score: (p.fer.score + p.rony.score) / 2 })));
+
+    const section = (title, groups, label) => {
+        const ranked = Object.keys(groups)
+            .map(k => ({ k, games: groups[k], rating: rate(groups[k]) }))
+            /* Combinação jogada uma vez só não vira sugestão */
+            .filter(r => r.games.length >= 2)
+            .sort((a, b) => b.rating - a.rating);
+        if (!ranked.length) return;
+        box.appendChild(el("h3", "flex-pick-h", title));
+        const row = el("div", "flex-chips");
+        ranked.slice(0, 4).forEach((r, i) => row.appendChild(
+            chip(label(r.k), wrText(r.games.map(p => p.fer)), i === 0 ? "best" : r.rating < 0.45 ? "weak" : "")));
+        box.appendChild(row);
+    };
+
+    section("🗺️ Lanes", groupBy(pairs, p => p.fer.position + "|" + p.rony.position), k => {
+        const [a, b] = k.split("|");
+        return "Fer " + laneIcon(a) + " " + laneName(a) + " + Rony " + laneIcon(b) + " " + laneName(b);
+    });
+
+    if (Object.keys(champData).length) {
+        section("🧬 Classes", groupBy(pairs.filter(p => mainClass(p.fer.champion) && mainClass(p.rony.champion)),
+            p => mainClass(p.fer.champion) + "|" + mainClass(p.rony.champion)), k => {
+            const [a, b] = k.split("|");
+            return "Fer " + classIcon(a) + " " + className(a) + " + Rony " + classIcon(b) + " " + className(b);
+        });
+    }
+
+    return box;
 
 }
 
@@ -840,7 +1091,11 @@ async function loadDdragonVersion() {
         const versions = await (await fetch("https://ddragon.leagueoflegends.com/api/versions.json")).json();
         IMAGE_URL = "https://ddragon.leagueoflegends.com/cdn/" + versions[0] + "/img/champion/";
         const champs = await (await fetch("https://ddragon.leagueoflegends.com/cdn/" + versions[0] + "/data/pt_BR/champion.json")).json();
-        Object.keys(champs.data).forEach(id => { champNames[id] = champs.data[id].name; });
+        Object.keys(champs.data).forEach(id => {
+            const c = champs.data[id];
+            champNames[id] = c.name;
+            champData[id] = { tags: c.tags || [], info: c.info || {}, ranged: (c.stats && c.stats.attackrange) > 300 };
+        });
     } catch (e) { }
 }
 

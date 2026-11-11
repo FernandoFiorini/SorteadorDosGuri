@@ -434,3 +434,57 @@
     }
 
 }
+
+/* Sugestão de pick */
+.flex-pick-h {
+    margin: 16px 0 8px !important;
+    font-size: 14px !important;
+    color: #b8c4d0 !important;
+}
+
+.flex-card > .flex-pick-h:first-of-type {
+    margin-top: 0 !important;
+}
+
+.flex-chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.flex-chip {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+    padding: 8px 12px;
+    border-radius: 10px;
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid #22334a;
+    min-width: 0;
+    max-width: 100%;
+}
+
+.flex-chip strong {
+    font-size: 14px;
+    color: #f0f3f6;
+}
+
+.flex-chip > span {
+    font-size: 12px;
+    color: #8fa0b2;
+}
+
+.flex-chip .flex-champ-icon {
+    width: 24px;
+    height: 24px;
+}
+
+.flex-chip.best {
+    border-color: rgba(76, 175, 120, 0.55);
+    background: rgba(76, 175, 120, 0.08);
+}
+
+.flex-chip.weak {
+    border-color: rgba(220, 80, 80, 0.45);
+    background: rgba(220, 80, 80, 0.06);
+}

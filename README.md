@@ -317,9 +317,11 @@ Os segredos ficam em `scripts/coleta/.secrets/` (`riot.key` e `firebase-admin.js
 
 #### Ranked Flex (página escondida)
 
-`flex.html` não tem link no site: abra direto pelo endereço (`/flex.html`). Mostra as partidas de Ranked Flex do Fer e do Rony: resumo, pontos fortes e o que melhorar, por lane, por campeão, melhores e piores partidas e a aba da dupla.
+`flex.html` não tem link no site: abra direto pelo endereço (`/flex.html`). Mostra as partidas de Ranked Flex do Fer e do Rony: resumo, pontos fortes e o que melhorar, sugestão de pick (lanes e classes que funcionam, campeões para continuar, parecidos para experimentar e o que evitar), por lane, por campeão, melhores e piores partidas e a aba da dupla.
 
-Os dados ficam em `privado/flex` no Firebase, que o site não lê direto. A página pega pelo Worker (`GET /flex`), e o botão "🔄 Atualizar" dela chama `POST /flex/atualizar`, que busca até 20 partidas novas por clique. Para puxar a temporada inteira pelo PC:
+Os dados ficam em `privado/flex` no Firebase, que o site não lê direto. A página pega pelo Worker (`GET /flex`), e o botão "🔄 Atualizar" dela chama `POST /flex/atualizar`, que busca até 20 partidas novas por clique. A nota de cada partida (`js/flex-score.js`) compara só com partidas da mesma lane, e o suporte tem pesos próprios (visão, participação e o melhor estilo entre cura/escudo, tank ou dano). Os recordes do sorteador seguem com a nota simples, porque lá o campeão é sorteado.
+
+Para puxar a temporada inteira pelo PC:
 
 ```bash
 cd scripts/coleta

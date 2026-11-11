@@ -12,6 +12,10 @@
    Para gravar:
        node flex.js --gravar
 
+   Para recalcular as que já estão salvas (usa o cache, sem chamar
+   a Riot de novo), por exemplo depois de mudar o que é guardado:
+       node flex.js --refazer --gravar
+
    Usa os mesmos segredos e o mesmo cache de partidas do coletar.js.
    Partidas já salvas não são buscadas de novo.
 ===================================================== */
@@ -131,7 +135,8 @@ async function main() {
 
     }
 
-    const fresh = [...ids].filter(id => !saved[id] && !skipped[id]);
+    const redo = arg("refazer") === true;
+    const fresh = [...ids].filter(id => redo || (!saved[id] && !skipped[id]));
 
     console.log("Partidas de Flex desde " + since + ": " + ids.size + " (novas: " + fresh.length + ")");
 

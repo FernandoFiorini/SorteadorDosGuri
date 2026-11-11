@@ -70,6 +70,9 @@ function flexPlayer(p, info) {
         objectives: (p.dragonKills || 0) + (p.baronKills || 0) + (c.riftHeraldTakedowns || 0),
         multikill: p.pentaKills ? 5 : p.quadraKills ? 4 : p.tripleKills ? 3 : p.doubleKills ? 2 : 0,
         surrender: !!(p.gameEndedInSurrender),
+        ccTime: p.timeCCingOthers || 0,
+        healShield: (p.totalHealsOnTeammates || 0) + (p.totalDamageShieldedOnTeammates || 0),
+        mitigated: p.damageSelfMitigated || 0,
         opp: opp ? laneStats(opp) : null
     });
 
