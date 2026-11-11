@@ -147,6 +147,68 @@ function summarize(list) {
    mesmo jogador na mesma lane (a conta fica em js/flex-score.js) */
 function scoreGames(list) {
     scorePerformances(list, 2.2);
+    list.forEach(markTeamContext);
+}
+
+/* ---------- Derrota "de tabela" e vitória "carregado" ----------
+
+   Olha se a pessoa fez a parte dela, independente do resultado:
+   1. lane: não perdeu a lane para o oponente direto (ouro e mortes);
+   2. time: KDA melhor que o resto do time e não morreu mais que eles;
+   3. nota: nota da partida boa (5,5 ou mais).
+   Derrota com 2 dos 3 = "de tabela": não pesa contra o campeão.
+   Vitória com 0 dos 3 = "carregado": não conta como mérito. */
+
+const median = values => {
+    const v = values.slice().sort((a, b) => a - b);
+    return v.length ? (v.length % 2 ? v[(v.length - 1) / 2] : (v[v.length / 2 - 1] + v[v.length / 2]) / 2) : 0;
+};
+
+function markTeamContext(g) {
+
+    g.tabela = false;
+    g.carried = false;
+    g.contextWhy = [];
+
+    const team = g.team;
+
+    if (!team || !team.allies || team.allies.length === 0) return;
+
+    const myKda = kdaValue(g.kills, g.deaths, g.assists);
+    const allyKda = median(team.allies.map(a => kdaValue(a.k, a.d, a.a)));
+    const allyDeaths = avg(team.allies, a => a.d);
+
+    const laneOk = g.opp ? (g.gold - g.opp.gold >= -500 && g.deaths <= g.opp.deaths + 1) : null;
+    const teamOk = myKda >= allyKda && g.deaths <= allyDeaths + 0.5;
+    const scoreOk = g.score >= 5.5;
+
+    const checks = [laneOk, teamOk, scoreOk].filter(x => x !== null);
+    const passed = checks.filter(Boolean).length;
+
+    if (!g.win && passed >= 2) {
+
+        g.tabela = true;
+
+        if (laneOk) g.contextWhy.push("ganhou ou empatou a lane contra " + champName(g.opp.champion));
+        if (teamOk) g.contextWhy.push("KDA " + fmt(myKda, 1) + " contra " + fmt(allyKda, 1) + " do resto do time");
+        if (scoreOk) g.contextWhy.push("nota " + fmt(g.score, 1));
+
+        /* Quem afundou: aliado com muitas mortes e KDA ruim */
+        const sunk = team.allies
+            .filter(a => a.d >= 7 && kdaValue(a.k, a.d, a.a) < 1.5)
+            .sort((a, b) => b.d - a.d)[0];
+
+        if (sunk) g.contextWhy.push(champName(sunk.c) + " foi " + sunk.k + "/" + sunk.d + "/" + sunk.a);
+
+    } else if (g.win && passed === 0) {
+
+        g.carried = true;
+        if (laneOk === false) g.contextWhy.push("perdeu a lane para " + champName(g.opp.champion));
+        g.contextWhy.push("KDA " + fmt(myKda, 1) + " contra " + fmt(allyKda, 1) + " do resto do time");
+        g.contextWhy.push("nota " + fmt(g.score, 1));
+
+    }
+
 }
 
 function groupBy(list, keyFn) {
@@ -349,6 +411,15 @@ function summaryCard(list) {
     tiles.appendChild(statTile("CS por min", fmt(s.csMin), fmt(s.csAt10, 0) + " aos 10 min"));
     tiles.appendChild(statTile("Ouro por min", fmt(s.goldMin, 0)));
     tiles.appendChild(statTile("Visão por min", fmt(s.visionMin, 2), fmt(s.wards) + " sentinelas de controle"));
+
+    const losses = list.filter(g => !g.win);
+    const tabela = losses.filter(g => g.tabela).length;
+    const carried = list.filter(g => g.carried).length;
+
+    if (losses.length) {
+        tiles.appendChild(statTile("Derrotas de tabela", tabela + " de " + losses.length,
+            "fez a parte e o time não" + (carried ? " · " + carried + (carried > 1 ? " vitórias carregadas" : " vitória carregada") : "")));
+    }
     box.appendChild(tiles);
 
     /* Forma recente */
@@ -515,6 +586,12 @@ function gameLine(g, extra) {
     const score = el("span", "flex-score", fmt(g.score, 1));
     score.title = "Nota da partida (comparada com as suas outras na mesma lane)";
     row.appendChild(score);
+
+    if (g.tabela || g.carried) {
+        const tag = el("span", "flex-game-tag " + (g.tabela ? "tabela" : "carried"), g.tabela ? "🧱 de tabela" : "🎒 carregado");
+        tag.title = g.contextWhy.join(" · ");
+        row.appendChild(tag);
+    }
 
     if (extra) row.appendChild(el("span", "flex-game-tag", extra));
 
@@ -735,7 +812,7 @@ const LANE_CLASSES = {
 };
 
 /* Quanto uma partida "deu certo": metade vitória, metade nota */
-const gameRating = g => 0.5 * (g.win ? 1 : 0) + 0.5 * (g.score / 10);
+const gameRating = g => 0.5 * (g.tabela || g.carried ? 0.5 : g.win ? 1 : 0) + 0.5 * (g.score / 10);
 
 /* Média puxada para 0,5 quando há poucas partidas (1 jogo não vira certeza) */
 function smoothRating(games, weight = 3) {
@@ -838,7 +915,8 @@ function pickSuggestions(list) {
         .sort((a, b) => b.rating - a.rating);
 
     const comfort = champRank.filter(c => c.rating >= 0.55).slice(0, 5);
-    const avoid = champRank.filter(c => c.games.length >= 2 && c.rating < 0.45).slice(-3).reverse();
+    /* Só manda evitar com pelo menos 2 derrotas que foram culpa sua (não de tabela) */
+    const avoid = champRank.filter(c => c.games.filter(g => !g.win && !g.tabela).length >= 2 && c.rating < 0.45).slice(-3).reverse();
 
     /* Campeões novos parecidos com o que deu certo, nas melhores lanes */
     /* Só lanes com partidas suficientes viram recomendação */
@@ -890,6 +968,11 @@ function champChip(id, sub, kind) {
     return chip(head, sub, kind);
 }
 
+function tabelaText(games) {
+    const n = games.filter(g => g.tabela).length;
+    return n ? " · " + n + " de tabela" : "";
+}
+
 function wrText(games) {
     const wins = games.filter(g => g.win).length;
     return pct(wins / games.length) + " em " + games.length + " jogo" + (games.length > 1 ? "s" : "");
@@ -930,10 +1013,10 @@ function picksCard(list) {
         })));
 
     section("⚠️ Melhor evitar por enquanto", s.avoid.map(c =>
-        champChip(c.id, laneName(c.lane) + " · " + wrText(c.games), "weak")));
+        champChip(c.id, laneName(c.lane) + " · " + wrText(c.games) + tabelaText(c.games), "weak")));
 
     box.appendChild(el("p", "flex-note",
-        "Cada partida vale metade pela vitória e metade pela nota. Com poucas partidas o resultado é puxado para o meio, então 1 vitória sozinha não vira certeza. Os parecidos saem da classe, dos atributos e do alcance do campeão."));
+        "Cada partida vale metade pela vitória e metade pela nota. Derrota de tabela (você fez sua parte e o time não) e vitória carregada contam como neutras. Com poucas partidas o resultado é puxado para o meio, então 1 vitória sozinha não vira certeza. Os parecidos saem da classe, dos atributos e do alcance do campeão."));
 
     return box;
 

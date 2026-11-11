@@ -488,3 +488,16 @@
     border-color: rgba(220, 80, 80, 0.45);
     background: rgba(220, 80, 80, 0.06);
 }
+
+/* Derrota de tabela / vitória carregada */
+.flex-game-tag.tabela {
+    color: #e6c27a;
+    border-color: rgba(200, 170, 110, 0.5);
+    cursor: help;
+}
+
+.flex-game-tag.carried {
+    color: #9fb4c8;
+    border-style: dashed;
+    cursor: help;
+}

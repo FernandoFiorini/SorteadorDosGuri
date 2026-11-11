@@ -42,6 +42,33 @@ function laneStats(p) {
 
 }
 
+/* Como o resto do time foi: serve para saber se a derrota foi "de tabela" */
+function teamContext(p, info) {
+
+    const allies = info.participants.filter(o => o.teamId === p.teamId);
+    const enemies = info.participants.filter(o => o.teamId !== p.teamId);
+    const sum = (list, f) => list.reduce((s, o) => s + (o[f] || 0), 0);
+
+    return {
+        kills: sum(allies, "kills"),
+        deaths: sum(allies, "deaths"),
+        gold: sum(allies, "goldEarned"),
+        enemyKills: sum(enemies, "kills"),
+        enemyGold: sum(enemies, "goldEarned"),
+        /* Os outros 4 do time, resumidos */
+        allies: allies.filter(o => o.puuid !== p.puuid).map(o => ({
+            c: o.championName,
+            p: o.teamPosition || o.individualPosition || "",
+            k: o.kills || 0,
+            d: o.deaths || 0,
+            a: o.assists || 0,
+            g: o.goldEarned || 0,
+            dmg: o.totalDamageDealtToChampions || 0
+        }))
+    };
+
+}
+
 function flexPlayer(p, info) {
 
     const c = p.challenges || {};
@@ -73,7 +100,8 @@ function flexPlayer(p, info) {
         ccTime: p.timeCCingOthers || 0,
         healShield: (p.totalHealsOnTeammates || 0) + (p.totalDamageShieldedOnTeammates || 0),
         mitigated: p.damageSelfMitigated || 0,
-        opp: opp ? laneStats(opp) : null
+        opp: opp ? laneStats(opp) : null,
+        team: teamContext(p, info)
     });
 
 }
