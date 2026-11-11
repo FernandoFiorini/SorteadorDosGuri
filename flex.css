@@ -1,0 +1,436 @@
+/* =====================================================
+   FLEX DOS GURI (flex.html)
+   Usa a base do style.css; aqui só o que é da página.
+===================================================== */
+
+.flex-page {
+    max-width: 1000px;
+}
+
+.flex-toolbar {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    margin-bottom: 18px;
+}
+
+.flex-tabs {
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+}
+
+.flex-tab {
+    background: rgba(13, 24, 36, 0.95);
+    border: 1px solid #27384b;
+    color: #b8c4d0;
+    padding: 8px 18px;
+    border-radius: 999px;
+    cursor: pointer;
+    font-size: 15px;
+    font-weight: bold;
+}
+
+.flex-tab:hover {
+    border-color: #c8aa6e;
+    color: #f5f5f5;
+}
+
+.flex-tab.active {
+    background: #c8aa6e;
+    border-color: #c8aa6e;
+    color: #0b1420;
+}
+
+.flex-actions {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.flex-update-status {
+    font-size: 13px;
+    color: #8fa0b2;
+}
+
+.flex-update {
+    background: transparent;
+    border: 1px solid #c8aa6e;
+    color: #c8aa6e;
+    padding: 7px 14px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+.flex-update:hover:not(:disabled) {
+    background: rgba(200, 170, 110, 0.12);
+}
+
+.flex-update:disabled {
+    opacity: 0.5;
+    cursor: wait;
+}
+
+.flex-empty {
+    text-align: center;
+    color: #8fa0b2;
+}
+
+.flex-h {
+    margin: 0 0 14px;
+    font-size: 19px;
+    color: #c8aa6e;
+}
+
+.flex-card h3 {
+    margin: 0 0 10px;
+    font-size: 15px;
+    color: #dfe6ee;
+}
+
+.flex-sub-h {
+    margin-top: 20px !important;
+}
+
+.flex-muted {
+    color: #8fa0b2;
+    font-size: 13px;
+}
+
+.flex-note {
+    margin: 14px 0 0;
+    font-size: 12px;
+    color: #6f8194;
+}
+
+/* Números do resumo */
+.flex-tiles {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    gap: 10px;
+}
+
+.flex-tile {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid #22334a;
+    border-radius: 10px;
+    padding: 12px;
+}
+
+.flex-tile-value {
+    font-size: 22px;
+    font-weight: bold;
+    color: #f5f5f5;
+    font-variant-numeric: tabular-nums;
+}
+
+.flex-tile-label {
+    font-size: 13px;
+    color: #b8c4d0;
+}
+
+.flex-tile-sub {
+    font-size: 12px;
+    color: #7c8ea1;
+}
+
+/* Forma recente */
+.flex-form {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 5px;
+    margin-top: 16px;
+}
+
+.flex-form-label {
+    font-size: 13px;
+    color: #8fa0b2;
+    margin-right: 4px;
+}
+
+.flex-dot {
+    width: 24px;
+    height: 24px;
+    border-radius: 6px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 11px;
+    font-weight: bold;
+    cursor: default;
+}
+
+.flex-dot.win {
+    background: rgba(76, 175, 120, 0.22);
+    color: #6fd39a;
+    border: 1px solid rgba(76, 175, 120, 0.5);
+}
+
+.flex-dot.loss {
+    background: rgba(220, 80, 80, 0.18);
+    color: #f08a8a;
+    border: 1px solid rgba(220, 80, 80, 0.45);
+}
+
+.flex-streak {
+    margin-left: 8px;
+    font-size: 13px;
+    font-weight: bold;
+}
+
+.flex-streak.win {
+    color: #6fd39a;
+}
+
+.flex-streak.loss {
+    color: #8fc3f0;
+}
+
+/* Análise */
+.flex-insights {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+}
+
+.flex-insight-col {
+    background: rgba(255, 255, 255, 0.02);
+    border: 1px solid #22334a;
+    border-top: 3px solid #4caf78;
+    border-radius: 10px;
+    padding: 14px;
+    min-width: 0;
+}
+
+.flex-insight-col.bad {
+    border-top-color: #e0a04a;
+}
+
+.flex-insight {
+    display: flex;
+    gap: 10px;
+    padding: 8px 0;
+    border-top: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.flex-insight:first-of-type {
+    border-top: none;
+}
+
+.flex-insight-icon {
+    font-size: 18px;
+    line-height: 1.2;
+}
+
+.flex-insight strong {
+    display: block;
+    font-size: 14px;
+    color: #f0f3f6;
+}
+
+.flex-insight span {
+    font-size: 13px;
+    color: #a7b5c3;
+}
+
+.flex-decisive {
+    margin-top: 16px;
+    padding: 14px;
+    border-radius: 10px;
+    background: rgba(200, 170, 110, 0.07);
+    border: 1px solid rgba(200, 170, 110, 0.3);
+}
+
+.flex-decisive ul {
+    margin: 0;
+    padding-left: 18px;
+    color: #d9dfe6;
+    font-size: 14px;
+    line-height: 1.6;
+}
+
+/* Tabelas */
+.flex-table-wrap {
+    overflow-x: auto;
+}
+
+.flex-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 14px;
+    font-variant-numeric: tabular-nums;
+}
+
+.flex-table th {
+    text-align: left;
+    font-size: 12px;
+    font-weight: normal;
+    color: #8fa0b2;
+    padding: 6px 10px;
+    border-bottom: 1px solid #27384b;
+    white-space: nowrap;
+}
+
+.flex-table td {
+    padding: 7px 10px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    white-space: nowrap;
+}
+
+.flex-table tbody tr:hover {
+    background: rgba(255, 255, 255, 0.03);
+}
+
+.flex-champ {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.flex-champ-icon {
+    width: 28px;
+    height: 28px;
+    border-radius: 6px;
+    flex-shrink: 0;
+}
+
+.flex-wr.good,
+.flex-diff.good {
+    color: #6fd39a;
+    font-weight: bold;
+}
+
+.flex-wr.bad,
+.flex-diff.bad {
+    color: #f08a8a;
+    font-weight: bold;
+}
+
+.flex-better {
+    color: #c8aa6e;
+    font-weight: bold;
+}
+
+/* Linha de partida */
+.flex-game {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 8px 10px;
+    margin-top: 6px;
+    border-radius: 8px;
+    border-left: 3px solid #4caf78;
+    background: rgba(76, 175, 120, 0.06);
+}
+
+.flex-game.loss {
+    border-left-color: #dc5050;
+    background: rgba(220, 80, 80, 0.06);
+}
+
+.flex-game .flex-champ-icon {
+    width: 34px;
+    height: 34px;
+}
+
+.flex-game-info {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    min-width: 0;
+    flex: 1;
+}
+
+.flex-game-info strong {
+    font-size: 14px;
+}
+
+.flex-game-info span {
+    font-size: 12px;
+    color: #a7b5c3;
+}
+
+.flex-score {
+    font-size: 16px;
+    font-weight: bold;
+    color: #c8aa6e;
+    font-variant-numeric: tabular-nums;
+}
+
+.flex-game-tag {
+    font-size: 11px;
+    color: #8fa0b2;
+    border: 1px solid #27384b;
+    border-radius: 999px;
+    padding: 1px 8px;
+}
+
+/* Recordes */
+.flex-records {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 10px;
+}
+
+.flex-record {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid #22334a;
+    border-radius: 10px;
+    padding: 10px 12px;
+}
+
+.flex-record-label {
+    font-size: 12px;
+    color: #8fa0b2;
+}
+
+.flex-record-value {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-weight: bold;
+}
+
+.flex-record-value .flex-champ-icon {
+    width: 24px;
+    height: 24px;
+}
+
+/* Histórico */
+.flex-history summary {
+    cursor: pointer;
+    font-size: 16px;
+    font-weight: bold;
+    color: #c8aa6e;
+}
+
+@media (max-width: 700px) {
+
+    .flex-insights {
+        grid-template-columns: 1fr;
+    }
+
+    .flex-toolbar {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .flex-actions {
+        justify-content: space-between;
+    }
+
+    .flex-game-info span {
+        white-space: normal;
+    }
+
+}

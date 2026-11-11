@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="robots" content="noindex, nofollow">
+    <title>Flex dos guri</title>
+    <link rel="icon" type="image/svg+xml" href="icon.svg">
+
+    <link rel="stylesheet" href="style.css?v=15">
+    <link rel="stylesheet" href="flex.css?v=1">
+</head>
+
+<!-- Página escondida: não tem link no site. Acesse por /flex.html -->
+
+<body>
+
+    <div class="container flex-page">
+
+        <header>
+            <h1><img class="header-icon" src="icon.svg" alt="" aria-hidden="true">Flex dos guri</h1>
+            <p class="header-sub"><span id="flexSubtitle">Carregando partidas...</span></p>
+        </header>
+
+        <div class="flex-toolbar">
+            <div class="flex-tabs" id="flexTabs" role="tablist"></div>
+            <div class="flex-actions">
+                <span class="flex-update-status" id="flexUpdateStatus"></span>
+                <button type="button" class="flex-update" id="flexUpdate">🔄 Atualizar</button>
+            </div>
+        </div>
+
+        <main id="flexContent">
+            <div class="card flex-empty">Carregando...</div>
+        </main>
+
+        <footer class="rodape">
+            <p><a href="./">← Voltar ao sorteador</a></p>
+        </footer>
+
+    </div>
+
+    <script src="js/config.js?v=15"></script>
+    <script src="js/flex.js?v=1"></script>
+
+</body>
+
+</html>

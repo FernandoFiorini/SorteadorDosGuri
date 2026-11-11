@@ -315,6 +315,17 @@ node coletar.js --desde=2026-10-19 --gravar
 
 Os segredos ficam em `scripts/coleta/.secrets/` (`riot.key` e `firebase-admin.json`), ignorados pelo Git.
 
+#### Ranked Flex (página escondida)
+
+`flex.html` não tem link no site: abra direto pelo endereço (`/flex.html`). Mostra as partidas de Ranked Flex do Fer e do Rony: resumo, pontos fortes e o que melhorar, por lane, por campeão, melhores e piores partidas e a aba da dupla.
+
+Os dados ficam em `privado/flex` no Firebase, que o site não lê direto. A página pega pelo Worker (`GET /flex`), e o botão "🔄 Atualizar" dela chama `POST /flex/atualizar`, que busca até 20 partidas novas por clique. Para puxar a temporada inteira pelo PC:
+
+```bash
+cd scripts/coleta
+node flex.js --gravar
+```
+
 ---
 
 ## 🎮 Como jogar

@@ -12,11 +12,14 @@
 
 import configSource from "../../js/config.js";
 import ligacao from "../../scripts/coleta/ligacao.js";
+import flexCore from "../../scripts/coleta/flex-core.js";
 
 const {
     QUEUE_SWIFTPLAY, COOLDOWN_MS, PLAYERS,
     parseAliases, makePlayerKey, toGame, pairUp, gameRecord, pairResult
 } = ligacao;
+
+const { QUEUE_FLEX, FLEX_PLAYERS, FLEX_SEASON_START, flexRecord } = flexCore;
 
 const DATABASE_URL = "https://sorteador-dos-guri-default-rtdb.firebaseio.com";
 const RIOT_API = "https://americas.api.riotgames.com";
@@ -275,6 +278,111 @@ async function collect(env, firebase, now) {
 
 }
 
+/* -------------------- Ranked Flex (Fer e Rony) -------------------- */
+
+/* Partidas novas por clique (limite de subrequisições do plano gratuito) */
+const FLEX_MAX_PER_RUN = 20;
+const FLEX_CACHE_SECONDS = 5 * 60;
+
+function flexCacheKey(request) {
+    return new Request(new URL("/flex", request.url).toString(), { method: "GET" });
+}
+
+async function flexData(request, env, ctx) {
+
+    const cache = caches.default;
+    const cached = await cache.match(flexCacheKey(request));
+
+    if (cached) return cached;
+
+    const account = JSON.parse(atob(env.FIREBASE_SERVICE_ACCOUNT));
+    const firebase = firebaseClient(await firebaseToken(account));
+
+    const partidas = (await firebase.read("privado/flex/partidas")) || {};
+    const coleta = (await firebase.read("privado/flex/coleta")) || null;
+
+    const response = new Response(JSON.stringify({ status: "ok", partidas, coleta }), {
+        headers: Object.assign({
+            "Content-Type": "application/json",
+            "Cache-Control": "public, max-age=" + FLEX_CACHE_SECONDS
+        }, CORS)
+    });
+
+    ctx.waitUntil(cache.put(flexCacheKey(request), response.clone()));
+
+    return response;
+
+}
+
+async function flexUpdate(request, env) {
+
+    const account = JSON.parse(atob(env.FIREBASE_SERVICE_ACCOUNT));
+    const firebase = firebaseClient(await firebaseToken(account));
+    const now = Date.now();
+
+    const coleta = (await firebase.read("privado/flex/coleta")) || {};
+    const elapsed = now - (coleta.ultima || 0);
+
+    if (elapsed >= 0 && elapsed < COOLDOWN_MS) {
+        return json({ status: "cooldown", esperar: Math.ceil((COOLDOWN_MS - elapsed) / 1000) }, 429);
+    }
+
+    await firebase.update({ "privado/flex/coleta/ultima": now });
+
+    const saved = (await firebase.read("privado/flex/partidas", "?shallow=true")) || {};
+    const skipped = (await firebase.read("privado/flex/ignoradas", "?shallow=true")) || {};
+
+    /* Busca a partir da última partida salva (ou do início da temporada) */
+    const since = coleta.ultimaPartida
+        ? Math.floor(coleta.ultimaPartida / 1000) - 3600
+        : Math.floor(new Date(FLEX_SEASON_START + "T00:00:00-03:00").getTime() / 1000);
+
+    const puuids = {};
+
+    await Promise.all(FLEX_PLAYERS.map(async key => {
+        const [name, tag] = PLAYERS[key].map(encodeURIComponent);
+        puuids[key] = (await riot(env, "/riot/account/v1/accounts/by-riot-id/" + name + "/" + tag)).puuid;
+    }));
+
+    const ids = new Set();
+
+    for (const key of FLEX_PLAYERS) {
+        const page = await riot(env, "/lol/match/v5/matches/by-puuid/" + puuids[key]
+            + "/ids?queue=" + QUEUE_FLEX + "&startTime=" + since + "&count=100");
+        page.forEach(id => ids.add(id));
+    }
+
+    const fresh = [...ids].filter(id => !saved[id] && !skipped[id]).sort();
+    const chosen = fresh.slice(0, FLEX_MAX_PER_RUN);
+    const updates = {};
+    let novas = 0;
+    let newest = coleta.ultimaPartida || 0;
+
+    await Promise.all(chosen.map(async id => {
+        const { info } = await riot(env, "/lol/match/v5/matches/" + id);
+        const record = flexRecord(id, info, puuids);
+        if (record) {
+            updates["privado/flex/partidas/" + id] = record;
+            novas++;
+            newest = Math.max(newest, record.start);
+        } else {
+            updates["privado/flex/ignoradas/" + id] = true;
+        }
+    }));
+
+    /* Só avança a data de busca quando não sobrou nada para trás */
+    updates["privado/flex/coleta/fim"] = Date.now();
+    updates["privado/flex/coleta/origem"] = "site";
+    if (fresh.length <= FLEX_MAX_PER_RUN && newest) updates["privado/flex/coleta/ultimaPartida"] = newest;
+
+    await firebase.update(updates);
+
+    await caches.default.delete(flexCacheKey(request));
+
+    return json({ status: "ok", novas, faltam: Math.max(0, fresh.length - chosen.length) });
+
+}
+
 /* -------------------- Clipes do YouTube -------------------- */
 
 /* Canais com os clipes das jogatinas (o YouTube não deixa o navegador
@@ -367,6 +475,17 @@ export default {
             } catch (error) {
                 console.error(error);
                 return json({ status: "erro", mensagem: "Não foi possível buscar os vídeos." }, 502);
+            }
+        }
+
+        if (url.pathname === "/flex" || url.pathname === "/flex/atualizar") {
+            try {
+                if (request.method === "GET" && url.pathname === "/flex") return await flexData(request, env, ctx);
+                if (request.method === "POST" && url.pathname === "/flex/atualizar") return await flexUpdate(request, env);
+                return json({ status: "erro", mensagem: "Rota inválida." }, 404);
+            } catch (error) {
+                console.error(error);
+                return json({ status: "erro", mensagem: error.message }, 502);
             }
         }
 
