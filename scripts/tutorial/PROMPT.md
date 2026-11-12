@@ -60,7 +60,7 @@ Siga o formato do campeão Katarina já existente em js/tutorials.js.
 ```js
 <IdDoCampeao>: {
     pasta: "tutoriais/<campeao>/",
-    builds: [{ titulo, feiticos: ["Flash", "Incendiar"], inicial: [], core: [], situacional: [], runas: { principal: [], secundaria: [] }, skills: [], texto }],
+    builds: [{ titulo, feiticos: ["Flash", "Incendiar"], inicial: [], core: [], situacional: [], ultimo: [], runas: { principal: [], secundaria: [] }, skills: [], texto }],
     // feitiços pelo nome do jogo: Flash, Incendiar, Teleporte, Curar, Barreira, Purificar, Exaustão, Fantasma, Golpear
     // escolha entre itens em qualquer lista: { ou: [{ item: "Escudo de Doran", quando: "contra poke" }, { item: "Lacre Sombrio", quando: "com chance de abate" }] }
     guia: { fases: [{ titulo, texto }], fortes: [], fracos: [], dificeis: [{ campeao, motivo }], faceis: [], dicaDeOuro },

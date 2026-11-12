@@ -883,6 +883,331 @@ const TUTORIALS = {
                 texto: "Use o R e o Flash logo depois: o machado sai de onde você estava e o inimigo não espera o ângulo."
             }
         ]
+    },
+
+    Thresh: {
+        pasta: "tutoriais/thresh/",
+        /* Duas builds: mesmos itens, runa principal diferente */
+        builds: [
+            {
+                titulo: "Engage (Pós-choque)",
+                feiticos: [
+                    "Flash",
+                    { ou: [
+                        { item: "Incendiar", quando: "padrão" },
+                        { item: "Exaustão", quando: "contra muito dano explosivo" }
+                    ] }
+                ],
+                core: [
+                    "Medalhão dos Solari de Ferro",
+                    "Juramento do Cavaleiro",
+                    "Convergência de Zeke",
+                    { ou: [
+                        { item: "Botas da Rapidez" },
+                        { item: "Botas Ionianas da Lucidez" }
+                    ] }
+                ],
+                situacional: ["Bandocanos", "Bênção de Mikael"],
+                /* Último item */
+                ultimo: ["Coração Congelado"],
+                runas: {
+                    principal: ["Pós-choque", "Fonte da Vida", "Osso Revestido", "Inabalável"],
+                    secundaria: ["Calçados Mágicos", "Perspicácia Cósmica"]
+                },
+                skills: ["R", "Q", "E", "W"],
+                texto: "Pós-choque para quem vai entrar na luta com o Q e aguentar o dano. Quarto item: Bandocanos ou Bênção de Mikael (tira controle de um aliado). Último item: Coração Congelado."
+            },
+            {
+                titulo: "Utilidade (Aprimoramento Glacial)",
+                feiticos: [
+                    "Flash",
+                    { ou: [
+                        { item: "Incendiar", quando: "padrão" },
+                        { item: "Exaustão", quando: "contra muito dano explosivo" }
+                    ] }
+                ],
+                core: [
+                    "Medalhão dos Solari de Ferro",
+                    "Juramento do Cavaleiro",
+                    "Convergência de Zeke",
+                    { ou: [
+                        { item: "Botas da Rapidez" },
+                        { item: "Botas Ionianas da Lucidez" }
+                    ] }
+                ],
+                situacional: ["Bandocanos", "Bênção de Mikael"],
+                /* Último item */
+                ultimo: ["Coração Congelado"],
+                runas: {
+                    principal: ["Aprimoramento Glacial", "Calçados Mágicos", "Entrega de Biscoitos", "Perspicácia Cósmica"],
+                    secundaria: ["Fonte da Vida", "Inabalável"]
+                },
+                skills: ["R", "Q", "E", "W"],
+                texto: "Aprimoramento Glacial deixa lento quem você prende: bom para proteger o atirador e segurar quem tenta fugir."
+            }
+        ],
+        guia: {
+            fases: [
+                { titulo: "Fase de rotas", texto: "Cutuque com o ataque básico (o E passivo dá dano extra) e pegue as almas. Guarde o Q para quando o inimigo errar uma habilidade ou chegar perto das tropas." },
+                { titulo: "Nível 6", texto: "O R fecha o caminho com paredes que deixam lento. Ande pelo mapa e use a lanterna para trazer o caçador ou o mid para um gank." },
+                { titulo: "Lutas em equipe", texto: "Q no carry fora de posição e lanterna para o seu time chegar junto. Se o seu atirador for atacado, use o E para empurrar quem pulou nele." }
+            ],
+            fortes: [
+                "Muito controle: Q prende, E empurra e o R fecha a passagem",
+                "A lanterna salva aliados e leva o time para dentro da luta"
+            ],
+            fracos: [
+                "Depende de acertar o Q: errou, a rota fica sem ameaça por um bom tempo",
+                "Pouca vida e defesa no começo para um suporte que precisa entrar"
+            ],
+            dificeis: [
+                { campeao: "Morgana", motivo: "O escudo dela bloqueia o seu Q e o seu E no aliado." },
+                { campeao: "Braum", motivo: "O escudo do E dele bloqueia o seu Q." },
+                { campeao: "Janna", motivo: "Empurra você para longe e desfaz o seu engage." }
+            ],
+            faceis: [
+                { campeao: "Sona", motivo: "Frágil e sem fuga: um Q que pega é abate." },
+                { campeao: "Soraka", motivo: "Sem mobilidade: presa fácil do Q." },
+                { campeao: "Seraphine", motivo: "Frágil e lenta: se o Q pega, ela não escapa." }
+            ],
+            dicaDeOuro: "Pegue sempre as almas, até com a lanterna: elas dão armadura e poder para o jogo inteiro. E não jogue o Q à toa."
+        },
+        habilidades: {
+            P: {
+                video: "passiva.mp4",
+                tituloPrincipal: "Pegar almas",
+                texto: "Inimigos que morrem perto podem soltar almas. Pegue clicando nelas: cada uma dá armadura e poder de habilidade para sempre.",
+                variacoes: [
+                    { titulo: "Almas com a lanterna", video: "passiva-lanterna.mp4", texto: "Jogue a lanterna (W) em cima da alma: ela é puxada até você sem precisar andar até lá." }
+                ]
+            },
+            Q: {
+                video: "q.mp4",
+                texto: "Joga o gancho: prende o primeiro inimigo e puxa ele até você. Ative de novo para ir até ele."
+            },
+            W: {
+                video: "w.mp4",
+                texto: "Joga a lanterna: dá escudo, e o aliado que clicar nela é puxado até você. Ótima para salvar ou para trazer alguém para a luta."
+            },
+            E: {
+                video: "e.mp4",
+                tituloPrincipal: "Uso",
+                texto: "Varre com a corrente: empurra os inimigos na direção que você escolher e deixa lento. Para trás puxa, para frente afasta.",
+                variacoes: [
+                    { titulo: "Ataque sem o passivo", video: "e-sem-passivo.mp4", texto: "Compare: ataque básico normal, sem o passivo do E carregado." },
+                    { titulo: "Passivo carregado", video: "e-passivo.mp4", texto: "Fora de combate o passivo do E vai carregando: o próximo ataque dá bem mais dano. Cutuque assim na rota." }
+                ]
+            },
+            R: {
+                video: "r.mp4",
+                texto: "Cria uma caixa de paredes em volta: quem atravessa a primeira parede toma dano e fica bem lento. Fecha a fuga ou a entrada."
+            }
+        },
+        extras: [
+            {
+                grupo: "Combos básicos",
+                titulo: "Q (puxar e ir) + E",
+                teclas: ["Q", "Q", "E"],
+                video: "combo-q-e.mp4",
+                texto: "Prende com o Q, vai até ele com o segundo Q e usa o E para jogar ele de volta para o seu time."
+            },
+            {
+                grupo: "Combos básicos",
+                titulo: "E para trás: puxar para o time",
+                teclas: ["E"],
+                video: "combo-e-puxar.mp4",
+                texto: "Use o E virado para trás: o inimigo é puxado na direção do seu time."
+            },
+            {
+                grupo: "Combos avançados",
+                titulo: "Q + lanterna no aliado + E",
+                teclas: ["Q", "W", "E"],
+                video: "combo-q-w-e.mp4",
+                velocidade: 0.75,
+                texto: "Prende com o Q, joga a lanterna para o aliado vir junto e usa o E para segurar o inimigo no lugar."
+            },
+            {
+                grupo: "Combos avançados",
+                titulo: "Q + R durante a puxada + E",
+                teclas: ["Q", "R", "E"],
+                video: "combo-q-r-e.mp4",
+                velocidade: 0.75,
+                texto: "Enquanto o Q puxa, use o R: a caixa fecha em volta e o E termina de prender."
+            },
+            {
+                grupo: "Combos avançados",
+                titulo: "Flash + Q + W + Q + E + R",
+                teclas: ["Flash", "Q", "W", "Q", "E", "R"],
+                video: "combo-flash-q-w-q-e-r.mp4",
+                velocidade: 0.75,
+                texto: "Engage completo: Flash para o ângulo, Q, lanterna para o time, vai junto com o segundo Q, E e R para ninguém sair."
+            },
+            {
+                grupo: "Dicas",
+                titulo: "Flash + lanterna para salvar o aliado",
+                teclas: ["Flash", "W"],
+                video: "dica-flash-lanterna.mp4",
+                texto: "Dê Flash para longe e jogue a lanterna: o aliado em perigo clica e é puxado para fora da luta."
+            }
+        ]
+    },
+
+    Syndra: {
+        pasta: "tutoriais/syndra/",
+        /* Duas builds: mesmos itens, runa principal diferente */
+        builds: [
+            {
+                titulo: "Cometa Arcano",
+                feiticos: [
+                    "Flash",
+                    { ou: [
+                        { item: "Teleporte" },
+                        { item: "Fantasma" }
+                    ] }
+                ],
+                core: ["Eco de Luden", "Chama Sombria", "Sapatos do Feiticeiro", "Capuz da Morte de Rabadon", "Cajado do Vazio"],
+                situacional: [
+                    { ou: [
+                        { item: "Ampulheta de Zhonya", quando: "depende da composição deles" }
+                    ] },
+                    "Ápice da Tempestade"
+                ],
+                runas: {
+                    principal: ["Cometa Arcano", "Faixa de Fluxo de Mana", "Transcendência", "Chamuscar"],
+                    secundaria: ["Calçados Mágicos", "Perspicácia Cósmica"]
+                },
+                skills: ["R", "Q", "W", "E"],
+                texto: "Eco de Luden primeiro, depois Chama Sombria e a bota. Zhonya entra quando a composição deles tiver muito assassino ou mergulho. Depois Rabadon e Cajado do Vazio. Ápice da Tempestade também entra como opção de dano."
+            },
+            {
+                titulo: "Primeiro Ataque",
+                feiticos: [
+                    "Flash",
+                    { ou: [
+                        { item: "Teleporte" },
+                        { item: "Fantasma" }
+                    ] }
+                ],
+                core: ["Eco de Luden", "Chama Sombria", "Sapatos do Feiticeiro", "Capuz da Morte de Rabadon", "Cajado do Vazio"],
+                situacional: [
+                    { ou: [
+                        { item: "Ampulheta de Zhonya", quando: "depende da composição deles" }
+                    ] },
+                    "Ápice da Tempestade"
+                ],
+                runas: {
+                    principal: ["Primeiro Ataque", "Calçados Mágicos", "Entrega de Biscoitos", "Perspicácia Cósmica"],
+                    secundaria: ["Faixa de Fluxo de Mana", "Transcendência"]
+                },
+                skills: ["R", "Q", "W", "E"],
+                texto: "Primeiro Ataque dá ouro e dano extra quando você abre a troca: bom para quem gosta de começar trocando com o combo inteiro."
+            }
+        ],
+        guia: {
+            fases: [
+                { titulo: "Fase de rotas", texto: "Farme e cutuque com o Q. Guarde o E: Q + E é o seu atordoamento, e ele serve para punir quem chegar perto. Acertar habilidades junta as farpas da passiva." },
+                { titulo: "Nível 6", texto: "O R joga todas as esferas que estão no chão no alvo: quanto mais esferas, mais dano. Q, E e W antes do R costumam matar quem já está machucado." },
+                { titulo: "Lutas em equipe", texto: "Fique atrás do seu time. Atordoe com Q + E quem pular em você e guarde o R para o carry deles." }
+            ],
+            fortes: [
+                "Muito dano explosivo de longe, e o R executa com a passiva completa",
+                "Atordoamento com Q + E: segura quem vem para cima"
+            ],
+            fracos: [
+                "Nenhum avanço ou fuga: sofre com assassinos e ganks",
+                "Combo exige precisão: errou o Q + E, fica exposta"
+            ],
+            dificeis: [
+                { campeao: "Fizz", motivo: "Desvia do seu combo com o E dele e chega em você fácil." },
+                { campeao: "Yasuo", motivo: "A parede de vento bloqueia as esferas e o atordoamento." },
+                { campeao: "Kassadin", motivo: "Aguenta dano mágico e pula em você com o R." }
+            ],
+            faceis: [
+                { campeao: "Veigar", motivo: "Lento: você cutuca de longe e ele não chega." },
+                { campeao: "Xerath", motivo: "Frágil e sem fuga: o atordoamento pega fácil." },
+                { campeao: "Annie", motivo: "Alcance curto: você cutuca antes de ela chegar perto." }
+            ],
+            dicaDeOuro: "Q + E é o seu atordoamento: guarde o E para quando o inimigo vier para cima e nunca gaste à toa."
+        },
+        habilidades: {
+            P: {
+                video: "passiva.mp4",
+                texto: "Acertar habilidades e subir de nível junta Farpas de Ira. Com farpas suficientes, cada habilidade fica aprimorada (os botões \"Upado\" de cada skill mostram como fica)."
+            },
+            Q: {
+                video: "q.mp4",
+                tituloPrincipal: "Normal",
+                texto: "Cria uma esfera no chão que dá dano. As esferas ficam lá e são usadas pelo W, pelo E e pelo R.",
+                variacoes: [
+                    { titulo: "Upado", video: "q-upado.mp4", texto: "Com a passiva, a Syndra segura uma carga a mais de Q." }
+                ]
+            },
+            W: {
+                video: "w.mp4",
+                tituloPrincipal: "Normal",
+                texto: "Pega uma esfera ou uma tropa e arremessa: dano e lentidão. Bom para criar mais uma esfera no lugar certo.",
+                variacoes: [
+                    { titulo: "Upado", video: "w-upado.mp4", texto: "Com a passiva, o W dá dano verdadeiro a mais." }
+                ]
+            },
+            E: {
+                video: "e.mp4",
+                tituloPrincipal: "Normal",
+                texto: "Empurra os inimigos e as esferas na frente. Inimigo atingido por uma esfera empurrada fica atordoado: use junto com o Q para atordoar.",
+                variacoes: [
+                    { titulo: "Com o Q: atordoar", video: "e-com-q.mp4", texto: "Q e logo o E na mesma direção: a esfera é empurrada e atordoa quem ela acertar. É o principal controle da Syndra." },
+                    { titulo: "Upado", video: "e-upado.mp4", texto: "Com a passiva, o E fica mais largo e deixa todo mundo lento." }
+                ]
+            },
+            R: {
+                video: "r.mp4",
+                tituloPrincipal: "Normal",
+                texto: "Joga todas as esferas que estão em volta no campeão escolhido. Quanto mais esferas, mais dano.",
+                variacoes: [
+                    { titulo: "Com várias esferas", video: "r-varias.mp4", texto: "Deixe várias esferas no chão antes do R: cada uma é mais um golpe no alvo." },
+                    { titulo: "Upado: executa", video: "r-execute.mp4", texto: "Com a passiva completa, o R executa quem ficar com pouca vida." }
+                ]
+            }
+        },
+        extras: [
+            {
+                grupo: "Combos básicos",
+                titulo: "Q + E + W",
+                teclas: ["Q", "E", "W"],
+                video: "combo-q-e-w.mp4",
+                texto: "Q, E para atordoar e W para arremessar mais uma esfera com lentidão."
+            },
+            {
+                grupo: "Combos avançados",
+                titulo: "Flash + Q + E, W na esfera, R e W",
+                teclas: ["Flash", "Q", "E", "W", "R", "W"],
+                video: "combo-flash-q-e-w-r.mp4",
+                velocidade: 0.75,
+                texto: "Flash para o ângulo, Q + E para atordoar, puxa uma esfera com o W, R e, enquanto as esferas voam, solta o W para somar ainda mais dano."
+            },
+            {
+                grupo: "Combos avançados",
+                titulo: "R para juntar esferas e E",
+                teclas: ["R", "E"],
+                video: "combo-r-e.mp4",
+                velocidade: 0.75,
+                texto: "Truque: depois do R, as esferas ficam juntas perto do alvo. Use o E nelas para atordoar com todas de uma vez."
+            },
+            {
+                grupo: "Dicas",
+                titulo: "W na parede vai mais longe",
+                teclas: ["W"],
+                video: "dica-w-parede.mp4",
+                texto: "Arremessando a esfera com o W perto da parede, ela vai mais longe do que deveria: dá para pegar quem acha que está seguro."
+            },
+            {
+                grupo: "Dicas",
+                titulo: "Q + E na parede vai mais longe",
+                teclas: ["Q", "E"],
+                video: "dica-qe-parede.mp4",
+                texto: "O mesmo vale para o Q + E: perto da parede, a esfera empurrada alcança mais longe."
+            }
+        ]
     }
 
 };
@@ -1937,6 +2262,7 @@ async function renderTutorialBuild(tutorial) {
     if (build.inicial && build.inicial.length) left.appendChild(buildRow("Inicial", build.inicial, catalog, false));
     if (build.core && build.core.length) left.appendChild(buildRow("Principal", build.core, catalog, true));
     if (build.situacional && build.situacional.length) left.appendChild(buildRow("Situacional", build.situacional, catalog, false));
+    if (build.ultimo && build.ultimo.length) left.appendChild(buildRow("Último item", build.ultimo, catalog, false));
 
     if (build.feiticos && build.feiticos.length) right.appendChild(buildRow("Feitiços", build.feiticos, catalog, false, "spells"));
     if (build.runas) right.appendChild(buildRunes(build.runas, catalog));
