@@ -193,6 +193,41 @@ Os efeitos dos recordes ficam por fora do nick e combinam com os das medalhas: d
 
 Para criar uma conquista nova, basta adicionar um item em `ACHIEVEMENT_TITLES`, `ACHIEVEMENT_BADGES` (com níveis) ou `EMBLEM_BADGES` (emblemas), no arquivo `js/achievements.js`. Os pesos da nota dos recordes ficam em `RECORD_METRICS`.
 
+### 📖 Tutoriais dos campeões
+
+Caiu um campeão que ninguém sabe jogar? Logo abaixo do resultado fica a seção **📖 Tutoriais**, com busca por nome, e o card de quem tem guia ganha o botão **📖 Como jogar** no sorteio. Cada tutorial abre uma janela com três abas:
+
+* **🎬 Habilidades e combos:** um vídeo curto de cada skill (passiva, Q, W, E e R), com explicação embaixo. Skills com mais de um jeito de usar têm botões (forma normal e transformada, versão aprimorada, uso na parede...). Os combos vêm separados em **básicos** e **avançados**, e os avançados tocam em câmera lenta 🐢 0,75x. Tem ainda dicas e uma jogada de partida.
+* **📋 Como jogar:** o que fazer na fase de rotas, no nível 6 e nas lutas, pontos fortes e fracos, matchups difíceis e fáceis (com o ícone de cada campeão) e a dica de ouro.
+* **🛠️ Build:** itens à esquerda (inicial, principal em ordem, situacionais e último item, com escolhas do tipo "isso **ou** aquilo, quando...") e, à direita, feitiços, runas e a ordem de upar as skills. Embaixo, links para a build do momento no OP.GG e no U.GG.
+
+O 🌙 **Aphelios** tem um painel próprio no estilo do jogo: arma na mão, secundária, fila de armas, troca com W e o que cada par de armas faz junto.
+
+Guias prontos: Katarina, Locke, Aphelios, K'Sante, Evelynn, Draven, Thresh e Syndra.
+
+Os vídeos só carregam quando alguém clica, então não pesam para abrir o site. Para montar um campeão novo:
+
+1. Grave os clipes (3 a 12 segundos cada) e salve numa pasta com o nome do campeão.
+2. Comprima cada um para `tutoriais/<campeao>/` (720p, sem som, ~1 MB) com o conversor do próprio Windows:
+
+```powershell
+powershell -NoProfile -ExecutionPolicy Bypass -File scripts\video\comprimir-video.ps1 `
+    -InPath "C:\caminho\Q.mp4" -OutPath "C:\caminho\do\projeto\tutoriais\<campeao>\q.mp4"
+```
+
+3. Adicione a entrada do campeão em `TUTORIALS`, no arquivo `js/tutorials.js` (o formato completo e um prompt para gerar os textos estão em `scripts/tutorial/PROMPT.md`). Itens, runas e feitiços são escritos pelo nome em português do jogo; o ícone é achado sozinho.
+
+Ferramentas de apoio, em `scripts/tutorial/`: o `modelo-gravacao.html` é um checklist do que gravar (com Pendente / Gravado / Refazer) e o `fila-tutoriais.html` é a fila de prioridade de quais campeões fazer primeiro, pela dificuldade e por quanto a turma perde com eles, com ordem ajustável à mão.
+
+Os ícones redesenhados dos feitiços ficam em `tutoriais/feiticos/`; sem eles, o site usa os oficiais.
+
+### ✨ Funcionalidades e 📝 Patch Notes
+
+No topo da página ficam dois links:
+
+* **✨ Funcionalidades:** lista de tudo que o site faz, por categoria. Em **Experimentar** começa um tour que rola até cada função, destaca ela e mostra um cartão com **Anterior / Próxima** para ver uma por uma. Quando entra uma funcionalidade nova, o link pisca com **NOVO** até a pessoa abrir o menu (fica salvo no navegador). As funções ficam em `FEATURES`, no arquivo `js/features.js`, cada uma com a data em que chegou.
+* **📝 Patch Notes:** o histórico de atualizações por data, em `js/changelog.js`.
+
 ### 🎬 Clipes da gurizada
 
 No fim da página aparecem os 5 últimos vídeos de cada canal do grupo, com thumb e rolagem horizontal, e o rodapé tem os links dos canais:
