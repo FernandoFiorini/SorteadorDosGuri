@@ -147,6 +147,9 @@ function applyChampionData(data) {
     /* Mantém as grafias manuais como reserva para o que faltar */
     championNames = Object.assign({}, championNames, data.names);
 
+    /* Seção de tutoriais com os nomes e ícones da versão nova */
+    if (typeof renderTutorialSection === "function") renderTutorialSection();
+
 }
 
 async function loadChampionData() {

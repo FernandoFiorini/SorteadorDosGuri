@@ -285,6 +285,24 @@
 
         </div>
 
+        <!-- TUTORIAIS: todos os campeões com guia (js/tutorials.js) -->
+        <div class="card" id="tutorialsCard">
+            <details class="collapsible" id="tutorialsDetails" open>
+                <summary>
+                    <h2>📖 Tutoriais <span class="collapsible-count" id="tutorialsCount"></span></h2>
+                </summary>
+
+                <div class="champion-controls">
+                    <input type="text" id="tutorialSearch" placeholder="Pesquisar campeão..." autocomplete="off">
+                </div>
+
+                <div class="tutorial-grid" id="tutorialGrid"></div>
+
+                <div class="info">Vídeo de cada habilidade, combos, dicas, como jogar e build. O guia também
+                    aparece no card do campeão quando ele é sorteado.</div>
+            </details>
+        </div>
+
         <!-- ESTATÍSTICAS -->
         <div class="card" id="statsCard">
             <h2>📊 Estatísticas (global)</h2>
@@ -354,6 +372,41 @@
         </footer>
 
         <!-- PATCH NOTES (abre pelo link ao lado do subtítulo) -->
+        <!-- TUTORIAL DO CAMPEÃO (js/tutorials.js) -->
+        <dialog id="tutorialDialog" class="tutorial-dialog" aria-labelledby="tutorialChampName">
+            <div class="tutorial-head">
+                <img id="tutorialChampIcon" class="tutorial-champ-icon" alt="">
+                <div class="tutorial-champ">
+                    <strong id="tutorialChampName"></strong>
+                    <span id="tutorialChampTitle"></span>
+                </div>
+                <button type="button" id="tutorialClose" class="changelog-close" aria-label="Fechar">✕</button>
+            </div>
+            <div class="tutorial-body">
+                <div id="tutorialTabs" class="tutorial-tabs" role="tablist">
+                    <button type="button" class="tutorial-tab" data-tab="armas" role="tab">🌙 Armas</button>
+                    <button type="button" class="tutorial-tab active" data-tab="play" role="tab">🎬 Habilidades e combos</button>
+                    <button type="button" class="tutorial-tab" data-tab="guia" role="tab">📋 Como jogar</button>
+                    <button type="button" class="tutorial-tab" data-tab="build" role="tab">🛠️ Build</button>
+                </div>
+                <div id="tutorialPlayPanel" class="tutorial-panel">
+                <div id="tutorialSkills" class="tutorial-skills"></div>
+                <div class="tutorial-stage">
+                    <video id="tutorialVideo" class="tutorial-video" muted loop playsinline controls preload="metadata"></video>
+                    <div class="tutorial-caption">
+                        <h4><span id="tutorialHeading"></span> <span id="tutorialSpeed" class="tutorial-speed" title="Tocando mais devagar; dá para mudar no seletor de velocidade do vídeo" hidden></span></h4>
+                        <div id="tutorialVariants" class="tutorial-chips tutorial-variants" hidden></div>
+                        <p id="tutorialText"></p>
+                    </div>
+                </div>
+                <div id="tutorialExtras" class="tutorial-extras"></div>
+                </div>
+                <div id="tutorialWeaponsPanel" class="tutorial-panel aph-panel" hidden></div>
+                <div id="tutorialGuidePanel" class="tutorial-panel tutorial-guide" hidden></div>
+                <div id="tutorialBuildPanel" class="tutorial-panel tutorial-build" hidden></div>
+            </div>
+        </dialog>
+
         <dialog id="changelogDialog" class="changelog-dialog" aria-labelledby="changelogTitle">
             <div class="changelog-head">
                 <strong id="changelogTitle">📝 Patch Notes</strong>
@@ -385,6 +438,7 @@
     <script src="js/chat.js?v=15"></script>
     <script src="js/videos.js?v=15"></script>
     <script src="js/changelog.js?v=15"></script>
+    <script src="js/tutorials.js?v=15"></script>
     <script src="js/screen.js?v=15"></script>
     <script src="js/viewer.js?v=15"></script>
     <script src="js/ui.js?v=15"></script>

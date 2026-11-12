@@ -361,6 +361,12 @@ node flex.js --gravar
 * [ ] Integração com Discord para anunciar os sorteios.
 * [ ] Detector automático de desculpas esfarrapadas.
 
+### Para abrir o site ao público
+
+* [ ] **Contato com o dev:** um jeito de falar comigo pelo site (e-mail, formulário ou rede social no rodapé).
+* [ ] **Sugestões de melhoria:** um canal para a galera mandar ideias e reportar bugs.
+* [ ] **Monetizar o site:** anúncios, doação ou apoio, sem atrapalhar o sorteio.
+
 *Os itens marcados já existem; os demais ainda são ideias futuras.*
 
 ---

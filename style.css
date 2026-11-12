@@ -3602,3 +3602,946 @@ a.changelog-link:focus-visible {
     padding: 6px 10px;
     margin: -4px 0 12px;
 }
+
+/* =====================================================
+   TUTORIAL DO CAMPEÃO (js/tutorials.js)
+===================================================== */
+
+.tutorial-btn {
+    display: block;
+    margin: 10px auto 0;
+    background: rgba(200, 170, 110, 0.1);
+    border: 1px solid rgba(200, 170, 110, 0.55);
+    color: #e3c98f;
+    padding: 7px 14px;
+    border-radius: 999px;
+    cursor: pointer;
+    font-size: 13px;
+    font-weight: bold;
+    transition: 0.2s;
+}
+
+.tutorial-btn:hover,
+.tutorial-btn:focus-visible {
+    background: rgba(200, 170, 110, 0.22);
+    color: #fff;
+}
+
+.tutorial-preview-card {
+    border-style: dashed;
+}
+
+.tutorial-dialog {
+    width: min(920px, calc(100vw - 24px));
+    max-height: calc(100vh - 32px);
+    padding: 0;
+    background: #0d1824;
+    color: #f5f5f5;
+    border: 1px solid #c8aa6e;
+    border-radius: 14px;
+    box-shadow: 0 16px 40px rgba(0, 0, 0, 0.6);
+    overflow: hidden;
+}
+
+.tutorial-dialog[open] {
+    display: flex;
+    flex-direction: column;
+}
+
+.tutorial-dialog::backdrop {
+    background: rgba(3, 8, 14, 0.78);
+}
+
+.tutorial-head {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 16px;
+    border-bottom: 1px solid #253648;
+}
+
+.tutorial-champ-icon {
+    width: 46px;
+    height: 46px;
+    border-radius: 8px;
+    border: 2px solid #c8aa6e;
+}
+
+.tutorial-champ {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    min-width: 0;
+}
+
+.tutorial-champ strong {
+    font-size: 20px;
+    color: #c8aa6e;
+}
+
+.tutorial-champ span {
+    font-size: 13px;
+    color: #8fa0b2;
+    text-transform: capitalize;
+}
+
+.tutorial-body {
+    overflow-y: auto;
+    padding: 14px 16px 18px;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+}
+
+/* Habilidades: P Q W E R */
+.tutorial-skills {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 8px;
+}
+
+.tutorial-skill {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid #22334a;
+    border-radius: 10px;
+    padding: 8px 4px;
+    color: #b8c4d0;
+    cursor: pointer;
+    min-width: 0;
+    transition: 0.15s;
+}
+
+.tutorial-skill:hover {
+    border-color: #6b5a36;
+    color: #f5f5f5;
+}
+
+.tutorial-skill.active {
+    border-color: #c8aa6e;
+    background: rgba(200, 170, 110, 0.12);
+    color: #f5f5f5;
+}
+
+.tutorial-skill-icon {
+    position: relative;
+    width: 48px;
+    height: 48px;
+}
+
+.tutorial-skill-icon img {
+    width: 48px;
+    height: 48px;
+    border-radius: 8px;
+    border: 1px solid #304255;
+    display: block;
+}
+
+.tutorial-skill.active .tutorial-skill-icon img {
+    border-color: #c8aa6e;
+}
+
+.tutorial-key {
+    position: absolute;
+    right: -6px;
+    bottom: -6px;
+    background: #0b1420;
+    border: 1px solid #c8aa6e;
+    color: #c8aa6e;
+    font-size: 10px;
+    font-weight: bold;
+    padding: 1px 5px;
+    border-radius: 5px;
+}
+
+.tutorial-skill-name {
+    font-size: 12px;
+    text-align: center;
+    line-height: 1.2;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    max-width: 100%;
+}
+
+/* Vídeo + texto */
+.tutorial-stage {
+    display: grid;
+    grid-template-columns: minmax(0, 1.7fr) minmax(0, 1fr);
+    gap: 16px;
+    align-items: start;
+}
+
+.tutorial-video {
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    background: #000;
+    border-radius: 10px;
+    border: 1px solid #253648;
+    display: block;
+}
+
+.tutorial-caption h4 {
+    margin: 0 0 8px;
+    font-size: 17px;
+    color: #c8aa6e;
+}
+
+.tutorial-caption p {
+    margin: 0;
+    font-size: 14px;
+    line-height: 1.55;
+    color: #dfe6ee;
+}
+
+/* Combos, dicas e partida */
+.tutorial-extras {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    border-top: 1px solid #1a2836;
+    padding-top: 12px;
+}
+
+.tutorial-group-title {
+    display: block;
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: #8fa0b2;
+    margin-bottom: 6px;
+}
+
+.tutorial-chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.tutorial-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid #22334a;
+    border-radius: 999px;
+    padding: 6px 12px;
+    color: #d3dbe4;
+    font-size: 13px;
+    cursor: pointer;
+    transition: 0.15s;
+}
+
+.tutorial-chip:hover {
+    border-color: #6b5a36;
+}
+
+.tutorial-chip.active {
+    border-color: #c8aa6e;
+    background: rgba(200, 170, 110, 0.12);
+    color: #fff;
+}
+
+.tutorial-chip-keys {
+    display: inline-flex;
+    align-items: center;
+    gap: 3px;
+    color: #6f8194;
+    font-size: 11px;
+}
+
+.tutorial-chip kbd {
+    font-family: inherit;
+    font-size: 11px;
+    font-weight: bold;
+    color: #c8aa6e;
+    background: #0b1420;
+    border: 1px solid #3a4b5e;
+    border-bottom-width: 2px;
+    border-radius: 4px;
+    padding: 0 5px;
+}
+
+@media (max-width: 700px) {
+
+    .tutorial-stage {
+        grid-template-columns: 1fr;
+    }
+
+    .tutorial-skill-name {
+        display: none;
+    }
+
+    .tutorial-skill-icon,
+    .tutorial-skill-icon img {
+        width: 40px;
+        height: 40px;
+    }
+
+}
+
+.tutorial-speed {
+    display: inline-block;
+    vertical-align: middle;
+    margin-left: 6px;
+    font-size: 11px;
+    font-weight: bold;
+    color: #9fd3b0;
+    background: rgba(76, 175, 120, 0.12);
+    border: 1px solid rgba(76, 175, 120, 0.45);
+    border-radius: 999px;
+    padding: 1px 8px;
+}
+
+.tutorial-speed[hidden] {
+    display: none;
+}
+
+/* Tutorial: abas vídeos / build */
+.tutorial-tabs {
+    display: flex;
+    gap: 6px;
+    border-bottom: 1px solid #1a2836;
+    padding-bottom: 10px;
+}
+
+.tutorial-tabs[hidden] {
+    display: none;
+}
+
+.tutorial-tab {
+    background: transparent;
+    border: 1px solid #22334a;
+    color: #b8c4d0;
+    padding: 7px 14px;
+    border-radius: 999px;
+    cursor: pointer;
+    font-size: 13px;
+    font-weight: bold;
+}
+
+.tutorial-tab:hover {
+    border-color: #6b5a36;
+    color: #fff;
+}
+
+.tutorial-tab.active {
+    background: #c8aa6e;
+    border-color: #c8aa6e;
+    color: #0b1420;
+}
+
+.tutorial-panel {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+}
+
+.tutorial-panel[hidden] {
+    display: none;
+}
+
+/* Build */
+.build-loading {
+    color: #8fa0b2;
+    font-size: 13px;
+}
+
+.build-title {
+    margin: 0;
+    font-size: 17px;
+    color: #c8aa6e;
+}
+
+.build-row {
+    display: grid;
+    grid-template-columns: 110px minmax(0, 1fr);
+    gap: 12px;
+    align-items: center;
+    padding: 10px 0;
+    border-top: 1px solid #1a2836;
+}
+
+.build-row-label {
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: #8fa0b2;
+}
+
+.build-items {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-start;
+    gap: 8px;
+}
+
+.build-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    width: 64px;
+}
+
+.build-item-name {
+    font-size: 11px;
+    color: #a7b5c3;
+    text-align: center;
+    line-height: 1.2;
+}
+
+.build-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 42px;
+    height: 42px;
+    border-radius: 8px;
+    border: 1px solid #3a4b5e;
+    overflow: hidden;
+    background: #0b1420;
+    flex-shrink: 0;
+}
+
+.build-icon img {
+    width: 100%;
+    height: 100%;
+    display: block;
+}
+
+.build-icon.missing {
+    width: auto;
+    min-width: 42px;
+    padding: 0 6px;
+    font-size: 10px;
+    color: #8fa0b2;
+}
+
+.build-arrow {
+    color: #6f8194;
+    font-size: 20px;
+    line-height: 42px;
+}
+
+.build-runes {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.build-rune-group {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 6px;
+}
+
+.build-icon.rune,
+.build-icon.rune-tree {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    border-color: #2b3c50;
+}
+
+.build-icon.rune-tree {
+    background: transparent;
+    border: none;
+    width: 24px;
+    height: 24px;
+    margin-right: 2px;
+}
+
+.build-icon.keystone {
+    width: 42px;
+    height: 42px;
+    border-color: #c8aa6e;
+}
+
+.build-rune-names {
+    flex-basis: 100%;
+    font-size: 12px;
+    color: #a7b5c3;
+}
+
+.build-skill {
+    position: relative;
+    width: 42px;
+    height: 42px;
+}
+
+.build-skill img {
+    width: 42px;
+    height: 42px;
+    border-radius: 8px;
+    border: 1px solid #3a4b5e;
+    display: block;
+}
+
+.build-skill kbd {
+    position: absolute;
+    right: -5px;
+    bottom: -5px;
+    font-family: inherit;
+    font-size: 10px;
+    font-weight: bold;
+    color: #c8aa6e;
+    background: #0b1420;
+    border: 1px solid #c8aa6e;
+    border-radius: 4px;
+    padding: 0 4px;
+}
+
+.build-text {
+    margin: 0;
+    padding: 12px 14px;
+    border-radius: 10px;
+    background: rgba(200, 170, 110, 0.07);
+    border: 1px solid rgba(200, 170, 110, 0.3);
+    font-size: 14px;
+    line-height: 1.55;
+    color: #dfe6ee;
+}
+
+.build-links {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 10px;
+    font-size: 13px;
+    color: #8fa0b2;
+}
+
+.build-links a {
+    color: #c8aa6e;
+    text-decoration: none;
+    border: 1px solid rgba(200, 170, 110, 0.45);
+    border-radius: 999px;
+    padding: 4px 12px;
+}
+
+.build-links a:hover {
+    background: rgba(200, 170, 110, 0.12);
+}
+
+@media (max-width: 700px) {
+
+    .build-row {
+        grid-template-columns: 1fr;
+        gap: 8px;
+    }
+
+}
+
+/* Tutorial: aba "Como jogar" */
+.tutorial-tab[hidden] {
+    display: none;
+}
+
+.guide-phases {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.guide-phase {
+    display: flex;
+    gap: 12px;
+    align-items: flex-start;
+}
+
+.guide-phase-n {
+    flex-shrink: 0;
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(200, 170, 110, 0.15);
+    border: 1px solid #c8aa6e;
+    color: #c8aa6e;
+    font-weight: bold;
+    font-size: 13px;
+}
+
+.guide-phase strong {
+    display: block;
+    color: #f0f3f6;
+    font-size: 15px;
+    margin-bottom: 2px;
+}
+
+.guide-phase p {
+    margin: 0;
+    font-size: 14px;
+    line-height: 1.5;
+    color: #c5d0db;
+}
+
+.guide-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+}
+
+.guide-box {
+    background: rgba(255, 255, 255, 0.02);
+    border: 1px solid #22334a;
+    border-top: 3px solid #4caf78;
+    border-radius: 10px;
+    padding: 12px 14px;
+    min-width: 0;
+}
+
+.guide-box.bad {
+    border-top-color: #dc5050;
+}
+
+.guide-box h5 {
+    margin: 0 0 8px;
+    font-size: 14px;
+    color: #f0f3f6;
+}
+
+.guide-box ul {
+    margin: 0;
+    padding-left: 18px;
+    font-size: 14px;
+    line-height: 1.55;
+    color: #c5d0db;
+}
+
+.guide-matchup {
+    display: flex;
+    gap: 10px;
+    align-items: flex-start;
+    padding: 6px 0;
+}
+
+.guide-matchup + .guide-matchup {
+    border-top: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.guide-matchup img {
+    width: 36px;
+    height: 36px;
+    border-radius: 8px;
+    flex-shrink: 0;
+}
+
+.guide-matchup strong {
+    display: block;
+    font-size: 14px;
+    color: #f0f3f6;
+}
+
+.guide-matchup span {
+    font-size: 13px;
+    color: #a7b5c3;
+    line-height: 1.4;
+}
+
+.guide-tip {
+    margin: 0;
+}
+
+@media (max-width: 700px) {
+
+    .guide-grid {
+        grid-template-columns: 1fr;
+    }
+
+}
+
+/* Seção "📖 Tutoriais" */
+.tutorial-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+    gap: 10px;
+}
+
+.tutorial-tile {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+    background: #09111a;
+    border: 1px solid #304255;
+    border-radius: 10px;
+    padding: 12px 8px;
+    color: #f5f5f5;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+.tutorial-tile:hover,
+.tutorial-tile:focus-visible {
+    border-color: #c8aa6e;
+    background: rgba(200, 170, 110, 0.08);
+    transform: translateY(-2px);
+}
+
+.tutorial-tile img {
+    width: 64px;
+    height: 64px;
+    border-radius: 8px;
+    border: 2px solid #c8aa6e;
+}
+
+.tutorial-tile strong {
+    font-size: 15px;
+}
+
+.tutorial-grid-empty {
+    grid-column: 1 / -1;
+    color: #8fa0b2;
+    font-size: 14px;
+    text-align: center;
+    padding: 10px 0;
+}
+
+/* Tutorial: mais de um vídeo na mesma skill */
+.tutorial-variants {
+    margin-bottom: 10px;
+}
+
+.tutorial-variants[hidden] {
+    display: none;
+}
+
+.tutorial-variants .tutorial-chip {
+    padding: 4px 11px;
+    font-size: 12px;
+}
+
+/* =====================================================
+   TUTORIAL: PAINEL DE ARMAS (Aphelios) — estilo HUD do jogo
+===================================================== */
+
+.aph-hud {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    gap: 14px 18px;
+    padding: 16px;
+    border-radius: 14px;
+    background: radial-gradient(circle at 30% 0%, rgba(120, 140, 255, 0.12), transparent 60%), #08111b;
+    border: 1px solid #2b3c50;
+    box-shadow: inset 0 0 30px rgba(0, 0, 0, 0.5);
+}
+
+.aph-slot {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+}
+
+.aph-slot-title {
+    font-size: 10px;
+    letter-spacing: 1.5px;
+    color: #8fa0b2;
+    font-weight: bold;
+}
+
+.aph-ring {
+    --wcolor: #c8aa6e;
+    position: relative;
+    display: inline-flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    background: radial-gradient(circle at 50% 40%, color-mix(in srgb, var(--wcolor) 35%, #0b1420), #0b1420 70%);
+    border: 2px solid var(--wcolor);
+    box-shadow: 0 0 14px color-mix(in srgb, var(--wcolor) 45%, transparent);
+    color: var(--wcolor);
+    vertical-align: middle;
+    flex-shrink: 0;
+}
+
+.aph-ring b {
+    font-size: 1em;
+    line-height: 1;
+}
+
+.aph-lg {
+    width: 86px;
+    height: 86px;
+    font-size: 30px;
+    border-width: 3px;
+}
+
+.aph-md {
+    width: 58px;
+    height: 58px;
+    font-size: 20px;
+}
+
+.aph-sm {
+    width: 30px;
+    height: 30px;
+    font-size: 13px;
+    box-shadow: none;
+}
+
+.aph-ring-name {
+    position: absolute;
+    top: 100%;
+    margin-top: 4px;
+    font-size: 12px;
+    font-weight: bold;
+    white-space: nowrap;
+}
+
+.aph-lg .aph-ring-name,
+.aph-md .aph-ring-name {
+    font-size: 13px;
+}
+
+.aph-slot .aph-ring {
+    margin-bottom: 20px;
+}
+
+.aph-queue-row {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    min-height: 58px;
+}
+
+.aph-btn {
+    background: #0d1824;
+    border: 1px solid #3a4b5e;
+    color: #dfe6ee;
+    padding: 7px 12px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 13px;
+    font-weight: bold;
+}
+
+.aph-btn:hover {
+    border-color: #c8aa6e;
+}
+
+.aph-btn kbd {
+    font-family: inherit;
+    color: #c8aa6e;
+    border: 1px solid #c8aa6e;
+    border-radius: 4px;
+    padding: 0 5px;
+    margin-right: 4px;
+}
+
+.aph-pickers {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.aph-pick-row {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 6px;
+}
+
+.aph-pick-label {
+    width: 110px;
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: #8fa0b2;
+}
+
+.aph-pick {
+    display: inline-flex;
+    align-items: center;
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid #22334a;
+    border-radius: 999px;
+    padding: 3px 12px 3px 3px;
+    cursor: pointer;
+    color: #d3dbe4;
+}
+
+.aph-pick .aph-ring {
+    margin-right: 6px;
+}
+
+.aph-pick.active {
+    border-color: #c8aa6e;
+    background: rgba(200, 170, 110, 0.12);
+}
+
+.aph-pair {
+    border-top: 1px solid #1a2836;
+    padding-top: 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.aph-pair h5 {
+    margin: 0;
+    font-size: 15px;
+    color: #f0f3f6;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 6px;
+}
+
+.aph-pair p {
+    margin: 0;
+    font-size: 14px;
+    line-height: 1.5;
+    color: #c5d0db;
+}
+
+.aph-star {
+    font-size: 11px;
+    color: #e6c27a;
+    border: 1px solid rgba(200, 170, 110, 0.5);
+    border-radius: 999px;
+    padding: 1px 8px;
+}
+
+@media (max-width: 700px) {
+
+    .aph-pick-label {
+        width: 100%;
+    }
+
+}
+
+/* Ícones das armas (Aphelios) */
+.aph-ring {
+    overflow: visible;
+}
+
+.aph-ring img {
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    display: block;
+}
+
+.aph-ring:has(img) {
+    background: #0b1420;
+}
+
+.aph-q-icon {
+    width: 18px;
+    height: 18px;
+    border-radius: 4px;
+    margin-left: 6px;
+    vertical-align: middle;
+}

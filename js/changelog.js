@@ -11,6 +11,18 @@
 /* Tipos: "novo", "melhoria", "som", "ajuste" (mudam a etiqueta colorida) */
 const CHANGELOG = [
     {
+        data: "2026-11-12",
+        titulo: "Tutoriais dos campeões",
+        itens: [
+            ["novo", "📖 Tutoriais: vídeo curto de cada habilidade, combos, dicas e uma jogada, com uma explicação embaixo de cada vídeo. Fica logo abaixo do resultado, com busca por nome."],
+            ["novo", "Quando sai um campeão com tutorial no sorteio, o card ganha o botão \"📖 Como jogar\"."],
+            ["novo", "Abas 📋 Como jogar (fases do jogo, pontos fortes e fracos, matchups e dica de ouro) e 🛠️ Build (itens, runas e ordem das skills, com link para a build do momento no OP.GG e U.GG)."],
+            ["novo", "Combos mais difíceis tocam em câmera lenta 🐢 0,75x."],
+            ["novo", "🌙 Aphelios com painel próprio das armas, no estilo do jogo: arma na mão, secundária, fila e o que cada par faz junto."],
+            ["novo", "Primeiros guias: Katarina, Locke e Aphelios."]
+        ]
+    },
+    {
         data: "2026-11-10",
         titulo: "Ranking dos guri, medalhas com níveis, chat flutuante e clipes",
         itens: [

@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Gravação Locke</title>
+<style>
+  :root {
+    --bg: #0b1420; --panel: #0f1c2a; --panel2: #152536; --line: #27384b;
+    --text: #f0f3f6; --muted: #8fa0b2; --gold: #c8aa6e; --gold-dim: rgba(200,170,110,.14);
+    --green: #4caf78; --red: #e06060; --amber: #e0a04a;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { background: var(--bg); color: var(--text); font: 16px/1.5 "Segoe UI", Arial, sans-serif; }
+  .wrap { max-width: 980px; margin: 0 auto; padding: 24px 16px 80px; }
+  header { position: sticky; top: 0; z-index: 5; background: var(--bg); padding: 14px 0 12px; border-bottom: 1px solid var(--line); margin-bottom: 20px; }
+  .top { display: flex; align-items: center; gap: 14px; flex-wrap: wrap; }
+  .champ { width: 48px; height: 48px; border-radius: 10px; border: 2px solid var(--gold); }
+  h1 { font-size: 22px; font-weight: 800; }
+  h1 small { display: block; font-size: 13px; font-weight: 400; color: var(--muted); }
+  .actions { margin-left: auto; display: flex; gap: 8px; flex-wrap: wrap; }
+  button { font: inherit; font-size: 14px; font-weight: 600; cursor: pointer; border-radius: 8px; padding: 8px 14px; border: 1px solid var(--line); background: var(--panel2); color: var(--text); }
+  button:hover { border-color: var(--gold); }
+  button.primary { background: var(--gold); color: #111; border-color: var(--gold); }
+  .progress { margin-top: 12px; display: flex; align-items: center; gap: 12px; }
+  .bar { flex: 1; height: 10px; background: var(--panel2); border-radius: 99px; overflow: hidden; }
+  .bar i { display: block; height: 100%; width: 0; background: var(--gold); transition: width .25s; }
+  .count { font-size: 14px; color: var(--muted); white-space: nowrap; }
+  .count b { color: var(--gold); }
+  h2 { font-size: 18px; margin: 28px 0 6px; display: flex; align-items: baseline; gap: 10px; flex-wrap: wrap; }
+  h2 small { font-size: 13px; color: var(--muted); font-weight: 400; }
+  .setup { background: var(--panel); border: 1px solid var(--line); border-radius: 12px; padding: 12px 16px; margin: 10px 0 4px; font-size: 14px; color: var(--muted); }
+  .setup b { color: var(--text); }
+  .kit li { margin: 4px 0 0 18px; }
+  .checks { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 6px 16px; margin-top: 8px; }
+  .checks label { display: flex; gap: 8px; align-items: center; cursor: pointer; color: var(--text); }
+  .checks input { accent-color: var(--gold); width: 16px; height: 16px; }
+  .scene { background: var(--panel); border: 1px solid var(--line); border-left: 4px solid var(--line); border-radius: 12px; padding: 14px 16px; margin-top: 10px; }
+  .scene.done { border-left-color: var(--green); }
+  .scene.redo { border-left-color: var(--red); }
+  .scene.optional .code::after { content: "opcional"; margin-left: 8px; font-size: 11px; font-weight: 600; color: var(--amber); border: 1px solid var(--amber); border-radius: 99px; padding: 0 7px; vertical-align: 2px; }
+  .row1 { display: flex; gap: 12px; align-items: flex-start; flex-wrap: wrap; }
+  .code { font-weight: 900; color: var(--gold); font-size: 15px; min-width: 34px; }
+  .title { flex: 1; min-width: 200px; font-weight: 700; }
+  .title .use { display: block; font-size: 13px; font-weight: 400; color: var(--muted); }
+  .file { display: inline-block; margin-top: 4px; font: 12px Consolas, monospace; color: var(--gold); background: var(--gold-dim); border-radius: 6px; padding: 1px 8px; }
+  .slow { margin-left: 6px; font-size: 11px; color: #9fd3b0; border: 1px solid rgba(76,175,120,.5); border-radius: 99px; padding: 0 7px; }
+  .status { display: flex; border: 1px solid var(--line); border-radius: 8px; overflow: hidden; }
+  .status button { border: 0; border-radius: 0; background: transparent; color: var(--muted); padding: 6px 11px; font-size: 13px; }
+  .status button + button { border-left: 1px solid var(--line); }
+  .status button.on[data-s="todo"] { background: var(--panel2); color: var(--text); }
+  .status button.on[data-s="done"] { background: var(--green); color: #111; }
+  .status button.on[data-s="redo"] { background: var(--red); color: #111; }
+  .how { margin-top: 8px; font-size: 14px; }
+  .how li { margin-left: 18px; }
+  .note { margin-top: 10px; width: 100%; background: var(--bg); color: var(--text); border: 1px solid var(--line); border-radius: 8px; padding: 8px 10px; font: inherit; font-size: 14px; }
+  .note:focus { outline: none; border-color: var(--gold); }
+  .q { margin-top: 12px; }
+  .q label { display: block; font-size: 14px; font-weight: 600; margin-bottom: 4px; }
+  .q label small { font-weight: 400; color: var(--muted); }
+  .q textarea { width: 100%; min-height: 54px; background: var(--bg); color: var(--text); border: 1px solid var(--line); border-radius: 8px; padding: 8px 10px; font: inherit; font-size: 14px; resize: vertical; }
+  .q textarea:focus { outline: none; border-color: var(--gold); }
+  .toast { position: fixed; left: 50%; bottom: 24px; transform: translateX(-50%); background: var(--gold); color: #111; font-weight: 700; padding: 10px 18px; border-radius: 10px; opacity: 0; transition: opacity .2s; pointer-events: none; }
+  .toast.show { opacity: 1; }
+  @media (max-width: 600px) { .actions { margin-left: 0; width: 100%; } }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div class="top">
+      <img class="champ" src="https://ddragon.leagueoflegends.com/cdn/16.22.1/img/champion/Locke.png" alt="">
+      <h1>Locke · mid<small>Checklist de gravação · tutorial do Sorteador dos guri</small></h1>
+      <div class="actions">
+        <button class="primary" id="copy">Copiar resumo</button>
+        <button id="reset">Zerar</button>
+      </div>
+    </div>
+    <div class="progress"><div class="bar"><i id="bar"></i></div><div class="count" id="count"></div></div>
+  </header>
+
+  <h2>Kit <small>para saber o que mostrar em cada clipe</small></h2>
+  <div class="setup">
+    <b>Locke, o Exorcista das Cinzas</b> · assassino/mago corpo a corpo, usa mana.
+    <ul class="kit">
+      <li><b>Passiva, Estaca de Prata:</b> ataques dão dano mágico extra, maior quanto mais vida o inimigo perdeu.</li>
+      <li><b>Q, Pregos Ritualísticos:</b> pregos que marcam e deixam lento (acumula). Atacar consome os pregos, com bônus em 2 e 3.</li>
+      <li><b>W, Ignição da Alma:</b> velocidade de ataque e de movimento queimando a própria vida; cura parte no fim. Dá para encerrar antes.</li>
+      <li><b>E, Perseguição das Cinzas:</b> teleporta para um ponto (dano ao chegar) e o próximo ataque avança até o alvo. Reseta com abate.</li>
+      <li><b>R, Purgatório:</b> artefato em área; campeão marcado com pouca vida é <b>selado</b> (executado). Se selou, o artefato cai no chão: pegar dá força permanente.</li>
+    </ul>
+  </div>
+
+  <h2>Antes de gravar</h2>
+  <div class="setup">
+    <div class="checks" id="prechecks"></div>
+  </div>
+
+  <div id="sections"></div>
+
+  <h2>Me manda junto <small>vira a build e o “Como jogar” do site; vai no resumo copiado</small></h2>
+  <div class="setup" id="questions"></div>
+</div>
+<div class="toast" id="toast"></div>
+
+<script>
+const CHAMP = "Locke";
+const ROLE = "mid";
+const KEY = "sorteador-gravacao-locke-mid";
+
+const PRE = [
+  "Gravador funcionando (teste de 10 s assistido)",
+  "Pasta D:\\Tutoriais LOL\\Locke criada",
+  "Ferramenta de Treino: nível máximo, sem recargas, ouro infinito",
+  "2 bonecos em linha + 1 do lado",
+];
+
+/* site: onde o clipe entra no tutorial · slow: vai tocar em 0,75x */
+const SECTIONS = [
+  {
+    id: "A", name: "Sessão A — Ferramenta de Treino", time: "≈ 15 min · 1 arquivo por clipe (3–12 s)",
+    setup: "<b>Configuração:</b> Locke, mid. <b>Nível máximo</b>, <b>sem recargas</b>, ouro infinito. <b>2 bonecos em linha</b> (um atrás do outro) e um terceiro do lado. Nos combos, faça 3–5 tentativas e guarde a mais limpa.",
+    scenes: [
+      { c:"A1", t:"Passiva — dano cresce com a vida perdida", file:"passiva.mp4", site:"Habilidades — Passiva",
+        how:["Ataques num boneco com vida cheia","Continue até ele ficar com pouca vida: os números de dano crescem"] },
+      { c:"A2", t:"Q — pregos marcando e ataque consumindo", file:"q.mp4", site:"Habilidades — Q",
+        how:["Q acertando o boneco (aparece a marca)","1–2 ataques consumindo os pregos","Se der: Q com 3 pregos no mesmo alvo"] },
+      { c:"A3", t:"W — velocidade, vida caindo e cura no fim", file:"w.mp4", site:"Habilidades — W",
+        how:["Ligue o W, ande e ataque mostrando a velocidade","Deixe aparecer a vida descendo e a cura no final"] },
+      { c:"A4", t:"E — teleporte + ataque que avança", file:"e.mp4", site:"Habilidades — E",
+        how:["E para um ponto ao lado do boneco (dano ao chegar)","Ataque: ele avança atravessando os 2 bonecos em linha"] },
+      { c:"A5", t:"Combo básico de troca: Q → ataque → sair", file:"combo q + aa.mp4", site:"Combos — básico",
+        how:["Q no boneco, ataque consumindo os pregos e saia andando"] },
+      { c:"A6", t:"Combo básico de entrada: Q → E → ataque-avanço", file:"combo q + e.mp4", site:"Combos — básico",
+        how:["Q de longe, E perto do alvo e ataque que avança consumindo os pregos"] },
+      { c:"A7", t:"Combo avançado (all-in): Q → W → E → ataque-avanço → ataques", file:"combo q + w + e + aa.mp4", site:"Combos — avançado", slow:true,
+        how:["Q acertando 3 pregos, W, E e o ataque-avanço","Continue atacando até o fim","Repita 3–5x na mesma gravação"] },
+      { c:"A8", t:"Dica: o E atravessa parede", file:"dica e parede.mp4", site:"Dicas",
+        how:["Parede fina entre o mid e a selva","E para o outro lado e ataque"] },
+    ]
+  },
+  {
+    id: "B", name: "Sessão B — Partida com bots", time: "≈ 20–30 min · grave só os lances",
+    setup: "<b>Configuração:</b> partida personalizada, bots Intermediário, Locke mid. O R só sela <b>campeões</b>, por isso essas cenas são na partida. Anote o minuto dos lances bons.",
+    scenes: [
+      { c:"B1", t:"R — selando um campeão com pouca vida", file:"r.mp4", site:"Habilidades — R",
+        how:["R num campeão com pouca vida: área, lentidão e o selamento"] },
+      { c:"B2", t:"Dica: pegar o artefato do R no chão", file:"dica pegar artefato.mp4", site:"Dicas",
+        how:["Depois de selar alguém, ande até o artefato e pegue"] },
+      { c:"B3", t:"Combo avançado (luta): Q → E → R → abate → E de novo", file:"combo e + r + reset.mp4", site:"Combos — avançado", slow:true,
+        how:["E no grupo, R, selar ou abater","E de novo (resetou com o abate) no próximo alvo"] },
+      { c:"B4", t:"Jogada: 2+ abates seguidos", file:"jogada.mp4", site:"Na partida",
+        how:["O melhor lance: reset do E ou execução do R em sequência"] },
+      { c:"B5", t:"Dica: W com pouca vida para sobreviver", file:"dica w cura.mp4", site:"Dicas", opt:true,
+        how:["Se acontecer: ligar o W numa luta com pouca vida e sobreviver pela cura do fim"] },
+    ]
+  }
+];
+
+const QUESTIONS = [
+  { id:"build", t:"Build", hint:"item inicial, principais em ordem, botas e situacionais" },
+  { id:"runas", t:"Runas", hint:"principal e secundária (ou mande um print)" },
+  { id:"skills", t:"Ordem de upar", hint:"ex.: R > Q > E > W" },
+  { id:"dificeis", t:"Matchups difíceis", hint:"3 no mid, com o motivo se souber" },
+  { id:"faceis", t:"Matchups fáceis", hint:"3 no mid, com o motivo se souber" },
+  { id:"combo", t:"Combo seu", hint:"algum que não está na lista acima (opcional)" },
+  { id:"dica", t:"Dica de ouro", hint:"a coisa mais importante para quem nunca jogou" },
+];
+
+let state = { pre:{}, s:{}, notes:{}, q:{} };
+try { const raw = localStorage.getItem(KEY); if (raw) state = Object.assign(state, JSON.parse(raw)); } catch(e) {}
+function save() { try { localStorage.setItem(KEY, JSON.stringify(state)); } catch(e) {} }
+const esc = s => String(s).replace(/[&<>"]/g, ch => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[ch]));
+
+function render() {
+  document.getElementById("prechecks").innerHTML = PRE.map((p,i) =>
+    `<label><input type="checkbox" data-pre="${i}" ${state.pre[i]?"checked":""}> ${esc(p)}</label>`).join("");
+
+  document.getElementById("sections").innerHTML = SECTIONS.map(sec => `
+    <h2>${sec.name} <small>${sec.time}</small></h2>
+    <div class="setup">${sec.setup}</div>
+    ${sec.scenes.map(sc => {
+      const st = state.s[sc.c] || "todo";
+      return `<div class="scene ${st} ${sc.opt?"optional":""}" id="sc-${sc.c}">
+        <div class="row1">
+          <div class="code">${sc.c}</div>
+          <div class="title">${esc(sc.t)}${sc.slow?'<span class="slow">🐢 0,75x no site</span>':""}
+            <span class="use">No site: ${esc(sc.site)}</span>
+            <span class="file">${esc(sc.file)}</span></div>
+          <div class="status">
+            ${[["todo","Pendente"],["done","Gravado ✓"],["redo","Refazer"]].map(([k,l]) =>
+              `<button data-c="${sc.c}" data-s="${k}" class="${st===k?"on":""}">${l}</button>`).join("")}
+          </div>
+        </div>
+        <ul class="how">${sc.how.map(h=>`<li>${esc(h)}</li>`).join("")}</ul>
+        <input class="note" data-note="${sc.c}" placeholder="Observação (ex.: 2ª tentativa é a melhor · ficou com outro nome)" value="${esc(state.notes[sc.c]||"")}">
+      </div>`;}).join("")}
+  `).join("");
+
+  document.getElementById("questions").innerHTML = QUESTIONS.map(q => `
+    <div class="q"><label>${esc(q.t)} <small>${esc(q.hint)}</small></label>
+    <textarea data-q="${q.id}">${esc(state.q[q.id]||"")}</textarea></div>`).join("");
+
+  updateProgress();
+}
+
+function updateProgress() {
+  const all = SECTIONS.flatMap(s => s.scenes);
+  const req = all.filter(s => !s.opt);
+  const done = req.filter(s => state.s[s.c] === "done").length;
+  const optDone = all.filter(s => s.opt && state.s[s.c] === "done").length;
+  document.getElementById("bar").style.width = (done / req.length * 100) + "%";
+  document.getElementById("count").innerHTML = `<b>${done}</b> de ${req.length} obrigatórios · ${optDone} opcionais`;
+}
+
+document.addEventListener("click", e => {
+  const b = e.target.closest(".status button");
+  if (!b) return;
+  state.s[b.dataset.c] = b.dataset.s; save();
+  const card = document.getElementById("sc-" + b.dataset.c);
+  card.classList.remove("todo","done","redo"); card.classList.add(b.dataset.s);
+  card.querySelectorAll(".status button").forEach(x => x.classList.toggle("on", x === b));
+  updateProgress();
+});
+document.addEventListener("change", e => {
+  if (e.target.dataset.pre !== undefined) { state.pre[e.target.dataset.pre] = e.target.checked; save(); }
+});
+document.addEventListener("input", e => {
+  if (e.target.dataset.note) { state.notes[e.target.dataset.note] = e.target.value; save(); }
+  if (e.target.dataset.q) { state.q[e.target.dataset.q] = e.target.value; save(); }
+});
+
+function toast(msg) { const t = document.getElementById("toast"); t.textContent = msg; t.classList.add("show"); setTimeout(()=>t.classList.remove("show"), 1800); }
+
+/* Resumo para colar no chat junto com o pedido "tutorial do <campeão>" */
+document.getElementById("copy").onclick = () => {
+  const mark = { todo:"[ ]", done:"[x]", redo:"[!]" };
+  let md = `## Gravação — tutorial ${CHAMP} (${ROLE})\nPasta: D:\\Tutoriais LOL\\${CHAMP}\n`;
+  SECTIONS.forEach(sec => {
+    md += `\n### ${sec.name}\n`;
+    sec.scenes.forEach(sc => {
+      const st = state.s[sc.c] || "todo";
+      const note = (state.notes[sc.c] || "").trim();
+      md += `- ${mark[st]} **${sc.c}** ${sc.t} → \`${sc.file}\` (${sc.site}${sc.slow?", 0,75x":""})${sc.opt?" _(opcional)_":""}${st==="redo"?" — **REFAZER**":""}${note?` — ${note}`:""}\n`;
+    });
+  });
+  const answers = QUESTIONS.filter(q => (state.q[q.id]||"").trim());
+  if (answers.length) {
+    md += `\n### Para os textos\n`;
+    answers.forEach(q => { md += `- **${q.t}:** ${state.q[q.id].trim().replace(/\n+/g, " / ")}\n`; });
+  }
+  md += "\n_Legenda: [x] gravado · [ ] pendente · [!] refazer_\n";
+  const done = () => toast("Resumo copiado! Cole no chat com “tutorial do " + CHAMP + "”.");
+  if (navigator.clipboard && navigator.clipboard.writeText) {
+    navigator.clipboard.writeText(md).then(done, () => fallback(md, done));
+  } else fallback(md, done);
+};
+function fallback(text, cb) {
+  const ta = document.createElement("textarea"); ta.value = text; document.body.appendChild(ta);
+  ta.select(); try { document.execCommand("copy"); cb(); } catch(e) { prompt("Copie o texto:", text); }
+  ta.remove();
+}
+document.getElementById("reset").onclick = () => {
+  if (confirm("Zerar todo o progresso e as anotações?")) { state = { pre:{}, s:{}, notes:{}, q:{} }; save(); render(); }
+};
+
+render();
+</script>
+</body>
+</html>

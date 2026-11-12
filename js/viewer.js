@@ -213,6 +213,8 @@ function renderStaticResults(results, matchId) {
 
         appendVoteBar(card, matchId, result.champion);
 
+        appendTutorialButton(card, result.champion);
+
         container.appendChild(card);
 
         /* Nick com o efeito da medalha e moldura especial (só visual) */
