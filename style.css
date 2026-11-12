@@ -5082,7 +5082,8 @@ a.changelog-link.has-new::after {
 
 .site-stats-next {
     display: grid;
-    grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr) auto;
+    /* Última coluna com largura fixa: as barras ficam todas alinhadas */
+    grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr) 76px;
     align-items: center;
     gap: 10px;
     padding: 5px 0;
@@ -5104,6 +5105,8 @@ a.changelog-link.has-new::after {
 }
 
 .site-stats-next small {
+    text-align: right;
+    white-space: nowrap;
     color: #8fa0b2;
     font-variant-numeric: tabular-nums;
 }
@@ -5149,7 +5152,7 @@ a.changelog-link.has-new::after {
 @media (max-width: 520px) {
 
     .site-stats-next {
-        grid-template-columns: 1fr auto;
+        grid-template-columns: 1fr 76px;
     }
 
     .site-stats-next .site-stats-bar {

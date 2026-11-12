@@ -45,6 +45,9 @@ const PLAYER_ALIASES = {
 
    /* Ber */
    "bernoso": "ber",
+
+   /* Rony */
+   "roney": "rony",
 };
 
 /* =====================================================
