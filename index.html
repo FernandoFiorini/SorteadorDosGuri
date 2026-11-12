@@ -455,7 +455,12 @@
                 <strong id="changelogTitle">📝 Patch Notes</strong>
                 <button type="button" id="changelogClose" class="changelog-close" aria-label="Fechar">✕</button>
             </div>
+            <div id="changelogTabs" class="changelog-tabs" role="tablist">
+                <button type="button" class="tutorial-tab active" data-tab="log" role="tab">📝 Atualizações</button>
+                <button type="button" class="tutorial-tab" data-tab="marcos" role="tab">🏛️ Marcos do site</button>
+            </div>
             <div id="changelogList" class="changelog-list"></div>
+            <div id="siteStatsPanel" class="changelog-list site-stats" hidden></div>
         </dialog>
 
     </div>
@@ -484,6 +489,7 @@
     <script src="js/tutorials.js?v=15"></script>
     <script src="js/features.js?v=15"></script>
     <script src="js/guide-requests.js?v=15"></script>
+    <script src="js/site-stats.js?v=15"></script>
     <script src="js/screen.js?v=15"></script>
     <script src="js/viewer.js?v=15"></script>
     <script src="js/ui.js?v=15"></script>

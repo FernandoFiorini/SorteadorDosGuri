@@ -62,7 +62,8 @@ const FEATURES = [
         categoria: "✨ Extras",
         itens: [
             { titulo: "🎬 Últimos clipes", desde: "2026-11-10", texto: "Os vídeos mais recentes dos canais da gurizada, com rolagem para o lado.", alvo: "#clipsCard" },
-            { titulo: "📝 Patch Notes", desde: "2026-11-10", texto: "O histórico de tudo que mudou no site, por data.", alvo: "#changelogOpen" }
+            { titulo: "📝 Patch Notes", desde: "2026-11-10", texto: "O histórico de tudo que mudou no site, por data.", alvo: "#changelogOpen" },
+            { titulo: "🏛️ Marcos do site", desde: "2026-11-12", depoisDaData: true, texto: "A história do sorteador: primeiro sorteio, números gerais e marcos como 100 sorteios. Fica numa aba da janela do Patch Notes e não conta para as conquistas.", alvo: "#changelogOpen", abrir: "marcos" }
         ]
     }
 ];
@@ -193,6 +194,22 @@ function showTourStep() {
         return;
     }
 
+    /* Marcos do site: abre a janela do Patch Notes já na aba (modal: o
+       cartão vai para dentro dela, como no tutorial) */
+    const changelog = document.getElementById("changelogDialog");
+
+    if (f.abrir === "marcos") {
+        if (dialog && dialog.open) closeTutorial();
+        renderChangelog();
+        if (!changelog.open) changelog.showModal();
+        setChangelogTab("marcos");
+        changelog.appendChild(card);
+        spotlight(document.getElementById("siteStatsPanel"));
+        return;
+    }
+
+    if (changelog && changelog.open) changelog.close();
+
     document.body.appendChild(card);
     if (dialog && dialog.open) closeTutorial();
 
@@ -219,6 +236,8 @@ function showTourStep() {
 function endTour() {
     const card = document.getElementById("tourCard");
     card.hidden = true;
+    const changelog = document.getElementById("changelogDialog");
+    if (changelog && changelog.open && card.parentElement === changelog) changelog.close();
     card.classList.remove("at-left");
     document.body.appendChild(card);
     const dialog = document.getElementById("tutorialDialog");

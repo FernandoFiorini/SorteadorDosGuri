@@ -23,7 +23,7 @@ const CHANGELOG = [
             ["novo", "📖 Tutoriais: vídeo curto de cada habilidade, combos, dicas e uma jogada, com uma explicação embaixo de cada vídeo. Fica logo abaixo do resultado, com busca por nome.", {
                 sub: [
                     ["Primeiros guias: Katarina, Locke, Aphelios, K'Sante, Evelynn, Draven, Thresh e Syndra."],
-                    ["🙋 Pedir um guia: escolha os campeões que você quer ver com tutorial e veja os mais pedidos. Também dá para pedir direto no card do campeão sorteado, ao lado do 👍 / 👎."],
+                    ["🙋 Pedir um guia: escolha os campeões que você quer ver com tutorial e veja os mais pedidos. Também dá para pedir direto no card do campeão sorteado, embaixo do 👍 / 👎."],
                     ["Quando sai um campeão com tutorial no sorteio, o card ganha o botão \"📖 Como jogar\"."],
                     ["Abas 📋 Como jogar (fases do jogo, pontos fortes e fracos, matchups e dica de ouro) e 🛠️ Build (itens, runas e ordem das skills, com link para a build do momento no OP.GG e U.GG)."],
                     ["Combos mais difíceis tocam em câmera lenta 🐢 0,75x."],
@@ -31,6 +31,7 @@ const CHANGELOG = [
                 ]
             }],
             ["novo", "✨ Funcionalidades: lista de tudo que o site faz, ao lado do Patch Notes. Em \"Experimentar\" começa um tour que mostra cada função no lugar dela, uma por uma."],
+            ["novo", "🏛️ Marcos do site: nova aba aqui no Patch Notes com a história do sorteador (primeiro sorteio, números gerais e marcos como 100 sorteios), 🔥 ofensiva diária (dias seguidos com sorteio, com nome novo a cada 10 dias) e os campeões que ainda não saíram no sorteio. Não conta para as conquistas."],
             ["som", "Nardi grito seco."]
         ]
     },

@@ -229,6 +229,7 @@ No topo da página ficam dois links:
 
 * **✨ Funcionalidades:** lista de tudo que o site faz, por categoria. Em **Experimentar** começa um tour que rola até cada função, destaca ela e mostra um cartão com **Anterior / Próxima** para ver uma por uma. Quando entra uma funcionalidade nova, o link pisca com **NOVO** até a pessoa abrir o menu (fica salvo no navegador). As funções ficam em `FEATURES`, no arquivo `js/features.js`, cada uma com a data em que chegou.
 * **📝 Patch Notes:** o histórico de atualizações por data, em `js/changelog.js`.
+* **🏛️ Marcos do site:** segunda aba da janela do Patch Notes. Mostra a história de uso do sorteador: primeiro sorteio registrado, números gerais (sorteios, partidas, campeões já sorteados, horas de partida, dia recorde...) e marcos como 10, 50, 100 sorteios, com a data em que foram alcançados e a barra do próximo. Tem também a **🔥 ofensiva diária** (dias seguidos com pelo menos um sorteio; o nome muda a cada 10 dias: 🔥 Em chamas, ☄️ Imparável, 🌋 Lendária...) e a lista dos campeões que ainda não saíram em nenhum sorteio. Não dá XP nem conta para conquistas. Os marcos ficam em `SITE_MILESTONES`, no arquivo `js/site-stats.js`.
 
 ### 🎬 Clipes da gurizada
 

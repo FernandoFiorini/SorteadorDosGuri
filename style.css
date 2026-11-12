@@ -5020,3 +5020,205 @@ a.changelog-link.has-new::after {
     opacity: 0.5;
     cursor: default;
 }
+
+/* =====================================================
+   MARCOS DO SITE (aba na janela do Patch Notes)
+===================================================== */
+
+.changelog-tabs {
+    display: flex;
+    gap: 6px;
+    padding: 10px 16px 0;
+}
+
+.changelog-list[hidden] {
+    display: none;
+}
+
+.site-stats-empty {
+    color: #8fa0b2;
+    font-size: 14px;
+    padding: 16px 0;
+}
+
+.site-stats-tiles {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    gap: 8px;
+    padding-top: 12px;
+}
+
+.site-stats-tile {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid #22334a;
+    border-radius: 10px;
+    padding: 10px 12px;
+}
+
+.site-stats-tile strong {
+    font-size: 20px;
+    color: #f0f3f6;
+    font-variant-numeric: tabular-nums;
+}
+
+.site-stats-label {
+    font-size: 13px;
+    color: #b8c4d0;
+}
+
+.site-stats-tile small {
+    font-size: 11px;
+    color: #7c8ea1;
+}
+
+.site-stats-h {
+    margin: 18px 0 8px;
+    font-size: 14px;
+    color: #c8aa6e;
+}
+
+.site-stats-next {
+    display: grid;
+    grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr) auto;
+    align-items: center;
+    gap: 10px;
+    padding: 5px 0;
+    font-size: 13px;
+    color: #dfe6ee;
+}
+
+.site-stats-bar {
+    height: 8px;
+    background: #152536;
+    border-radius: 99px;
+    overflow: hidden;
+}
+
+.site-stats-bar i {
+    display: block;
+    height: 100%;
+    background: #c8aa6e;
+}
+
+.site-stats-next small {
+    color: #8fa0b2;
+    font-variant-numeric: tabular-nums;
+}
+
+.site-stats-done {
+    list-style: none;
+    margin: 0;
+    padding: 0 0 12px 0;
+    border-left: 2px solid #253648;
+    margin-left: 82px;
+}
+
+.site-stats-done li {
+    position: relative;
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+    padding: 6px 0 6px 12px;
+}
+
+.site-stats-date {
+    position: absolute;
+    left: -82px;
+    width: 72px;
+    text-align: right;
+    font-size: 11px;
+    color: #6f8194;
+    font-variant-numeric: tabular-nums;
+    top: 9px;
+}
+
+.site-stats-done strong {
+    display: block;
+    font-size: 13px;
+    color: #f0f3f6;
+}
+
+.site-stats-done small {
+    font-size: 12px;
+    color: #8fa0b2;
+}
+
+@media (max-width: 520px) {
+
+    .site-stats-next {
+        grid-template-columns: 1fr auto;
+    }
+
+    .site-stats-next .site-stats-bar {
+        grid-column: 1 / -1;
+        order: 3;
+    }
+
+}
+
+/* Marcos do site: ofensiva diária e campeões que faltam */
+.site-streak {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin-top: 12px;
+    padding: 12px 16px;
+    border-radius: 12px;
+    border: 1px solid rgba(255, 140, 50, 0.55);
+    background: linear-gradient(120deg, rgba(255, 120, 40, 0.16), rgba(200, 170, 110, 0.06));
+}
+
+.site-streak.off {
+    border-color: #2b3c50;
+    background: rgba(255, 255, 255, 0.03);
+}
+
+.site-streak-icon {
+    font-size: 34px;
+    line-height: 1;
+}
+
+.site-streak strong {
+    display: block;
+    font-size: 16px;
+    color: #ffcf8a;
+}
+
+.site-streak.off strong {
+    color: #b8c4d0;
+}
+
+.site-streak span:not(.site-streak-icon) {
+    display: block;
+    font-size: 13px;
+    color: #dfe6ee;
+}
+
+.site-streak small {
+    font-size: 12px;
+    color: #8fa0b2;
+}
+
+.site-stats-missing {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    padding-bottom: 14px;
+}
+
+.site-stats-missing img {
+    width: 34px;
+    height: 34px;
+    border-radius: 6px;
+    border: 1px solid #304255;
+    filter: grayscale(0.6);
+    transition: filter 0.15s;
+}
+
+.site-stats-missing img:hover {
+    filter: none;
+    border-color: #c8aa6e;
+}
