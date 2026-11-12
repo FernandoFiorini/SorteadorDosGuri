@@ -90,21 +90,25 @@ function appendGuideRequestButton(card, championId) {
     if (!bar) return;
     bar.after(btn);
 
-    refreshGuideRequestButtons();
+    /* Preenche este botão direto: na tela de quem assiste, o card ainda
+       não está na página quando o botão é criado */
+    updateGuideRequestButton(btn);
 
 }
 
+function updateGuideRequestButton(btn) {
+    const id = btn.dataset.champion;
+    const mine = requestedByMe(id);
+    const n = requestCount(id);
+    btn.classList.toggle("mine", mine);
+    btn.disabled = !guideRequestsUid || !!guideRequestsError;
+    btn.textContent = (mine ? "✓ Guia pedido" : "🙋 Pedir um guia") + (n ? " · " + n : "");
+    btn.title = guideRequestsError
+        || (mine ? "Você pediu o guia de " + champLabel(id) + " (clique para desfazer)" : "Pedir um guia de " + champLabel(id));
+}
+
 function refreshGuideRequestButtons() {
-    document.querySelectorAll(".guide-req-card-btn").forEach(btn => {
-        const id = btn.dataset.champion;
-        const mine = requestedByMe(id);
-        const n = requestCount(id);
-        btn.classList.toggle("mine", mine);
-        btn.disabled = !guideRequestsUid || !!guideRequestsError;
-        btn.textContent = (mine ? "✓ Guia pedido" : "🙋 Pedir um guia") + (n ? " · " + n : "");
-        btn.title = guideRequestsError
-            || (mine ? "Você pediu o guia de " + champLabel(id) + " (clique para desfazer)" : "Pedir um guia de " + champLabel(id));
-    });
+    document.querySelectorAll(".guide-req-card-btn").forEach(updateGuideRequestButton);
 }
 
 /* Faixa "Mais pedidos" na seção Tutoriais (todo mundo vê) */
