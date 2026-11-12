@@ -1,0 +1,125 @@
+{
+  "rules": {
+    "salas": {
+      "$sala": {
+        ".read": true,
+
+        "hostUid": {
+          ".write": "auth != null && (!data.exists() || data.val() === auth.uid)",
+          ".validate": "newData.isString()"
+        },
+
+        "sorteio": {
+          ".write": "auth != null && root.child('salas').child($sala).child('hostUid').val() === auth.uid"
+        },
+
+        "partidas": {
+          ".write": "auth != null && root.child('salas').child($sala).child('hostUid').val() === auth.uid",
+          "$partida": {
+            "resultado": {
+              ".validate": "newData.val() === 'vitoria' || newData.val() === 'derrota' || newData.val() === 'anulada'"
+            }
+          }
+        },
+
+        "votos": {
+          ".write": "auth != null && root.child('salas').child($sala).child('hostUid').val() === auth.uid",
+          "$partida": {
+            "$campeao": {
+              "$uid": {
+                ".write": "auth != null && auth.uid === $uid",
+                ".validate": "newData.val() === 1 || newData.val() === -1"
+              }
+            }
+          }
+        },
+
+        "mensagens": {
+          ".indexOn": ["ts"],
+          "$msg": {
+            ".write": "auth != null && !data.exists() && newData.child('uid').val() === auth.uid",
+            ".validate": "newData.hasChildren(['uid','nome','texto','ts']) && newData.child('nome').isString() && newData.child('nome').val().length > 0 && newData.child('nome').val().length <= 20 && newData.child('texto').isString() && newData.child('texto').val().length <= 300 && newData.child('ts').isNumber() && newData.child('ts').val() <= now",
+
+            "uid": { ".validate": "newData.isString()" },
+            "nome": { ".validate": "newData.isString()" },
+            "texto": { ".validate": "newData.isString()" },
+            "ts": { ".validate": "newData.isNumber() && newData.val() <= now" },
+            "$other": { ".validate": false }
+          }
+        },
+
+        "rtc": {
+          ".write": "auth != null && root.child('salas').child($sala).child('hostUid').val() === auth.uid",
+
+          "viewers": {
+            "$uid": {
+              ".write": "auth != null && auth.uid === $uid"
+            }
+          },
+
+          "answers": {
+            "$cid": {
+              ".write": "auth != null"
+            }
+          },
+
+          "ice": {
+            "$cid": {
+              "viewer": {
+                ".write": "auth != null"
+              }
+            }
+          }
+        },
+
+        "$other": {
+          ".validate": false
+        }
+      }
+    },
+
+    "global": {
+      "riot": { ".read": true },
+      "riotColeta": { ".read": true },
+
+      "pedidosGuia": {
+        ".read": true,
+        "$campeao": {
+          ".validate": "$campeao.matches(/^[A-Za-z]{2,20}$/)",
+          "$uid": {
+            ".write": "auth != null && auth.uid === $uid",
+            ".validate": "newData.isNumber() && newData.val() <= now"
+          }
+        }
+      },
+
+      "partidas": {
+        ".read": true,
+
+        "$partida": {
+          ".write": "auth != null && newData.child('hostUid').val() === auth.uid && (!data.exists() || data.child('hostUid').val() === auth.uid)",
+          ".validate": "newData.hasChildren(['hostUid', 'time', 'entries'])",
+
+          "hostUid":   { ".validate": "newData.isString()" },
+          "time":      { ".validate": "newData.isNumber()" },
+          "resultado": { ".validate": "newData.val() === 'vitoria' || newData.val() === 'derrota' || newData.val() === 'anulada'" }
+        }
+      },
+
+      "votos": {
+        ".read": true,
+
+        "$partida": {
+          ".write": "auth != null && root.child('global').child('partidas').child($partida).child('hostUid').val() === auth.uid",
+
+          "$campeao": {
+            "$uid": {
+              ".write": "auth != null && auth.uid === $uid",
+              ".validate": "newData.val() === 1 || newData.val() === -1"
+            }
+          }
+        }
+      }
+    }
+  }
+}

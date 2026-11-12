@@ -295,7 +295,10 @@
 
                 <div class="champion-controls">
                     <input type="text" id="tutorialSearch" placeholder="Pesquisar campeão..." autocomplete="off">
+                    <button type="button" class="mini-btn guide-req-btn" id="guideRequestBtn">🙋 Pedir um guia</button>
                 </div>
+
+                <div class="guide-req-top" id="guideRequestTop"></div>
 
                 <div class="tutorial-grid" id="tutorialGrid"></div>
 
@@ -432,6 +435,21 @@
             <button type="button" id="tourList" class="tour-list">Ver a lista</button>
         </div>
 
+        <!-- PEDIR UM GUIA (js/guide-requests.js) -->
+        <dialog id="guideRequestDialog" class="changelog-dialog" aria-labelledby="guideRequestTitle">
+            <div class="changelog-head">
+                <strong id="guideRequestTitle">🙋 Pedir um guia</strong>
+                <button type="button" id="guideRequestClose" class="changelog-close" aria-label="Fechar">✕</button>
+            </div>
+            <div class="changelog-list">
+                <p class="guide-req-status" id="guideRequestStatus"></p>
+                <div class="champion-controls">
+                    <input type="text" id="guideRequestSearch" placeholder="Pesquisar campeão..." autocomplete="off">
+                </div>
+                <div class="guide-req-grid" id="guideRequestGrid"></div>
+            </div>
+        </dialog>
+
         <dialog id="changelogDialog" class="changelog-dialog" aria-labelledby="changelogTitle">
             <div class="changelog-head">
                 <strong id="changelogTitle">📝 Patch Notes</strong>
@@ -465,6 +483,7 @@
     <script src="js/changelog.js?v=15"></script>
     <script src="js/tutorials.js?v=15"></script>
     <script src="js/features.js?v=15"></script>
+    <script src="js/guide-requests.js?v=15"></script>
     <script src="js/screen.js?v=15"></script>
     <script src="js/viewer.js?v=15"></script>
     <script src="js/ui.js?v=15"></script>

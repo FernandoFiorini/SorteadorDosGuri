@@ -4898,3 +4898,112 @@ a.changelog-link.has-new::after {
     }
 
 }
+
+/* =====================================================
+   PEDIR UM GUIA (js/guide-requests.js)
+===================================================== */
+
+.guide-req-btn {
+    flex-shrink: 0;
+    white-space: nowrap;
+}
+
+.guide-req-top {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 6px 8px;
+    margin: -4px 0 14px;
+    font-size: 13px;
+}
+
+.guide-req-title {
+    color: #c8aa6e;
+    font-weight: bold;
+}
+
+.guide-req-muted {
+    color: #8fa0b2;
+}
+
+.guide-req-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: #09111a;
+    border: 1px solid #304255;
+    border-radius: 999px;
+    padding: 2px 10px 2px 2px;
+    color: #dfe6ee;
+}
+
+.guide-req-chip img {
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+}
+
+.guide-req-chip b {
+    color: #c8aa6e;
+}
+
+.guide-req-status {
+    margin: 10px 0;
+    font-size: 13px;
+    color: #a7b5c3;
+}
+
+.guide-req-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(104px, 1fr));
+    gap: 8px;
+    padding-bottom: 12px;
+}
+
+.guide-req-tile {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    background: #09111a;
+    border: 1px solid #304255;
+    border-radius: 10px;
+    padding: 8px 4px;
+    color: #f5f5f5;
+    cursor: pointer;
+    transition: 0.15s;
+}
+
+.guide-req-tile:hover:not(:disabled) {
+    border-color: #c8aa6e;
+}
+
+.guide-req-tile:disabled {
+    cursor: default;
+    opacity: 0.6;
+}
+
+.guide-req-tile img {
+    width: 48px;
+    height: 48px;
+    border-radius: 8px;
+}
+
+.guide-req-tile strong {
+    font-size: 13px;
+    text-align: center;
+}
+
+.guide-req-tile span {
+    font-size: 11px;
+    color: #8fa0b2;
+}
+
+.guide-req-tile.mine {
+    border-color: #4caf78;
+    background: rgba(76, 175, 120, 0.1);
+}
+
+.guide-req-tile.mine span {
+    color: #8fd6ad;
+}

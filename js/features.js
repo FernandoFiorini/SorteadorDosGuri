@@ -46,7 +46,8 @@ const FEATURES = [
             { titulo: "🎬 Habilidades e combos", desde: "2026-11-12", texto: "Clique em cada habilidade para ver o vídeo. Os combos mais difíceis tocam em câmera lenta.", tutorial: "Katarina" },
             { titulo: "📋 Como jogar", desde: "2026-11-12", texto: "Fases do jogo, pontos fortes e fracos, matchups e a dica de ouro.", tutorial: "Katarina", aba: "guia" },
             { titulo: "🛠️ Build", desde: "2026-11-12", texto: "Itens, runas e ordem das skills, com link para a build do momento.", tutorial: "Katarina", aba: "build" },
-            { titulo: "🌙 Armas do Aphelios", desde: "2026-11-12", texto: "Painel no estilo do jogo: arma na mão, secundária, fila e o que cada par faz junto.", tutorial: "Aphelios" }
+            { titulo: "🌙 Armas do Aphelios", desde: "2026-11-12", texto: "Painel no estilo do jogo: arma na mão, secundária, fila e o que cada par faz junto.", tutorial: "Aphelios" },
+            { titulo: "🙋 Pedir um guia", desde: "2026-11-12", depoisDaData: true, texto: "Escolha os campeões que você quer ver com tutorial. Todo mundo vê os mais pedidos, e os mais votados entram primeiro na fila.", alvo: "#guideRequestBtn" }
         ]
     },
     {
@@ -68,33 +69,50 @@ const FEATURES = [
 
 /* ---------- Novidades (localStorage) ---------- */
 
+/* Guarda QUAIS funções a pessoa já viu (não só a data), para uma função
+   nova no mesmo dia também aparecer como NOVO. Versão antiga guardava
+   só a data: ela é convertida (tudo até aquele dia conta como visto). */
 const FEATURES_SEEN_KEY = "funcionalidadesVistas";
+
+const featureKey = f => f.titulo;
+
+/* depoisDaData: true = chegou depois de alguém já ter aberto o menu no
+   mesmo dia (no formato antigo, que guardava só a data). */
 
 function latestFeatureDate() {
     return FEATURES.flatMap(c => c.itens.map(f => f.desde || "")).sort().pop() || "";
 }
 
-function seenFeatureDate() {
-    try { return localStorage.getItem(FEATURES_SEEN_KEY) || ""; } catch (e) { return ""; }
+function seenFeatures() {
+    let raw = null;
+    try { raw = localStorage.getItem(FEATURES_SEEN_KEY); } catch (e) { }
+    if (!raw) return null;                       /* nunca abriu o menu */
+    if (raw.startsWith("[")) {
+        try { return new Set(JSON.parse(raw)); } catch (e) { return null; }
+    }
+    /* formato antigo: uma data */
+    return new Set(FEATURES.flatMap(c => c.itens).filter(f => f.desde && f.desde <= raw && !f.depoisDaData).map(featureKey));
 }
 
-/* Novo = chegou depois da última vez que a pessoa abriu o menu.
-   Quem nunca abriu vê como novo só o que é do último dia. */
+/* Novo = a pessoa ainda não viu. Quem nunca abriu o menu vê como novo
+   só o que chegou no último dia. */
 function isNewFeature(f, seen) {
     if (!f.desde) return false;
-    return seen ? f.desde > seen : f.desde === latestFeatureDate();
+    return seen ? !seen.has(featureKey(f)) : f.desde === latestFeatureDate();
 }
 
 function refreshFeaturesBadge() {
     const link = document.getElementById("featuresOpen");
     if (!link) return;
-    const hasNew = latestFeatureDate() > seenFeatureDate();
+    const seen = seenFeatures();
+    const hasNew = FEATURES.flatMap(c => c.itens).some(f => isNewFeature(f, seen));
     link.classList.toggle("has-new", hasNew);
     link.title = hasNew ? "Tem funcionalidade nova!" : "";
 }
 
 function markFeaturesSeen() {
-    try { localStorage.setItem(FEATURES_SEEN_KEY, latestFeatureDate()); } catch (e) { }
+    const all = FEATURES.flatMap(c => c.itens).map(featureKey);
+    try { localStorage.setItem(FEATURES_SEEN_KEY, JSON.stringify(all)); } catch (e) { }
     refreshFeaturesBadge();
 }
 
@@ -212,7 +230,7 @@ function endTour() {
 function renderFeatures() {
 
     const list = document.getElementById("featuresList");
-    const seen = seenFeatureDate();
+    const seen = seenFeatures();
     list.innerHTML = "";
 
     FEATURES.forEach(cat => {

@@ -217,6 +217,8 @@ powershell -NoProfile -ExecutionPolicy Bypass -File scripts\video\comprimir-vide
 
 3. Adicione a entrada do campeão em `TUTORIALS`, no arquivo `js/tutorials.js` (o formato completo e um prompt para gerar os textos estão em `scripts/tutorial/PROMPT.md`). Itens, runas e feitiços são escritos pelo nome em português do jogo; o ícone é achado sozinho.
 
+Qualquer pessoa pode clicar em **🙋 Pedir um guia** e escolher campeões que ainda não têm tutorial (um pedido por pessoa por campeão; clicar de novo desfaz). Os mais pedidos aparecem para todo mundo na seção, e a fila de prioridade mostra a coluna de pedidos. Os pedidos ficam em `global/pedidosGuia` no Firebase (regra em `database.rules.json`).
+
 Ferramentas de apoio, em `scripts/tutorial/`: o `modelo-gravacao.html` é um checklist do que gravar (com Pendente / Gravado / Refazer) e o `fila-tutoriais.html` é a fila de prioridade de quais campeões fazer primeiro, pela dificuldade e por quanto a turma perde com eles, com ordem ajustável à mão.
 
 Os ícones redesenhados dos feitiços ficam em `tutoriais/feiticos/`; sem eles, o site usa os oficiais.
@@ -297,7 +299,7 @@ Para utilizar o modo ao vivo:
 1. Crie um projeto no [Firebase Console](https://console.firebase.google.com/).
 2. Registre uma aplicação Web.
 3. Configure o Firebase Authentication para permitir autenticação anônima.
-4. Habilite o Realtime Database e configure as regras de acesso adequadas.
+4. Habilite o Realtime Database e cole as regras de acesso do arquivo `database.rules.json` (Realtime Database → Regras → colar o arquivo inteiro → Publicar). Esse arquivo é a cópia completa das regras: sempre que algo novo precisar de permissão no banco, ele é atualizado e basta colar de novo. O emulador local também usa esse mesmo arquivo.
 5. Preencha o objeto `firebaseConfig` no código com os dados do seu projeto.
 6. Hospede a aplicação em um endereço acessível aos demais jogadores.
 
@@ -400,6 +402,7 @@ node flex.js --gravar
 
 * [ ] **Contato com o dev:** um jeito de falar comigo pelo site (e-mail, formulário ou rede social no rodapé).
 * [ ] **Sugestões de melhoria:** um canal para a galera mandar ideias e reportar bugs.
+* [ ] **Sugestão dentro de cada tutorial:** no guia de um campeão, a pessoa sugere algo (ex.: "adicione o combo tal") e a sugestão vai para uma lista para o dev revisar.
 * [ ] **Monetizar o site:** anúncios, doação ou apoio, sem atrapalhar o sorteio.
 
 *Os itens marcados já existem; os demais ainda são ideias futuras.*
