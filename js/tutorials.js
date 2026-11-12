@@ -36,7 +36,15 @@ const TUTORIALS = {
         builds: [
             {
                 titulo: "Padrão (dano mágico)",
-                inicial: ["Lâmina de Doran", "Poção de Vida"],
+                inicial: [
+                    {
+                        ou: [
+                            { item: "Escudo de Doran", quando: "contra poke" },
+                            { item: "Lacre Sombrio", quando: "com chance de abate" }
+                        ]
+                    },
+                    "Poção de Vida"
+                ],
                 core: ["Perdição de Lich", "Sapatos do Feiticeiro", "Chama Sombria", "Capuz da Morte de Rabadon"],
                 situacional: ["Ampulheta de Zhonya", "Cajado do Vazio", "Véu da Banshee"],
                 runas: {
@@ -73,7 +81,7 @@ const TUTORIALS = {
                 { campeao: "Veigar", motivo: "Desvie da jaula e use o E para chegar nele." },
                 { campeao: "Xerath", motivo: "Depois que você encosta, ele não tem como fugir." }
             ],
-            dicaDeOuro: "Antes de entrar numa luta, sempre olhe onde estão as suas adagas. Elas são o seu caminho de fuga."
+            dicaDeOuro: "Sempre pense no reset, ele é a mecânica mais importante da Katarina, se conseguir matar um, você mata todos!"
         },
         habilidades: {
             P: {
@@ -153,11 +161,44 @@ const TUTORIALS = {
 
     Locke: {
         pasta: "tutoriais/locke/",
-        /* Sem "Como jogar" ainda (aba não aparece até cadastrar) */
+        guia: {
+            fases: [
+                { titulo: "Fase de rotas", texto: "Farme com o Q e use os pregos para trocar: Q no inimigo e ataque básico logo depois para estourar as marcas. Guarde o E para quando ele gastar a habilidade de fuga." },
+                { titulo: "Nível 6", texto: "Com o R, todo campeão com pouca vida vira abate: empurre a rota e vá atrás de quem está machucado nas outras rotas." },
+                { titulo: "Lutas em equipe", texto: "Não entre primeiro. Espere o controle do time deles sair, entre com o E em quem já está com pouca vida e use o R para selar. Pegou o abate? O E volta: pule para o próximo." }
+            ],
+            fortes: [
+                "Finaliza muito bem: a passiva e o R ficam mais fortes quanto menos vida o inimigo tem",
+                "Reset do E no abate: numa luta boa, pula de um em um"
+            ],
+            fracos: [
+                "Corpo a corpo: sofre contra quem ataca de longe na rota",
+                "Ficar atrás na rota: caso você perca a fase de rotas, muito difícil voltar para a partida"
+            ],
+            dificeis: [
+                { campeao: "Syndra", motivo: "Consegue te punir muito na fase de rotas, não é impossível ganhar, apenas difícil." },
+                { campeao: "Lissandra", motivo: "Muito controle de grupo: te prende assim que você entra." },
+                { campeao: "Galio", motivo: "Aguenta muito dano mágico, você vai precisar pegar kills em outras lanes para matar ele." }
+            ],
+            faceis: [
+                { campeao: "Xerath", motivo: "Sem mobilidade: chegou nele com o E, ele não foge." },
+                { campeao: "Velkoz", motivo: "Mago parado: desviou da skill principal, o all-in é seu." },
+                { campeao: "Ziggs", motivo: "Frágil e sem fuga boa depois que você cola." }
+            ],
+            dicaDeOuro: "Olhe a vida dos inimigos o tempo todo: o Locke é o assassino que termina o serviço. Qualquer campeão que não tenha mobilidade e que não seja tank, vira alvo fácil."
+        },
         builds: [
             {
                 titulo: "Padrão (dano mágico)",
-                inicial: ["Lâmina de Doran", "Poção de Vida"],
+                inicial: [
+                    {
+                        ou: [
+                            { item: "Anel de Doran", quando: "padrão" },
+                            { item: "Lacre Sombrio", quando: "com chance de abate" }
+                        ]
+                    },
+                    "Poção de Vida"
+                ],
                 core: ["Perdição de Lich", "Sapatos do Feiticeiro", "Chama Sombria", "Ampulheta de Zhonya", "Capuz da Morte de Rabadon"],
                 situacional: ["Cajado do Vazio", "Véu da Banshee"],
                 runas: {
@@ -241,6 +282,47 @@ const TUTORIALS = {
 
     Aphelios: {
         pasta: "tutoriais/aphelios/",
+        guia: {
+            fases: [
+                { titulo: "Fase de rotas", texto: "Farme e cutuque com a arma que tiver mais alcance (Calibrum). Olhe sempre a munição e a fila: gaste nas tropas a arma que você não quer para chegar na que é forte para trocar." },
+                { titulo: "Nível 6", texto: "O R muda com a arma da mão. Antes de usar, coloque a arma certa: Infernum ou Crescendum para dano em área, Gravitum para prender, Severum para se curar." },
+                { titulo: "Lutas em equipe", texto: "Fique atrás do seu time: ele não tem avanço nenhum. Entre na luta com um par forte (Infernum + Crescendum, Severum + Gravitum) e use o W para trocar para o Q certo na hora." }
+            ],
+            fortes: [
+                "Dano altíssimo no fim do jogo, principalmente em área",
+                "Cinco armas: tem resposta para quase toda situação (cura, prender, área, alcance)"
+            ],
+            fracos: [
+                "Nenhum avanço ou fuga: depende do time para ficar vivo",
+                "Difícil: escolher a arma errada na hora errada perde a luta"
+            ],
+            /* Magos de poke no suporte inimigo: sem avanço, o Aphelios só apanha de longe */
+            dificeis: [
+                { campeao: "Mel", motivo: "Ataca de longe e ainda devolve suas habilidades: fica difícil até farmar." },
+                { campeao: "Swain", motivo: "Puxa você com o E e drena vida no R; sem avanço, você não escapa." },
+                { campeao: "Syndra", motivo: "Atordoa e ataca de longe com muito dano; um erro e você morre." },
+                { campeao: "Hwei", motivo: "Poke e controle de longe o tempo todo; você não consegue chegar perto." }
+            ],
+            faceis: [
+                { campeao: "Jinx", motivo: "Fraca no começo e sem fuga: dá para ganhar a rota cedo." },
+                { campeao: "KogMaw", motivo: "Sem mobilidade e fraco antes dos itens." },
+                { campeao: "Twitch", motivo: "Frágil e sem avanço: Gravitum prende e você ganha a troca." }
+            ],
+            dicaDeOuro: "Antes de toda luta, olhe a arma da mão, a secundária e a próxima da fila. Saber qual par você vai ter é o que separa um Aphelios bom de um ruim."
+        },
+        builds: [
+            {
+                titulo: "Padrão (crítico)",
+                inicial: ["Arco de Doran", "Poção de Vida"],
+                core: ["A Coletora", "Grevas do Berserker", "Gume do Infinito", "Lembranças do Lorde Dominik", "Furacão de Runaan"],
+                situacional: ["Sedenta por Sangue", "Anjo Guardião"],
+                runas: {
+                    principal: ["Pressione o Ataque", "Triunfo", "Lenda: Linhagem", "Golpe de Misericórdia"],
+                    secundaria: ["Reembolso", "Tônico Triplo"]
+                },
+                texto: "A Coletora primeiro e a bota como segundo item. Depois Gume do Infinito, Lembranças do Lorde Dominik e Furacão de Runaan. No último item, Sedenta por Sangue para mais cura ou Anjo Guardião se estiverem focando você."
+            }
+        ],
         /* Abre direto no painel das armas (o resto do kit depende delas) */
         abaInicial: "armas",
         /* Aba "🌙 Armas": painel no estilo do HUD do jogo */
@@ -251,7 +333,7 @@ const TUTORIALS = {
                 calibrum: {
                     nome: "Calibrum", tipo: "rifle", cor: "verde", hex: "#3fc97f",
                     secundaria: "tiros de longo alcance do rifle",
-                    aa: { video: "calibrum-aa.mp4", texto: "Rifle de longo alcance: ataca mais longe que as outras armas. Bom para cutucar na rota sem chegar perto." },
+                    aa: { video: "calibrum-aa.mp4", texto: "Rifle de longo alcance: ataca mais longe que as outras armas. Bom para atacar na rota sem chegar perto." },
                     q: { video: "calibrum-q.mp4", texto: "Tiro longo que marca o inimigo. Com a marca, você ataca ele de bem longe e estoura a marca com dano extra." },
                     r: { video: "calibrum-r.mp4", texto: "O R marca todo mundo que pegar. Depois, ataques de longe estouram as marcas." }
                 },
@@ -1219,13 +1301,7 @@ function buildRow(label, names, catalog, arrows) {
     const list = document.createElement("div");
     list.className = "build-items";
 
-    names.forEach((name, i) => {
-        if (i > 0 && arrows) {
-            const arrow = document.createElement("span");
-            arrow.className = "build-arrow";
-            arrow.textContent = "›";
-            list.appendChild(arrow);
-        }
+    const itemBox = (name, when) => {
         const wrap = document.createElement("span");
         wrap.className = "build-item";
         wrap.appendChild(buildIcon(catalog.items[normalizeName(name)], name));
@@ -1233,7 +1309,39 @@ function buildRow(label, names, catalog, arrows) {
         caption.className = "build-item-name";
         caption.textContent = (catalog.items[normalizeName(name)] || { name }).name;
         wrap.appendChild(caption);
-        list.appendChild(wrap);
+        if (when) {
+            const tip = document.createElement("span");
+            tip.className = "build-item-when";
+            tip.textContent = when;
+            wrap.appendChild(tip);
+        }
+        return wrap;
+    };
+
+    names.forEach((name, i) => {
+        if (i > 0 && arrows) {
+            const arrow = document.createElement("span");
+            arrow.className = "build-arrow";
+            arrow.textContent = "›";
+            list.appendChild(arrow);
+        }
+        /* Escolha entre itens: { ou: [{ item, quando }, ...] } */
+        if (name && name.ou) {
+            const group = document.createElement("span");
+            group.className = "build-choice";
+            name.ou.forEach((opt, n) => {
+                if (n > 0) {
+                    const or = document.createElement("span");
+                    or.className = "build-or";
+                    or.textContent = "ou";
+                    group.appendChild(or);
+                }
+                group.appendChild(itemBox(opt.item, opt.quando));
+            });
+            list.appendChild(group);
+            return;
+        }
+        list.appendChild(itemBox(name));
     });
 
     row.appendChild(list);

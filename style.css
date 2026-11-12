@@ -4545,3 +4545,29 @@ a.changelog-link:focus-visible {
     margin-left: 6px;
     vertical-align: middle;
 }
+
+/* Build: escolha entre itens ("ou") */
+.build-choice {
+    display: inline-flex;
+    align-items: flex-start;
+    gap: 6px;
+    padding: 6px 8px;
+    border: 1px dashed #3a4b5e;
+    border-radius: 10px;
+}
+
+.build-or {
+    align-self: center;
+    margin-top: -18px;
+    font-size: 11px;
+    font-weight: bold;
+    text-transform: uppercase;
+    color: #8fa0b2;
+}
+
+.build-item-when {
+    font-size: 10px;
+    color: #c8aa6e;
+    text-align: center;
+    line-height: 1.2;
+}

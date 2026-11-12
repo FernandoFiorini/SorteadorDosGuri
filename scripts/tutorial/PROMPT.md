@@ -60,6 +60,7 @@ Siga o formato do campeão Katarina já existente em js/tutorials.js.
 <IdDoCampeao>: {
     pasta: "tutoriais/<campeao>/",
     builds: [{ titulo, inicial: [], core: [], situacional: [], runas: { principal: [], secundaria: [] }, skills: [], texto }],
+    // escolha entre itens em qualquer lista: { ou: [{ item: "Escudo de Doran", quando: "contra poke" }, { item: "Lacre Sombrio", quando: "com chance de abate" }] }
     guia: { fases: [{ titulo, texto }], fortes: [], fracos: [], dificeis: [{ campeao, motivo }], faceis: [], dicaDeOuro },
     habilidades: { P: { video, texto }, Q: {...}, W: {...}, E: {...}, R: {...} },
     // skill com mais de um vídeo (ex.: E normal + E resetando):
