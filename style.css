@@ -4854,3 +4854,47 @@ a.changelog-link.has-new::after {
     }
 
 }
+
+/* Build em duas colunas: itens | feitiços, runas e skills */
+.build-cols {
+    display: grid;
+    grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr);
+    gap: 0 24px;
+    align-items: start;
+}
+
+.build-col {
+    min-width: 0;
+}
+
+.build-col + .build-col {
+    border-left: 1px solid #1a2836;
+    padding-left: 24px;
+}
+
+.build-col .build-row {
+    grid-template-columns: 1fr;
+    gap: 6px;
+    padding: 8px 0;
+}
+
+.build-col .build-row:first-child {
+    border-top: none;
+    padding-top: 0;
+}
+
+@media (max-width: 700px) {
+
+    .build-cols {
+        grid-template-columns: 1fr;
+    }
+
+    .build-col + .build-col {
+        border-left: none;
+        padding-left: 0;
+        border-top: 1px solid #1a2836;
+        margin-top: 8px;
+        padding-top: 8px;
+    }
+
+}

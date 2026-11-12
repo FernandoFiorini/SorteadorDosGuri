@@ -39,8 +39,9 @@ Para cada clipe: o que fazer na gravação e onde (Ferramenta de Treino ou parti
 
 PARTE 2 — BLOCO PARA O SITE (objeto JavaScript, pronto para colar em TUTORIALS)
 - habilidades P, Q, W, E, R: 1 a 2 frases cada, explicando o que faz e para que serve
-- extras: os combos (grupo "Combos", com teclas ["Q","E"] etc. e velocidade: 0.75
-  nos avançados), as dicas (grupo "Dicas") e a jogada (grupo "Na partida")
+- extras: os combos em dois grupos, "Combos básicos" e "Combos avançados" (com teclas
+  ["Q","E"] etc.; os avançados com velocidade: 0.75), as dicas (grupo "Dicas") e a
+  jogada (grupo "Na partida")
 - guia:
   - fases: "Fase de rotas", "Nível 6", "Lutas em equipe" (1 a 2 frases cada)
   - fortes: 2 pontos fortes / fracos: 2 pontos fracos
@@ -59,7 +60,8 @@ Siga o formato do campeão Katarina já existente em js/tutorials.js.
 ```js
 <IdDoCampeao>: {
     pasta: "tutoriais/<campeao>/",
-    builds: [{ titulo, inicial: [], core: [], situacional: [], runas: { principal: [], secundaria: [] }, skills: [], texto }],
+    builds: [{ titulo, feiticos: ["Flash", "Incendiar"], inicial: [], core: [], situacional: [], runas: { principal: [], secundaria: [] }, skills: [], texto }],
+    // feitiços pelo nome do jogo: Flash, Incendiar, Teleporte, Curar, Barreira, Purificar, Exaustão, Fantasma, Golpear
     // escolha entre itens em qualquer lista: { ou: [{ item: "Escudo de Doran", quando: "contra poke" }, { item: "Lacre Sombrio", quando: "com chance de abate" }] }
     guia: { fases: [{ titulo, texto }], fortes: [], fracos: [], dificeis: [{ campeao, motivo }], faceis: [], dicaDeOuro },
     habilidades: { P: { video, texto }, Q: {...}, W: {...}, E: {...}, R: {...} },

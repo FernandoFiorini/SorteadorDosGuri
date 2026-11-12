@@ -22,7 +22,7 @@ const CHANGELOG = [
         itens: [
             ["novo", "📖 Tutoriais: vídeo curto de cada habilidade, combos, dicas e uma jogada, com uma explicação embaixo de cada vídeo. Fica logo abaixo do resultado, com busca por nome.", {
                 sub: [
-                    ["Primeiros guias: Katarina, Locke e Aphelios."],
+                    ["Primeiros guias: Katarina, Locke, Aphelios e K'Sante."],
                     ["Quando sai um campeão com tutorial no sorteio, o card ganha o botão \"📖 Como jogar\"."],
                     ["Abas 📋 Como jogar (fases do jogo, pontos fortes e fracos, matchups e dica de ouro) e 🛠️ Build (itens, runas e ordem das skills, com link para a build do momento no OP.GG e U.GG)."],
                     ["Combos mais difíceis tocam em câmera lenta 🐢 0,75x."],

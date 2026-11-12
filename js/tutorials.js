@@ -36,6 +36,7 @@ const TUTORIALS = {
         builds: [
             {
                 titulo: "Padrão (dano mágico)",
+                feiticos: ["Flash", "Incendiar"],
                 inicial: [
                     {
                         ou: [
@@ -107,21 +108,21 @@ const TUTORIALS = {
         },
         extras: [
             {
-                grupo: "Combos",
+                grupo: "Combos básicos",
                 titulo: "Básico: Q + E",
                 teclas: ["Q", "E"],
                 video: "combo-q-e.mp4",
                 texto: "Q no inimigo e E na adaga que caiu (ou no inimigo, se a adaga cair perto dele). Você pega a adaga do lado dele e já gira."
             },
             {
-                grupo: "Combos",
+                grupo: "Combos básicos",
                 titulo: "Básico 2: Q + E no inimigo",
                 teclas: ["Q", "E"],
                 video: "combo-q-e-no-alvo.mp4",
                 texto: "Q e logo E em cima do inimigo. A adaga cai atrás dele, bem onde você aparece, e você pega sem precisar andar."
             },
             {
-                grupo: "Combos",
+                grupo: "Combos avançados",
                 titulo: "Avançado: E + W + Q + R",
                 teclas: ["E", "W", "Q", "R"],
                 video: "combo-e-w-q-r.mp4",
@@ -129,7 +130,7 @@ const TUTORIALS = {
                 texto: "Entra com o E, solta o W colado nele, Q em outro alvo e R no meio. A adaga do W cai durante o giro e soma dano."
             },
             {
-                grupo: "Combos",
+                grupo: "Combos avançados",
                 titulo: "Avançado: E + W + Q para seguir",
                 teclas: ["E", "W", "Q"],
                 video: "combo-e-w-q-seguir.mp4",
@@ -190,6 +191,7 @@ const TUTORIALS = {
         builds: [
             {
                 titulo: "Padrão (dano mágico)",
+                feiticos: ["Flash", "Incendiar"],
                 inicial: [
                     {
                         ou: [
@@ -242,7 +244,21 @@ const TUTORIALS = {
         },
         extras: [
             {
-                grupo: "Combos",
+                grupo: "Combos básicos",
+                titulo: "Poke: 3x Q + Eletrocutar",
+                teclas: ["Q", "Q", "Q"],
+                video: "combo-poke-3q.mp4",
+                texto: "Joga os três pregos de longe no mesmo alvo: o terceiro acerto ativa o Eletrocutar. Troca segura na rota, sem precisar entrar."
+            },
+            {
+                grupo: "Combos básicos",
+                titulo: "W + 3x Q + E",
+                teclas: ["W", "Q", "Q", "Q", "E"],
+                video: "combo-w-3q-e.mp4",
+                texto: "Liga o W para ganhar velocidade, joga os três pregos e entra com o E: o ataque-avanço estoura as marcas."
+            },
+            {
+                grupo: "Combos avançados",
                 titulo: "E + W + 3x Q + E",
                 teclas: ["E", "W", "Q", "Q", "Q", "E"],
                 video: "combo-e-w-3q-e.mp4",
@@ -250,7 +266,7 @@ const TUTORIALS = {
                 texto: "Entra com o E, liga o W, joga os três pregos no mesmo alvo e usa o E de novo para avançar estourando as marcas."
             },
             {
-                grupo: "Combos",
+                grupo: "Combos avançados",
                 titulo: "E + W + Q + R + E + Incendiar",
                 teclas: ["E", "W", "Q", "R", "E", "Incendiar"],
                 video: "combo-e-w-q-r-e-ignite.mp4",
@@ -313,6 +329,15 @@ const TUTORIALS = {
         builds: [
             {
                 titulo: "Padrão (crítico)",
+                feiticos: [
+                    "Flash",
+                    { ou: [
+                        { item: "Curar" },
+                        { item: "Barreira" },
+                        { item: "Purificar" },
+                        { item: "Exaustão" }
+                    ] }
+                ],
                 inicial: ["Arco de Doran", "Poção de Vida"],
                 core: ["A Coletora", "Grevas do Berserker", "Gume do Infinito", "Lembranças do Lorde Dominik", "Furacão de Runaan"],
                 situacional: ["Sedenta por Sangue", "Anjo Guardião"],
@@ -415,35 +440,35 @@ const TUTORIALS = {
         },
         extras: [
             {
-                grupo: "Combos", armas: ["infernum", "severum"],
+                grupo: "Combos básicos", armas: ["infernum", "severum"],
                 titulo: "Simples: Q do Infernum com Severum",
                 teclas: ["Q"],
                 video: "combo-infernum-severum.mp4",
                 texto: "Infernum na mão e Severum na secundária: o Q em cone faz a Severum atirar em todo mundo que pegou, e você se cura."
             },
             {
-                grupo: "Combos", armas: ["severum", "infernum"],
+                grupo: "Combos básicos", armas: ["severum", "infernum"],
                 titulo: "Q da Severum com Infernum: cura e área",
                 teclas: ["Q"],
                 video: "combo-severum-infernum.mp4",
                 texto: "Severum na mão e Infernum na secundária: o Q atira com as duas armas, cura você e espalha dano em área."
             },
             {
-                grupo: "Combos", armas: ["severum", "crescendum"],
+                grupo: "Combos básicos", armas: ["severum", "crescendum"],
                 titulo: "Q da Severum com Crescendum + ataque",
                 teclas: ["Q", "AA"],
                 video: "combo-severum-crescendum.mp4",
                 texto: "O Q da Severum dispara os chakrams do Crescendum várias vezes e acumula muitos. Depois é só atacar."
             },
             {
-                grupo: "Combos", armas: ["crescendum", "calibrum"],
+                grupo: "Combos básicos", armas: ["crescendum", "calibrum"],
                 titulo: "Q do Crescendum + ataque de longe com Calibrum",
                 teclas: ["Q", "AA"],
                 video: "combo-crescendum-calibrum.mp4",
                 texto: "Crescendum na mão e Calibrum na secundária: a torreta atira com o rifle e você ataca de longe."
             },
             {
-                grupo: "Combos", armas: ["calibrum", "crescendum"],
+                grupo: "Combos avançados", armas: ["calibrum", "crescendum"],
                 titulo: "Q do Calibrum + chakrams de longe",
                 teclas: ["Q", "AA"],
                 video: "combo-calibrum-crescendum.mp4",
@@ -451,7 +476,7 @@ const TUTORIALS = {
                 texto: "Marca com o Q do Calibrum e solta os chakrams do Crescendum de longe no alvo marcado."
             },
             {
-                grupo: "Combos", armas: ["severum", "gravitum"],
+                grupo: "Combos avançados", armas: ["severum", "gravitum"],
                 titulo: "Severum + Gravitum: cura, lentidão e enraizar",
                 teclas: ["Q", "W", "Q"],
                 video: "combo-severum-gravitum.mp4",
@@ -459,7 +484,7 @@ const TUTORIALS = {
                 texto: "Q da Severum cura você e deixa o alvo lento pelo Gravitum da secundária. No final, W para o Gravitum e Q para enraizar."
             },
             {
-                grupo: "Combos", armas: ["calibrum"],
+                grupo: "Combos avançados", armas: ["calibrum"],
                 titulo: "Q + R do Calibrum e 2 ataques de longe",
                 teclas: ["Q", "R", "AA", "AA"],
                 video: "combo-calibrum-q-r.mp4",
@@ -467,7 +492,7 @@ const TUTORIALS = {
                 texto: "Q e R com o Calibrum marcam o inimigo. Dois ataques de longe estouram as marcas com muito dano."
             },
             {
-                grupo: "Combos", armas: ["crescendum"],
+                grupo: "Combos avançados", armas: ["crescendum"],
                 titulo: "R do Crescendum + Flash para perto",
                 teclas: ["R", "Flash", "AA"],
                 video: "combo-crescendum-r-flash.mp4",
@@ -475,7 +500,7 @@ const TUTORIALS = {
                 texto: "O R do Crescendum dá chakrams em quem pegou. Flash para perto: de perto os chakrams voltam mais rápido e o dano é bem maior."
             },
             {
-                grupo: "Combos", armas: ["infernum"],
+                grupo: "Combos avançados", armas: ["infernum"],
                 titulo: "R + Flash + Q do Infernum",
                 teclas: ["R", "Flash", "Q"],
                 video: "combo-infernum-r-flash-q.mp4",
@@ -493,6 +518,138 @@ const TUTORIALS = {
                 titulo: "Crescendum perto ataca mais rápido",
                 video: "dica-crescendum-perto.mp4",
                 texto: "Perto do alvo os chakrams voltam mais rápido, então você ataca mais rápido. Com o Crescendum, jogue um pouco mais perto (com cuidado)."
+            }
+        ]
+    },
+
+    KSante: {
+        pasta: "tutoriais/ksante/",
+        builds: [
+            {
+                titulo: "Padrão (tanque)",
+                feiticos: ["Flash", "Teleporte"],
+                inicial: [
+                    { ou: [
+                        { item: "Elmo de Doran", quando: "padrão" },
+                        { item: "Escudo de Doran", quando: "contra poke" }
+                    ] },
+                    "Poção de Vida"
+                ],
+                core: [
+                    { ou: [
+                        { item: "Manopla dos Glacinatas", quando: "contra quem não tem avanço" },
+                        { item: "Rookern Lamúrico", quando: "contra muito dano mágico" }
+                    ] }
+                ],
+                runas: {
+                    principal: ["Aperto dos Mortos-Vivos", "Golpe de Escudo", "Ventos Revigorantes", "Crescimento Excessivo"],
+                    secundaria: ["Triunfo", "Até a Morte"]
+                },
+                skills: ["R", "Q", "W", "E"],
+                texto: "Primeiro item: Manopla dos Glacinatas quando o time deles não tem avanço (a lentidão gruda neles), ou Rookern Lamúrico contra muito dano mágico."
+            }
+        ],
+        guia: {
+            fases: [
+                { titulo: "Fase de rotas", texto: "Troque curto com o Q e guarde o terceiro Q (atordoa e puxa) para quando o inimigo vier para cima. Não tente matar sozinho cedo: o K'Sante normal é tanque, ganha no desgaste." },
+                { titulo: "Nível 6", texto: "O R muda tudo: jogue o inimigo contra a parede para ele atravessar e ficar longe do time dele, e use a Forma Irrestrita para terminar o duelo." },
+                { titulo: "Lutas em equipe", texto: "Normal, você é o tanque: entre com W (imbatível), prenda com o terceiro Q e proteja seu time com o E num aliado. Use o R no carry deles quando der para isolar ou matar." }
+            ],
+            fortes: [
+                "Muito controle: terceiro Q atordoa e puxa, W empurra e atordoa",
+                "O R isola o carry inimigo do outro lado da parede"
+            ],
+            fracos: [
+                "Na Forma Irrestrita perde vida e defesa: entrou na hora errada, morre",
+                "Kit difícil e depende de itens de defesa caros"
+            ],
+            dificeis: [
+                { campeao: "Vayne", motivo: "Dano verdadeiro e te mantém longe com o E e o rolamento." },
+                { campeao: "Fiora", motivo: "Dano verdadeiro nos pontos fracos e o W dela devolve seu atordoamento." },
+                { campeao: "Gwen", motivo: "Dano verdadeiro e a névoa do W bloqueia suas habilidades." }
+            ],
+            faceis: [
+                { campeao: "Garen", motivo: "Sem alcance e sem controle: você troca curto com o Q e sai." },
+                { campeao: "Sion", motivo: "Lento e previsível: o W e o terceiro Q cortam a investida dele." },
+                { campeao: "Nasus", motivo: "Fraco no começo: dá para segurar ele longe da wave." }
+            ],
+            dicaDeOuro: "Guarde o R para terminar a luta, não para começar: na Forma Irrestrita você troca defesa por dano."
+        },
+        habilidades: {
+            P: {
+                video: "passiva.mp4",
+                texto: "As habilidades marcam o alvo: o próximo ataque básico nele dá dano extra. Depois de cada skill, encaixe um ataque."
+            },
+            Q: {
+                video: "q.mp4",
+                tituloPrincipal: "Forma normal",
+                texto: "Golpe em linha curta que dá dano e lentidão. Acertou duas vezes, o terceiro Q vira uma onda de choque que atordoa e puxa o inimigo.",
+                variacoes: [
+                    { titulo: "Forma Irrestrita", video: "q-irrestrita.mp4", texto: "Depois do R, o Q volta bem mais rápido: dá para encadear vários seguidos." }
+                ]
+            },
+            W: {
+                video: "w.mp4",
+                tituloPrincipal: "Forma normal",
+                texto: "Segura para carregar (fica imbatível e toma menos dano) e solta para avançar empurrando e atordoando. Quanto mais carrega, mais longe empurra.",
+                variacoes: [
+                    { titulo: "Forma Irrestrita", video: "w-irrestrita.mp4", texto: "Depois do R, o W dá dano verdadeiro e não empurra mais. E a recarga volta na hora." }
+                ]
+            },
+            E: {
+                video: "e.mp4",
+                tituloPrincipal: "Forma normal",
+                texto: "Avanço curto que dá escudo. Num aliado, vai bem mais longe e os dois ganham escudo.",
+                variacoes: [
+                    { titulo: "Forma Irrestrita", video: "e-irrestrita.mp4", texto: "Depois do R, o avanço é mais rápido e a recarga menor." }
+                ]
+            },
+            R: {
+                video: "r.mp4",
+                tituloPrincipal: "Normal",
+                texto: "Empurra um campeão e você vira a Forma Irrestrita: mais velocidade de ataque, penetração e cura, mas menos vida e defesa.",
+                variacoes: [
+                    { titulo: "Na parede", video: "r-parede.mp4", texto: "Com uma parede atrás, o inimigo atravessa para o outro lado e toma um segundo golpe. Ótimo para separar o carry do time dele." }
+                ]
+            }
+        },
+        extras: [
+            {
+                grupo: "Combos básicos",
+                titulo: "Básico: Q + Q + W",
+                teclas: ["Q", "Q", "W"],
+                video: "combo-q-q-w.mp4",
+                texto: "Dois Q para acumular e o W para empurrar e atordoar. O terceiro Q fica pronto para puxar de volta."
+            },
+            {
+                grupo: "Combos básicos",
+                titulo: "Básico: começando com W + Q + Q",
+                teclas: ["W", "Q", "Q"],
+                video: "combo-w-q-q.mp4",
+                texto: "Entra com o W e emenda os dois Q enquanto o inimigo está atordoado."
+            },
+            {
+                grupo: "Combos básicos",
+                titulo: "Começando com o E: E + Q + Q + W",
+                teclas: ["E", "Q", "Q", "W"],
+                video: "combo-e-q-q-w.mp4",
+                texto: "E para chegar perto com escudo, dois Q e o W para fechar a troca."
+            },
+            {
+                grupo: "Combos avançados",
+                titulo: "Avançado: ataque básico entre as skills",
+                teclas: ["Q", "AA", "Q", "AA", "W"],
+                video: "combo-aa-entre-skills.mp4",
+                velocidade: 0.75,
+                texto: "Encaixe um ataque básico depois de cada habilidade: a marca da passiva estoura em todos e o dano sobe muito."
+            },
+            {
+                grupo: "Combos avançados",
+                titulo: "Ultimate: Q + Q + E + W, R, W + Q + E + Q",
+                teclas: ["Q", "Q", "E", "W", "R", "W", "Q", "E", "Q"],
+                video: "combo-ultimate.mp4",
+                velocidade: 0.75,
+                texto: "Combo completo: Q, Q, E e W na forma normal; R para virar Forma Irrestrita (o W volta na hora) e W, Q, E, Q aproveitando as recargas curtas."
             }
         ]
     }
@@ -1225,6 +1382,9 @@ function renderTutorialGuide(tutorial) {
 /* Itens e runas do jogo (nome -> ícone), buscados uma vez */
 let buildCatalog = null;
 
+/* "Exaustão" -> "exaustao" (nome do arquivo do ícone local) */
+const spellFileName = name => normalizeName(name).replace(/[^a-z0-9]+/g, "-");
+
 const normalizeName = text => String(text || "").normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase().trim();
 
 async function loadBuildCatalog() {
@@ -1233,14 +1393,24 @@ async function loadBuildCatalog() {
 
     const version = (IMAGE_URL.match(/cdn\/([^/]+)\//) || [])[1] || DATA_DRAGON_VERSION;
     const base = "https://ddragon.leagueoflegends.com/cdn/";
-    const catalog = { items: {}, runes: {} };
+    const catalog = { items: {}, runes: {}, spells: {} };
 
     try {
 
-        const [items, runes] = await Promise.all([
+        const [items, runes, spells] = await Promise.all([
             fetch(base + version + "/data/pt_BR/item.json").then(r => r.json()),
-            fetch(base + version + "/data/pt_BR/runesReforged.json").then(r => r.json())
+            fetch(base + version + "/data/pt_BR/runesReforged.json").then(r => r.json()),
+            fetch(base + version + "/data/pt_BR/summoner.json").then(r => r.json())
         ]);
+
+        Object.values(spells.data).forEach(spell => {
+            catalog.spells[normalizeName(spell.name)] = {
+                name: spell.name,
+                /* Ícone redesenhado, se tiver na pasta (ex.: tutoriais/feiticos/flash.png) */
+                local: "tutoriais/feiticos/" + spellFileName(spell.name) + ".png",
+                icon: base + version + "/img/spell/" + spell.image.full
+            };
+        });
 
         Object.keys(items.data).forEach(id => {
             const item = items.data[id];
@@ -1275,9 +1445,15 @@ function buildIcon(entry, fallbackName, extraClass) {
 
     if (entry && entry.icon) {
         const img = document.createElement("img");
-        img.src = entry.icon;
         img.alt = entry.name;
         img.loading = "lazy";
+        if (entry.local) {
+            /* Tenta o ícone local primeiro; se não existir, volta para o oficial */
+            img.src = entry.local;
+            img.onerror = () => { img.onerror = null; img.src = entry.icon; };
+        } else {
+            img.src = entry.icon;
+        }
         box.appendChild(img);
     } else {
         box.classList.add("missing");
@@ -1288,7 +1464,9 @@ function buildIcon(entry, fallbackName, extraClass) {
 
 }
 
-function buildRow(label, names, catalog, arrows) {
+function buildRow(label, names, catalog, arrows, kind) {
+
+    const source = catalog[kind || "items"] || {};
 
     const row = document.createElement("div");
     row.className = "build-row";
@@ -1304,10 +1482,10 @@ function buildRow(label, names, catalog, arrows) {
     const itemBox = (name, when) => {
         const wrap = document.createElement("span");
         wrap.className = "build-item";
-        wrap.appendChild(buildIcon(catalog.items[normalizeName(name)], name));
+        wrap.appendChild(buildIcon(source[normalizeName(name)], name));
         const caption = document.createElement("span");
         caption.className = "build-item-name";
-        caption.textContent = (catalog.items[normalizeName(name)] || { name }).name;
+        caption.textContent = (source[normalizeName(name)] || { name }).name;
         wrap.appendChild(caption);
         if (when) {
             const tip = document.createElement("span");
@@ -1516,11 +1694,26 @@ async function renderTutorialBuild(tutorial) {
     head.textContent = build.titulo;
     panel.appendChild(head);
 
-    if (build.inicial && build.inicial.length) panel.appendChild(buildRow("Inicial", build.inicial, catalog, false));
-    if (build.core && build.core.length) panel.appendChild(buildRow("Principal", build.core, catalog, true));
-    if (build.situacional && build.situacional.length) panel.appendChild(buildRow("Situacional", build.situacional, catalog, false));
-    if (build.runas) panel.appendChild(buildRunes(build.runas, catalog));
-    if (build.skills && build.skills.length) panel.appendChild(buildSkills(build.skills));
+    /* Itens à esquerda; feitiços, runas e ordem das skills à direita
+       (cabe na janela sem precisar rolar) */
+    const cols = document.createElement("div");
+    cols.className = "build-cols";
+    const left = document.createElement("div");
+    left.className = "build-col";
+    const right = document.createElement("div");
+    right.className = "build-col";
+
+    if (build.inicial && build.inicial.length) left.appendChild(buildRow("Inicial", build.inicial, catalog, false));
+    if (build.core && build.core.length) left.appendChild(buildRow("Principal", build.core, catalog, true));
+    if (build.situacional && build.situacional.length) left.appendChild(buildRow("Situacional", build.situacional, catalog, false));
+
+    if (build.feiticos && build.feiticos.length) right.appendChild(buildRow("Feitiços", build.feiticos, catalog, false, "spells"));
+    if (build.runas) right.appendChild(buildRunes(build.runas, catalog));
+    if (build.skills && build.skills.length) right.appendChild(buildSkills(build.skills));
+
+    cols.appendChild(left);
+    if (right.children.length) cols.appendChild(right);
+    panel.appendChild(cols);
 
     if (build.texto) {
         const text = document.createElement("p");

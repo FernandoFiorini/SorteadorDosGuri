@@ -1,0 +1,5 @@
+Ícones redesenhados dos feitiços (opcional).
+Nome do arquivo = nome do feitiço em minúsculo, sem acento:
+flash.png, incendiar.png, teleporte.png, curar.png, barreira.png,
+purificar.png, exaustao.png, fantasma.png, golpear.png
+Se o arquivo não existir, o site usa o ícone oficial do Data Dragon.
