@@ -28,6 +28,7 @@
         <header>
             <h1><img class="header-icon" src="icon.svg" alt="" aria-hidden="true">Sorteador dos guri</h1>
             <p class="header-sub"><span id="headerSubtitle">Sorteie jogadores, lanes e campeões</span>
+                <a href="#" id="featuresOpen" class="changelog-link">✨ Funcionalidades</a>
                 <a href="#" id="changelogOpen" class="changelog-link">📝 Patch Notes</a></p>
         </header>
 
@@ -407,6 +408,30 @@
             </div>
         </dialog>
 
+        <!-- FUNCIONALIDADES + TOUR (js/features.js) -->
+        <dialog id="featuresDialog" class="changelog-dialog" aria-labelledby="featuresTitle">
+            <div class="changelog-head">
+                <strong id="featuresTitle">✨ Funcionalidades</strong>
+                <button type="button" id="featuresClose" class="changelog-close" aria-label="Fechar">✕</button>
+            </div>
+            <div id="featuresList" class="changelog-list"></div>
+        </dialog>
+
+        <div id="tourCard" class="tour-card" role="dialog" aria-live="polite" hidden>
+            <div class="tour-top">
+                <span id="tourCategory" class="tour-category"></span>
+                <button type="button" id="tourClose" class="changelog-close" aria-label="Sair do tour">✕</button>
+            </div>
+            <strong id="tourTitle" class="tour-title"></strong>
+            <p id="tourText" class="tour-text"></p>
+            <div class="tour-nav">
+                <button type="button" id="tourPrev" class="aph-btn">‹ Anterior</button>
+                <span id="tourCount" class="tour-count"></span>
+                <button type="button" id="tourNext" class="aph-btn tour-next">Próxima ›</button>
+            </div>
+            <button type="button" id="tourList" class="tour-list">Ver a lista</button>
+        </div>
+
         <dialog id="changelogDialog" class="changelog-dialog" aria-labelledby="changelogTitle">
             <div class="changelog-head">
                 <strong id="changelogTitle">📝 Patch Notes</strong>
@@ -439,6 +464,7 @@
     <script src="js/videos.js?v=15"></script>
     <script src="js/changelog.js?v=15"></script>
     <script src="js/tutorials.js?v=15"></script>
+    <script src="js/features.js?v=15"></script>
     <script src="js/screen.js?v=15"></script>
     <script src="js/viewer.js?v=15"></script>
     <script src="js/ui.js?v=15"></script>

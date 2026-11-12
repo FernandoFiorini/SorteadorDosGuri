@@ -3287,8 +3287,8 @@ a.changelog-link:focus-visible {
 }
 
 .changelog-dialog {
-    width: min(520px, calc(100vw - 32px));
-    max-height: min(70vh, 600px);
+    width: min(760px, calc(100vw - 32px));
+    max-height: min(84vh, 820px);
     padding: 0;
     background: #0d1824;
     color: #f5f5f5;
@@ -4570,4 +4570,214 @@ a.changelog-link:focus-visible {
     color: #c8aa6e;
     text-align: center;
     line-height: 1.2;
+}
+
+/* Destaque de onde fica a função nova */
+.spotlight {
+    position: relative;
+    z-index: 5;
+    animation: spotlight 1.2s ease-in-out 3;
+}
+
+@keyframes spotlight {
+    0%, 100% {
+        box-shadow: 0 0 0 0 rgba(200, 170, 110, 0), 0 10px 30px rgba(0, 0, 0, 0.3);
+    }
+    50% {
+        box-shadow: 0 0 0 4px rgba(200, 170, 110, 0.9), 0 0 36px 8px rgba(200, 170, 110, 0.45);
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .spotlight {
+        animation: none;
+        box-shadow: 0 0 0 3px #c8aa6e;
+    }
+}
+
+/* Patch Notes: subitens de uma função (alinhados com o texto do item,
+   depois da etiqueta "Novo") */
+.changelog-day .changelog-sub {
+    margin: -2px 0 2px 74px;
+    padding: 2px 0 2px 12px;
+    border-left: 2px solid #253648;
+    gap: 4px;
+    font-size: 12.5px;
+    color: #b8c4d0;
+}
+
+.changelog-day .changelog-sub li {
+    position: relative;
+    padding-left: 14px;
+}
+
+.changelog-day .changelog-sub li::before {
+    content: "↳";
+    position: absolute;
+    left: 0;
+    top: 0;
+    color: #6f8194;
+}
+
+@media (max-width: 520px) {
+
+    .changelog-day .changelog-sub {
+        margin-left: 16px;
+    }
+
+}
+
+/* =====================================================
+   FUNCIONALIDADES + TOUR (js/features.js)
+===================================================== */
+
+.features-cat {
+    padding: 12px 0;
+    border-bottom: 1px solid #1a2836;
+}
+
+.features-cat:last-child {
+    border-bottom: none;
+}
+
+.features-cat h4 {
+    margin: 0 0 8px;
+    font-size: 14px;
+    color: #c8aa6e;
+}
+
+.features-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 8px 0;
+}
+
+.features-item + .features-item {
+    border-top: 1px solid rgba(255, 255, 255, 0.04);
+}
+
+.features-item > div {
+    flex: 1;
+    min-width: 0;
+}
+
+.features-item strong {
+    display: block;
+    font-size: 14px;
+    color: #f0f3f6;
+}
+
+.features-item span {
+    font-size: 13px;
+    color: #a7b5c3;
+    line-height: 1.45;
+}
+
+.features-try {
+    flex-shrink: 0;
+    background: rgba(200, 170, 110, 0.1);
+    border: 1px solid rgba(200, 170, 110, 0.55);
+    color: #e3c98f;
+    font-size: 12px;
+    font-weight: bold;
+    padding: 5px 12px;
+    border-radius: 999px;
+    cursor: pointer;
+    white-space: nowrap;
+}
+
+.features-try:hover:not(:disabled) {
+    background: #c8aa6e;
+    color: #0b1420;
+}
+
+.features-try:disabled {
+    border-color: #2b3c50;
+    background: transparent;
+    color: #5b6878;
+    cursor: default;
+}
+
+/* Cartão flutuante do tour */
+.tour-card {
+    position: fixed;
+    left: 50%;
+    bottom: 20px;
+    transform: translateX(-50%);
+    z-index: 1000;
+    width: min(440px, calc(100vw - 32px));
+    background: #0d1824;
+    border: 1px solid #c8aa6e;
+    border-radius: 14px;
+    padding: 12px 16px 14px;
+    box-shadow: 0 16px 40px rgba(0, 0, 0, 0.6);
+    color: #f5f5f5;
+    animation: aparecer 0.3s ease;
+}
+
+.tour-card[hidden] {
+    display: none;
+}
+
+.tour-top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.tour-category {
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: #8fa0b2;
+}
+
+.tour-title {
+    display: block;
+    font-size: 16px;
+    color: #c8aa6e;
+    margin: 2px 0 4px;
+}
+
+.tour-text {
+    margin: 0;
+    font-size: 14px;
+    line-height: 1.5;
+    color: #dfe6ee;
+}
+
+.tour-nav {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    margin-top: 12px;
+}
+
+.tour-nav .aph-btn:disabled {
+    opacity: 0.4;
+    cursor: default;
+}
+
+.tour-next {
+    background: #c8aa6e;
+    border-color: #c8aa6e;
+    color: #0b1420;
+}
+
+.tour-count {
+    font-size: 12px;
+    color: #8fa0b2;
+}
+
+.tour-list {
+    display: block;
+    margin: 8px auto 0;
+    background: none;
+    border: none;
+    color: #8fa0b2;
+    font-size: 12px;
+    text-decoration: underline;
+    cursor: pointer;
 }

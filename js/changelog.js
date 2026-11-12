@@ -6,6 +6,12 @@
    TOPO da lista (ou no dia que já existe):
    { data: "AAAA-MM-DD", titulo: "Resumo do dia",
      itens: [["novo", "..."], ["melhoria", "..."], ["som", "..."]] }
+
+   Subitens (detalhes da mesma função, adicionados no MESMO dia):
+     ["novo", "Função principal", { sub: [["detalhe"], ["outro detalhe"]] }]
+
+   Para levar a pessoa até uma função do site, use a lista
+   "✨ Funcionalidades" (js/features.js), não o Patch Notes.
 ===================================================== */
 
 /* Tipos: "novo", "melhoria", "som", "ajuste" (mudam a etiqueta colorida) */
@@ -14,12 +20,16 @@ const CHANGELOG = [
         data: "2026-11-12",
         titulo: "Tutoriais dos campeões",
         itens: [
-            ["novo", "📖 Tutoriais: vídeo curto de cada habilidade, combos, dicas e uma jogada, com uma explicação embaixo de cada vídeo. Fica logo abaixo do resultado, com busca por nome."],
-            ["novo", "Quando sai um campeão com tutorial no sorteio, o card ganha o botão \"📖 Como jogar\"."],
-            ["novo", "Abas 📋 Como jogar (fases do jogo, pontos fortes e fracos, matchups e dica de ouro) e 🛠️ Build (itens, runas e ordem das skills, com link para a build do momento no OP.GG e U.GG)."],
-            ["novo", "Combos mais difíceis tocam em câmera lenta 🐢 0,75x."],
-            ["novo", "🌙 Aphelios com painel próprio das armas, no estilo do jogo: arma na mão, secundária, fila e o que cada par faz junto."],
-            ["novo", "Primeiros guias: Katarina, Locke e Aphelios."]
+            ["novo", "📖 Tutoriais: vídeo curto de cada habilidade, combos, dicas e uma jogada, com uma explicação embaixo de cada vídeo. Fica logo abaixo do resultado, com busca por nome.", {
+                sub: [
+                    ["Primeiros guias: Katarina, Locke e Aphelios."],
+                    ["Quando sai um campeão com tutorial no sorteio, o card ganha o botão \"📖 Como jogar\"."],
+                    ["Abas 📋 Como jogar (fases do jogo, pontos fortes e fracos, matchups e dica de ouro) e 🛠️ Build (itens, runas e ordem das skills, com link para a build do momento no OP.GG e U.GG)."],
+                    ["Combos mais difíceis tocam em câmera lenta 🐢 0,75x."],
+                    ["🌙 Aphelios com painel próprio das armas, no estilo do jogo: arma na mão, secundária, fila e o que cada par faz junto."]
+                ]
+            }],
+            ["novo", "✨ Funcionalidades: lista de tudo que o site faz, ao lado do Patch Notes. Em \"Experimentar\" começa um tour que mostra cada função no lugar dela, uma por uma."]
         ]
     },
     {
@@ -207,7 +217,7 @@ function renderChangelog() {
 
         const items = document.createElement("ul");
 
-        entry.itens.forEach(([type, text]) => {
+        entry.itens.forEach(([type, text, go]) => {
 
             const li = document.createElement("li");
 
@@ -220,7 +230,22 @@ function renderChangelog() {
 
             li.appendChild(tag);
             li.appendChild(span);
+
             items.appendChild(li);
+
+            /* Detalhes da mesma função, recuados embaixo dela */
+            if (go && go.sub && go.sub.length) {
+                const subList = document.createElement("ul");
+                subList.className = "changelog-sub";
+                go.sub.forEach(([subText]) => {
+                    const subLi = document.createElement("li");
+                    const subSpan = document.createElement("span");
+                    subSpan.textContent = subText;
+                    subLi.appendChild(subSpan);
+                    subList.appendChild(subLi);
+                });
+                items.appendChild(subList);
+            }
 
         });
 
