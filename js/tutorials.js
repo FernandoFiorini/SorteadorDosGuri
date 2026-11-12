@@ -776,6 +776,113 @@ const TUTORIALS = {
                 texto: "Situação específica: alvo com pouca vida fugindo, use o R virada para ele. O dano extra em vida baixa finaliza, mesmo você saltando para trás."
             }
         ]
+    },
+
+    Draven: {
+        pasta: "tutoriais/draven/",
+        builds: [
+            {
+                titulo: "Padrão (crítico)",
+                feiticos: [
+                    "Flash",
+                    { ou: [
+                        { item: "Curar" },
+                        { item: "Barreira" },
+                        { item: "Purificar" },
+                        { item: "Exaustão" }
+                    ] }
+                ],
+                inicial: ["Arco de Doran", "Poção de Vida"],
+                core: [
+                    { ou: [
+                        { item: "Sedenta por Sangue", quando: "contra muito poke" },
+                        { item: "Húbris", quando: "ganhando muito a rota" }
+                    ] },
+                    { ou: [
+                        { item: "A Coletora", quando: "para stompar" },
+                        { item: "Hexótica C44", quando: "mais utilidade" }
+                    ] },
+                    "Gume do Infinito",
+                    "Lembranças do Lorde Dominik"
+                ],
+                situacional: ["Anjo Guardião", "Arco-escudo Imortal"],
+                runas: {
+                    principal: ["Ritmo Fatal", "Presença de Espírito", "Lenda: Linhagem", "Golpe de Misericórdia"],
+                    secundaria: ["Reembolso", "Tônico Triplo"]
+                },
+                skills: ["R", "Q", "W", "E"],
+                texto: "Primeiro item: Sedenta por Sangue contra muito poke ou Húbris se estiver ganhando muito a rota. Segundo: A Coletora para stompar ou Hexótica C44 para mais utilidade. Depois Gume do Infinito e Lembranças do Lorde Dominik. Último: Anjo Guardião ou Arco-escudo Imortal."
+            }
+        ],
+        guia: {
+            fases: [
+                { titulo: "Fase de rotas", texto: "Fique sempre com os dois machados girando e troque agressivo: o Draven é o atirador mais forte do começo. No nível 2 e 3, procure o abate junto com o suporte." },
+                { titulo: "Nível 6", texto: "O R atravessa o mapa e executa quem está com pouca vida (quanto mais Adoração, mais vida ele executa). Cada abate ainda dá ouro extra pela passiva." },
+                { titulo: "Lutas em equipe", texto: "Bata em quem estiver mais perto sem perder machado. Não persiga longe demais: o machado cai onde você não está e o dano some." }
+            ],
+            fortes: [
+                "Dano altíssimo desde o começo: ganha quase toda troca na rota",
+                "Passiva dá ouro extra em cada abate: com vantagem, ele dispara na frente"
+            ],
+            fracos: [
+                "Depende de pegar os machados: errou, perdeu metade do dano",
+                "Nenhuma fuga de verdade: morrer cedo derruba a Adoração e o ouro extra"
+            ],
+            dificeis: [
+                { campeao: "Caitlyn", motivo: "Mais alcance: cutuca você de longe enquanto você corre atrás do machado." },
+                { campeao: "Ezreal", motivo: "Cutuca de longe e foge com o E: difícil de pegar." },
+                { campeao: "Ashe", motivo: "Lentidão e alcance: te mantém longe e você não consegue trocar." }
+            ],
+            faceis: [
+                { campeao: "Jinx", motivo: "Fraca no começo e sem fuga: perde as trocas cedo." },
+                { campeao: "KogMaw", motivo: "Sem mobilidade e fraco antes dos itens." },
+                { campeao: "Aphelios", motivo: "Sem avanço e depende da arma certa: você pune cedo." }
+            ],
+            dicaDeOuro: "Antes de clicar, olhe onde o machado vai cair. Pegar todos é o que separa um Draven que carrega de um que entrega."
+        },
+        habilidades: {
+            P: {
+                video: "passiva.mp4",
+                texto: "Pegar machado e abater tropa, monstro ou torre dá Adoração. Ao abater um campeão, o Draven ganha ouro extra conforme a Adoração acumulada."
+            },
+            Q: {
+                video: "q.mp4",
+                texto: "O próximo ataque dá dano extra e o machado quica para o ar. Pegue ele onde cair para manter o efeito; dá para ter dois girando ao mesmo tempo."
+            },
+            W: {
+                video: "w.mp4",
+                texto: "Velocidade de ataque e de movimento. Pegar um machado zera a recarga do W: use o tempo todo para alcançar o machado."
+            },
+            E: {
+                video: "e.mp4",
+                texto: "Arremessa os machados em linha: dano, empurra para os lados e deixa lento. Bom para quem vem para cima ou para segurar quem foge."
+            },
+            R: {
+                video: "r.mp4",
+                tituloPrincipal: "Normal",
+                texto: "Dois machados gigantes que cruzam o mapa. Executa quem estiver com vida abaixo da sua Adoração.",
+                variacoes: [
+                    { titulo: "Recolher no caminho", video: "r-volta.mp4", texto: "Aperte o R de novo enquanto os machados voam: eles voltam na hora e acertam de novo no caminho de volta." }
+                ]
+            }
+        },
+        extras: [
+            {
+                grupo: "Combos básicos",
+                titulo: "Como jogar: Q + ataque + W (reset) + R",
+                teclas: ["Q", "AA", "W", "R"],
+                video: "combo-q-aa-w-r.mp4",
+                texto: "O ciclo do Draven: Q, ataque, pega o machado (o W volta), W para correr até o próximo e o R para finalizar."
+            },
+            {
+                grupo: "Combos avançados",
+                titulo: "R + Flash (truque)",
+                teclas: ["R", "Flash"],
+                video: "combo-r-flash.mp4",
+                velocidade: 0.75,
+                texto: "Use o R e o Flash logo depois: o machado sai de onde você estava e o inimigo não espera o ângulo."
+            }
+        ]
     }
 
 };
