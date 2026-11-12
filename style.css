@@ -5008,32 +5008,15 @@ a.changelog-link.has-new::after {
     color: #8fd6ad;
 }
 
-/* "🙋 Pedir guia" na barra das reações do card sorteado */
-.guide-req-card-btn {
-    background: #09111a;
-    border: 1px solid #304255;
-    color: #9ba7b5;
-    padding: 6px 10px;
-    border-radius: 6px;
-    cursor: pointer;
-    font-size: 12px;
-    font-weight: bold;
-    white-space: nowrap;
-    transition: 0.2s;
-}
-
-.guide-req-card-btn:hover:not(:disabled) {
-    border-color: #c8aa6e;
-    color: #e3c98f;
-}
-
-.guide-req-card-btn.mine {
-    border-color: #4caf78;
+/* "🙋 Pedir um guia" embaixo das reações do card sorteado
+   (mesmo formato do "📖 Como jogar"; verde quando você já pediu) */
+.tutorial-btn.guide-req-card-btn.mine {
+    border-color: rgba(76, 175, 120, 0.6);
     background: rgba(76, 175, 120, 0.12);
     color: #8fd6ad;
 }
 
-.guide-req-card-btn:disabled {
+.tutorial-btn.guide-req-card-btn:disabled {
     opacity: 0.5;
     cursor: default;
 }

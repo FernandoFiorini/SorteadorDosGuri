@@ -74,21 +74,21 @@ async function toggleGuideRequest(id) {
 }
 
 /* ---------- Botão no card do campeão sorteado ----------
-   Ao lado do 👍 / 👎: pede o guia daquele campeão (só se ainda não tem). */
+   Embaixo do 👍 / 👎: pede o guia daquele campeão (só se ainda não tem). */
 function appendGuideRequestButton(card, championId) {
 
     if (!championId || TUTORIALS[championId]) return;
 
     const btn = document.createElement("button");
     btn.type = "button";
-    btn.className = "guide-req-card-btn";
+    btn.className = "tutorial-btn guide-req-card-btn";
     btn.dataset.champion = championId;
     btn.onclick = () => toggleGuideRequest(championId);
 
-    /* Na mesma barra das reações; sem barra (sem Firebase), não aparece */
+    /* Logo abaixo da barra das reações; sem barra (sem Firebase), não aparece */
     const bar = card.querySelector(".vote-bar");
     if (!bar) return;
-    bar.appendChild(btn);
+    bar.after(btn);
 
     refreshGuideRequestButtons();
 
@@ -101,7 +101,7 @@ function refreshGuideRequestButtons() {
         const n = requestCount(id);
         btn.classList.toggle("mine", mine);
         btn.disabled = !guideRequestsUid || !!guideRequestsError;
-        btn.textContent = (mine ? "✓ Guia pedido" : "🙋 Pedir guia") + (n ? " · " + n : "");
+        btn.textContent = (mine ? "✓ Guia pedido" : "🙋 Pedir um guia") + (n ? " · " + n : "");
         btn.title = guideRequestsError
             || (mine ? "Você pediu o guia de " + champLabel(id) + " (clique para desfazer)" : "Pedir um guia de " + champLabel(id));
     });
