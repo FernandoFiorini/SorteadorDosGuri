@@ -652,6 +652,130 @@ const TUTORIALS = {
                 texto: "Combo completo: Q, Q, E e W na forma normal; R para virar Forma Irrestrita (o W volta na hora) e W, Q, E, Q aproveitando as recargas curtas."
             }
         ]
+    },
+
+    Evelynn: {
+        pasta: "tutoriais/evelynn/",
+        builds: [
+            {
+                titulo: "Padrão (dano mágico)",
+                feiticos: [
+                    "Flash",
+                    { ou: [
+                        { item: "Golpear", quando: "na selva" },
+                        { item: "Incendiar", quando: "na rota" }
+                    ] }
+                ],
+                inicial: ["Lacre Sombrio"],
+                core: [
+                    "Perdição de Lich",
+                    "Sapatos do Feiticeiro",
+                    { ou: [
+                        { item: "Chama Sombria", quando: "padrão" },
+                        { item: "Capuz da Morte de Rabadon", quando: "se estiver ganhando" }
+                    ] },
+                    "Cajado do Vazio"
+                ],
+                situacional: ["Ápice da Tempestade", "Ampulheta de Zhonya"],
+                runas: {
+                    principal: ["Eletrocutar", "Impacto Repentino", "Lembranças Aterrorizantes", "Caçador de Tesouros"],
+                    secundaria: ["Foco Absoluto", "Tempestade Crescente"]
+                },
+                skills: ["R", "Q", "E", "W"],
+                texto: "Perdição de Lich sempre primeiro. No terceiro item, Chama Sombria é o padrão; se estiver ganhando, vá de Rabadon para o dano explodir. Situacional: Ápice da Tempestade para mais dano ou Zhonya contra quem te foca."
+            }
+        ],
+        guia: {
+            fases: [
+                { titulo: "Antes do nível 6", texto: "A Evelynn ainda é fraca: faça a selva, evite brigar com o caçador inimigo e só ajude rota com o inimigo já machucado." },
+                { titulo: "Nível 6", texto: "Agora você fica invisível fora de combate. Chegue nas rotas sem ser vista, W de longe e só entre quando o encanto pegar." },
+                { titulo: "Lutas em equipe", texto: "Não entre primeiro: espere a luta começar, chegue invisível no carry deles e use o R para finalizar e sair de perto." }
+            ],
+            fortes: [
+                "Invisível depois do nível 6: aparece do nada em qualquer rota",
+                "Dano explosivo: o R finaliza quem está com pouca vida e ainda te tira da luta"
+            ],
+            fracos: [
+                "Muito fraca antes do nível 6",
+                "Sentinela de controle e quem revela invisível acabam com a surpresa"
+            ],
+            dificeis: [
+                { campeao: "LeeSin", motivo: "Invade cedo e ganha os duelos antes do seu nível 6." },
+                { campeao: "XinZhao", motivo: "Muito forte no começo: te persegue na sua própria selva." },
+                { campeao: "Graves", motivo: "Limpa a selva rápido e ganha qualquer briga cedo." }
+            ],
+            faceis: [
+                { campeao: "Karthus", motivo: "Frágil e lento: depois do 6, cai no seu combo inteiro." },
+                { campeao: "Shyvana", motivo: "Sem controle de grupo: não consegue te segurar depois que você entra." },
+                { campeao: "Amumu", motivo: "Fraco no começo do jogo; sem ganks fortes antes do seu 6." }
+            ],
+            dicaDeOuro: "A Evelynn de verdade começa no nível 6: antes disso sobreviva e farme. Depois, só entre quando o W encantar."
+        },
+        habilidades: {
+            P: {
+                video: "passiva.mp4",
+                tituloPrincipal: "Sombra Demoníaca",
+                texto: "Fora de combate, a Evelynn entra em Sombra Demoníaca: se estiver com pouca vida, ela vai se curando.",
+                variacoes: [
+                    { titulo: "Nível 6: invisível", video: "passiva-lv6.mp4", texto: "A partir do nível 6, a Sombra Demoníaca também deixa ela camuflada (invisível) fora de combate. É assim que ela chega nas rotas sem ninguém ver." }
+                ]
+            },
+            Q: {
+                video: "q.mp4",
+                texto: "Ataca com o chicote o primeiro inimigo atingido e depois dispara espinhos nele algumas vezes. É o principal dano para farmar e trocar."
+            },
+            W: {
+                video: "w.mp4",
+                texto: "Amaldiçoa o alvo: o próximo ataque ou habilidade nele encanta (ele anda até você) e reduz a resistência mágica. Quanto mais esperar para acertar, mais forte fica."
+            },
+            E: {
+                video: "e.mp4",
+                texto: "Chicotada no alvo e um pouco de velocidade depois. Bom para grudar depois do encanto."
+            },
+            R: {
+                video: "r.mp4",
+                texto: "Fica inalvejável por um instante, dá muito dano na área da frente (mais em quem está com pouca vida) e salta para trás, longe da luta."
+            }
+        },
+        extras: [
+            {
+                grupo: "Combos básicos",
+                titulo: "W + Q + E + ataque + R",
+                teclas: ["W", "Q", "E", "AA", "R"],
+                video: "combo-w-q-e-aa-r.mp4",
+                texto: "W de longe e espere o encanto. Q, E e um ataque, e o R para finalizar e sair."
+            },
+            {
+                grupo: "Combos avançados",
+                titulo: "One shot: W + Flash + Q + E + R",
+                teclas: ["W", "Flash", "Q", "E", "R"],
+                video: "combo-oneshot.mp4",
+                velocidade: 0.75,
+                texto: "W no alvo, Flash para colar e o resto do combo de uma vez. O inimigo não tem tempo de reagir."
+            },
+            {
+                grupo: "Combos avançados",
+                titulo: "Fingir posição com o W",
+                teclas: ["W", "Q", "E", "R"],
+                video: "combo-w-fake.mp4",
+                velocidade: 0.75,
+                texto: "Use o W de um ângulo que engana onde você está: o inimigo foge para o lado errado e você pega ele quando o encanto ativa."
+            },
+            {
+                grupo: "Dicas",
+                titulo: "R atravessa parede para fugir",
+                teclas: ["R"],
+                video: "dica-r-parede.mp4",
+                texto: "O salto do R passa por cima da parede: mire de costas para ela e use para sair de uma luta perdida."
+            },
+            {
+                grupo: "Dicas",
+                titulo: "R para pegar quem está fugindo",
+                teclas: ["R"],
+                video: "dica-r-fugindo.mp4",
+                texto: "Situação específica: alvo com pouca vida fugindo, use o R virada para ele. O dano extra em vida baixa finaliza, mesmo você saltando para trás."
+            }
+        ]
     }
 
 };
