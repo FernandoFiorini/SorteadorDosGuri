@@ -29,7 +29,8 @@ const CHANGELOG = [
                     ["🌙 Aphelios com painel próprio das armas, no estilo do jogo: arma na mão, secundária, fila e o que cada par faz junto."]
                 ]
             }],
-            ["novo", "✨ Funcionalidades: lista de tudo que o site faz, ao lado do Patch Notes. Em \"Experimentar\" começa um tour que mostra cada função no lugar dela, uma por uma."]
+            ["novo", "✨ Funcionalidades: lista de tudo que o site faz, ao lado do Patch Notes. Em \"Experimentar\" começa um tour que mostra cada função no lugar dela, uma por uma."],
+            ["som", "Nardi grito seco."]
         ]
     },
     {
