@@ -540,17 +540,37 @@ function stopGlobalStats() {
 
 }
 
-function onStatsChanged() {
+/* afterReveal = true quando é chamado no fim da animação do sorteio
+   (js/reveal.js): aí também avisa o progresso das medalhas */
+let statsAfterReveal = false;
+
+function onStatsChanged(afterReveal) {
+
+    if (afterReveal === true) statsAfterReveal = true;
 
     if (statsTimer) return;
 
     statsTimer = setTimeout(() => {
+
         statsTimer = null;
-        renderStats();
-        refreshDrawNicks();
+
+        /* Reações e barra de resultado podem atualizar na hora */
         refreshVoteBars();
         refreshResultBar();
+
+        /* Durante a animação, o resto espera para não entregar o resultado */
+        if (typeof drawRevealing === "function" && drawRevealing()) {
+            statsHeldDuringReveal = true;
+            return;
+        }
+
+        renderStats();
+        refreshDrawNicks();
         renderMatchHistory();
+
+        if (typeof checkMedalProgress === "function") checkMedalProgress(globalData, statsAfterReveal);
+        statsAfterReveal = false;
+
     }, 50);
 
 }

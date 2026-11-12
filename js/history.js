@@ -39,6 +39,13 @@ function addMatchToHistory(results, matchId) {
 
 function renderMatchHistory() {
 
+    /* Durante a animação do sorteio, espera para não mostrar o resultado
+       antes da hora (js/reveal.js atualiza no fim) */
+    if (typeof drawRevealing === "function" && drawRevealing()) {
+        statsHeldDuringReveal = true;
+        return;
+    }
+
     const container = document.getElementById("matchHistory");
 
     const history = loadMatchHistory();

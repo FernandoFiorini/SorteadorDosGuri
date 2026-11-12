@@ -32,6 +32,8 @@ const CHANGELOG = [
             }],
             ["novo", "✨ Funcionalidades: lista de tudo que o site faz, ao lado do Patch Notes. Em \"Experimentar\" começa um tour que mostra cada função no lugar dela, uma por uma."],
             ["novo", "🏛️ Marcos do site: nova aba aqui no Patch Notes com a história do sorteador (primeiro sorteio, números gerais e marcos como 100 sorteios), 🔥 ofensiva diária (dias seguidos com sorteio, com nome novo a cada 10 dias) e os campeões que ainda não saíram no sorteio. Não conta para as conquistas."],
+            ["melhoria", "📈 Depois do sorteio, cada jogador recebe um aviso com o progresso das medalhas que avançaram (e 🎉 quando sobe de nível)."],
+            ["ajuste", "Enquanto os cards estão sendo revelados, estatísticas, medalhas, histórico e avisos esperam o fim do sorteio: ninguém descobre o resultado antes da hora."],
             ["som", "Nardi grito seco."]
         ]
     },
