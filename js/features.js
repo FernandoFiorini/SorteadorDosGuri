@@ -13,6 +13,7 @@
    "desde" é o dia em que a função chegou: enquanto tiver uma mais nova
    do que a pessoa já viu, o link "✨ Funcionalidades" fica em destaque
    (guardado no navegador) e a função aparece com a etiqueta NOVO.
+   Opcional: abrir: "chat" abre a janelinha do chat antes de destacar.
    Função que não está na tela naquela hora (ex.: chat fora da sala,
    cards só do host) é pulada no tour.
 ===================================================== */
@@ -35,7 +36,7 @@ const FEATURES = [
         categoria: "📡 Ao vivo",
         itens: [
             { titulo: "📡 Transmissão ao vivo", desde: "2026-10-09", texto: "Crie uma sala e mande o link: todo mundo assiste o sorteio na hora, com animação.", alvo: ".card:has(#roomLink)" },
-            { titulo: "💬 Chat da sala", desde: "2026-11-10", texto: "Janelinha no canto: converse com quem está na sala. Minimizado, mostra quantas mensagens não foram lidas.", alvo: "#chatCard" }
+            { titulo: "💬 Chat da sala", desde: "2026-11-10", texto: "Janelinha no canto: converse com quem está na sala. Minimizado, mostra quantas mensagens não foram lidas.", alvo: "#chatCard", abrir: "chat" }
         ]
     },
     {
@@ -157,6 +158,9 @@ function showTourStep() {
 
     card.hidden = false;
 
+    /* No passo do chat, o cartão sai da frente (chat fica embaixo à direita) */
+    card.classList.toggle("at-left", f.abrir === "chat");
+
     /* Tutorial: abre a janelinha; o resto: rola até a parte do site */
     const dialog = document.getElementById("tutorialDialog");
 
@@ -174,20 +178,30 @@ function showTourStep() {
     document.body.appendChild(card);
     if (dialog && dialog.open) closeTutorial();
 
-    const el = featureElement(f);
+    let el = featureElement(f);
     if (!el) return;
+
+    /* Chat: abre a janelinha e destaca ela aberta */
+    if (f.abrir === "chat" && typeof setChatOpen === "function") {
+        setChatOpen(true);
+        el = document.getElementById("chatPanel") || el;
+    }
 
     const details = el.closest("details") || el.querySelector("details.collapsible");
     if (details) details.open = true;
 
-    el.scrollIntoView({ behavior: "smooth", block: "center" });
-    setTimeout(() => spotlight(el), 450);
+    /* Fixo na tela (como o chat) já está à vista: não rola a página */
+    const fixed = getComputedStyle(el).position === "fixed" || !!el.closest(".chat-widget");
+    if (!fixed) el.scrollIntoView({ behavior: "smooth", block: "center" });
+
+    setTimeout(() => spotlight(el), fixed ? 50 : 450);
 
 }
 
 function endTour() {
     const card = document.getElementById("tourCard");
     card.hidden = true;
+    card.classList.remove("at-left");
     document.body.appendChild(card);
     const dialog = document.getElementById("tutorialDialog");
     if (dialog && dialog.open) closeTutorial();

@@ -4573,9 +4573,8 @@ a.changelog-link:focus-visible {
 }
 
 /* Destaque de onde fica a função nova */
+/* Sem mexer em position: elementos fixos (ex.: chat) continuam no lugar */
 .spotlight {
-    position: relative;
-    z-index: 5;
     animation: spotlight 1.2s ease-in-out 3;
 }
 
@@ -4838,4 +4837,20 @@ a.changelog-link.has-new::after {
     border-radius: 8px;
     padding-left: 8px;
     padding-right: 8px;
+}
+
+/* Tour: no passo do chat, o cartão vai para a esquerda */
+.tour-card.at-left {
+    left: 20px;
+    transform: none;
+    width: min(380px, calc(100vw - 32px));
+}
+
+@media (max-width: 760px) {
+
+    .tour-card.at-left {
+        bottom: auto;
+        top: 16px;
+    }
+
 }
