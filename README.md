@@ -64,11 +64,11 @@ Cada lane sorteia também um áudio aleatório dentre os presentes no projeto
 
 **VAI SER UMA LOUCURA**
 
-Para adicionar um áudio: coloque o `.mp3` na pasta do site e acrescente uma linha em `soundList`, no arquivo `js/sounds.js`. Para transformar um clipe de vídeo em MP3 sem instalar nada (usa o conversor do próprio Windows):
+Para adicionar um áudio: coloque o `.mp3` na pasta `sons/` e acrescente uma linha em `soundList`, no arquivo `js/sounds.js`. Para transformar um clipe de vídeo em MP3 sem instalar nada (usa o conversor do próprio Windows):
 
 ```powershell
 powershell -NoProfile -ExecutionPolicy Bypass -File scripts\audio\converter-mp3.ps1 `
-    -InPath "C:\caminho\completo\clip.mp4" -OutPath "C:\caminho\completo\nome.mp3"
+    -InPath "C:\caminho\completo\clip.mp4" -OutPath "C:\caminho\do\projeto\sons\nome.mp3"
 ```
 
 ### 📡 Sorteio ao vivo

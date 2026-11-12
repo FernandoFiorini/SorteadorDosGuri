@@ -4,8 +4,9 @@
 
 /* =====================================================
    LISTA DE ÁUDIOS SORTEÁVEIS
-   Para adicionar um áudio novo: coloque o arquivo na pasta do site
+   Para adicionar um áudio novo: coloque o arquivo na pasta sons/
    e acrescente uma linha aqui { name: "Nome exibido", file: "arquivo.mp3" }
+   (só o nome do arquivo: a pasta é colocada na hora de tocar)
 ===================================================== */
 
 const soundList = [
@@ -34,12 +35,16 @@ const soundList = [
 
 ];
 
+/* Pasta dos áudios. A lista e o sorteio (inclusive o que vai para quem
+   está assistindo pela sala) guardam só o nome do arquivo. */
+const SOUND_FOLDER = "sons/";
+
 /* Cache de objetos Audio (um por arquivo) */
 const audioCache = {};
 
 function getAudio(file) {
     if (!audioCache[file]) {
-        const audio = new Audio(file);
+        const audio = new Audio(SOUND_FOLDER + file);
         audio.preload = "auto";
         audioCache[file] = audio;
     }
