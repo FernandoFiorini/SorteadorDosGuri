@@ -157,6 +157,9 @@ function shuffleAnimation(card, result) {
             /* "📖 Como jogar", se o campeão tiver tutorial */
             appendTutorialButton(card, result.champion);
 
+            /* "🙋 Pedir guia" ao lado das reações, se ainda não tem guia */
+            appendGuideRequestButton(card, result.champion);
+
             /* Botão de resortear (só host; fica oculto via CSS quando
                "não repetir campeões já sorteados" está marcado) */
             if (!IS_VIEWER) {

@@ -215,6 +215,8 @@ function renderStaticResults(results, matchId) {
 
         appendTutorialButton(card, result.champion);
 
+        appendGuideRequestButton(card, result.champion);
+
         container.appendChild(card);
 
         /* Nick com o efeito da medalha e moldura especial (só visual) */

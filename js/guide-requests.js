@@ -46,11 +46,13 @@ async function startGuideRequests() {
         guideRequestsReady = true;
         guideRequestsError = "";
         renderGuideRequestTop();
+        refreshGuideRequestButtons();
         if (document.getElementById("guideRequestDialog").open) renderGuideRequestGrid();
     }, error => {
         console.warn("Pedidos de guia indisponíveis:", error);
         guideRequestsError = "Os pedidos ainda não estão liberados no banco.";
         renderGuideRequestTop();
+        refreshGuideRequestButtons();
     });
 
 }
@@ -69,6 +71,40 @@ async function toggleGuideRequest(id) {
         alert("Não foi possível registrar o pedido agora.");
     }
 
+}
+
+/* ---------- Botão no card do campeão sorteado ----------
+   Ao lado do 👍 / 👎: pede o guia daquele campeão (só se ainda não tem). */
+function appendGuideRequestButton(card, championId) {
+
+    if (!championId || TUTORIALS[championId]) return;
+
+    const btn = document.createElement("button");
+    btn.type = "button";
+    btn.className = "guide-req-card-btn";
+    btn.dataset.champion = championId;
+    btn.onclick = () => toggleGuideRequest(championId);
+
+    /* Na mesma barra das reações; sem barra (sem Firebase), não aparece */
+    const bar = card.querySelector(".vote-bar");
+    if (!bar) return;
+    bar.appendChild(btn);
+
+    refreshGuideRequestButtons();
+
+}
+
+function refreshGuideRequestButtons() {
+    document.querySelectorAll(".guide-req-card-btn").forEach(btn => {
+        const id = btn.dataset.champion;
+        const mine = requestedByMe(id);
+        const n = requestCount(id);
+        btn.classList.toggle("mine", mine);
+        btn.disabled = !guideRequestsUid || !!guideRequestsError;
+        btn.textContent = (mine ? "✓ Guia pedido" : "🙋 Pedir guia") + (n ? " · " + n : "");
+        btn.title = guideRequestsError
+            || (mine ? "Você pediu o guia de " + champLabel(id) + " (clique para desfazer)" : "Pedir um guia de " + champLabel(id));
+    });
 }
 
 /* Faixa "Mais pedidos" na seção Tutoriais (todo mundo vê) */
