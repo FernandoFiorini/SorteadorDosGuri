@@ -34,6 +34,8 @@ const soundList = [
     { name: "Havan e do Brasil", file: "havanedobrasil.mp3" },
     { name: "Nardi grito seco", file: "nardigritoseco.mp3" },
     { name: "Ah não Valde", file: "ahnaovalde.mp3" },
+    { name: "Perdemos o jogo caralho", file: "perdemosjogocaralho.mp3" },
+    { name: "Meu Deus faz alguma coisa", file: "meudeusfazalgumacoisa.mp3" },
 
 ];
 
