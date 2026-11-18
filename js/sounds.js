@@ -33,6 +33,7 @@ const soundList = [
     { name: "Vamo eu e tu com o mestre", file: "vamoeuetucommestre.mp3" },
     { name: "Havan e do Brasil", file: "havanedobrasil.mp3" },
     { name: "Nardi grito seco", file: "nardigritoseco.mp3" },
+    { name: "Ah não Valde", file: "ahnaovalde.mp3" },
 
 ];
 
