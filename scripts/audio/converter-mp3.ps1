@@ -6,8 +6,12 @@
 #       -InPath "C:\caminho\completo\clip.mp4" -OutPath "C:\caminho\completo\nome.mp3"
 #
 # Os dois caminhos precisam ser completos (absolutos).
+#
+# Cortes opcionais (em segundos):
+#   -TrimStart 3.8   descarta os primeiros 3,8s
+#   -TrimEnd 2       descarta os últimos 2s
 
-param([string]$InPath, [string]$OutPath)
+param([string]$InPath, [string]$OutPath, [double]$TrimStart = 0, [double]$TrimEnd = 0)
 
 $ErrorActionPreference = "Stop"
 
@@ -47,6 +51,8 @@ $outFile = Await ($folder.CreateFileAsync($outName, [Windows.Storage.CreationCol
 $profile = [Windows.Media.MediaProperties.MediaEncodingProfile]::CreateMp3([Windows.Media.MediaProperties.AudioEncodingQuality]::Medium)
 
 $transcoder = New-Object Windows.Media.Transcoding.MediaTranscoder
+if ($TrimStart -gt 0) { $transcoder.TrimStartTime = [TimeSpan]::FromSeconds($TrimStart) }
+if ($TrimEnd -gt 0) { $transcoder.TrimStopTime = [TimeSpan]::FromSeconds($TrimEnd) }
 $prep = Await ($transcoder.PrepareFileTranscodeAsync($inFile, $outFile, $profile)) ([Windows.Media.Transcoding.PrepareTranscodeResult])
 
 if (-not $prep.CanTranscode) { throw "Nao foi possivel converter: $($prep.FailureReason)" }

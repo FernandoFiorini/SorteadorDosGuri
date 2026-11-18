@@ -38,6 +38,9 @@ const soundList = [
     { name: "Meu Deus faz alguma coisa", file: "meudeusfazalgumacoisa.mp3" },
     { name: "Gemida do Ber", file: "gemidadober.mp3" },
     { name: "É o Ber só aqui ó", file: "eobersoaquio.mp3" },
+    { name: "Não tenho dano Nardi", file: "naotenhodanonardi.mp3" },
+    { name: "Ai ai ai ai", file: "aiaiaiai.mp3" },
+    { name: "Sosky sosky", file: "soskysosky.mp3" },
 
 ];
 
