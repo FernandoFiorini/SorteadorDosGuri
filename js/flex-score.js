@@ -206,6 +206,7 @@ function matchScore(g) {
         const r = lobbyScores(lobby, winners);
         g.mvp = r.mvp === g.slot;
         g.ace = r.ace === g.slot;
+        g.lobbyResult = r;
         return r.scores[g.slot];
     }
 

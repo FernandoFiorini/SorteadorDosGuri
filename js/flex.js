@@ -103,6 +103,7 @@ function gamesOf(key) {
                 duration: g.duration,
                 together: !!g.players[other],
                 lobby: g.lobby || null,
+                groupSlots: Object.values(g.players).map(p => p.slot),
                 csMin: s.cs / minutes,
                 goldMin: s.gold / minutes,
                 dmgMin: s.damage / minutes,
@@ -192,7 +193,7 @@ function markTeamContext(g) {
 
         if (laneOk) g.contextWhy.push("ganhou ou empatou a lane contra " + champName(g.opp.champion));
         if (teamOk) g.contextWhy.push("KDA " + fmt(myKda, 1) + " contra " + fmt(allyKda, 1) + " do resto do time");
-        if (scoreOk) g.contextWhy.push("nota " + fmt(g.score, 1));
+        if (scoreOk) g.contextWhy.push("Guri Score " + fmt(g.score, 1));
 
         /* Quem afundou: aliado com muitas mortes e KDA ruim */
         const sunk = team.allies
@@ -206,7 +207,7 @@ function markTeamContext(g) {
         g.carried = true;
         if (laneOk === false) g.contextWhy.push("perdeu a lane para " + champName(g.opp.champion));
         g.contextWhy.push("KDA " + fmt(myKda, 1) + " contra " + fmt(allyKda, 1) + " do resto do time");
-        g.contextWhy.push("nota " + fmt(g.score, 1));
+        g.contextWhy.push("Guri Score " + fmt(g.score, 1));
 
     }
 
@@ -419,7 +420,7 @@ function summaryCard(list) {
 
     const mvps = list.filter(g => g.mvp).length;
     const aces = list.filter(g => g.ace).length;
-    tiles.appendChild(statTile("MVP / ACE", mvps + " / " + aces, "melhor nota do time na partida"));
+    tiles.appendChild(statTile("MVP / ACE", mvps + " / " + aces, "maior Guri Score do time na partida"));
 
     if (losses.length) {
         tiles.appendChild(statTile("Derrotas de tabela", tabela + " de " + losses.length,
@@ -582,20 +583,24 @@ function gameLine(g, extra) {
 
     const info = el("div", "flex-game-info");
     info.appendChild(el("strong", null, champName(g.champion) + " · " + laneName(g.position)));
-    info.appendChild(el("span", null,
-        g.kills + "/" + g.deaths + "/" + g.assists + " · " + g.cs + " CS · " + pct(g.damageShare) + " do dano · "
-        + shortDate(g.start) + " · " + Math.round(g.duration / 60) + " min"
+    /* Números (somem quando a partida abre: estão na tabela) + data */
+    const line = el("span", "flex-game-line");
+    line.appendChild(el("span", "flex-game-stats",
+        g.kills + "/" + g.deaths + "/" + g.assists + " · " + g.cs + " CS · " + pct(g.damageShare) + " do dano · "));
+    line.appendChild(el("span", "flex-game-meta",
+        shortDate(g.start) + " · " + Math.round(g.duration / 60) + " min"
         + (g.opp ? " · contra " + champName(g.opp.champion) : "")));
+    info.appendChild(line);
     row.appendChild(info);
 
     const score = el("span", "flex-score", fmt(g.score, 1));
-    score.title = "Nota da partida, no estilo do OP Score: comparada com os 10 da partida (10 = o melhor da partida)";
+    score.title = "Guri Score: nota da partida no estilo do OP Score, comparada com os 10 da partida (10 = o melhor). Clique para ver os dois times.";
     row.appendChild(score);
 
     /* Como no OP.GG: MVP = melhor do time que venceu, ACE = do que perdeu */
     if (g.mvp || g.ace) {
         const badge = el("span", "flex-game-tag " + (g.mvp ? "mvp" : "ace"), g.mvp ? "MVP" : "ACE");
-        badge.title = g.mvp ? "Melhor nota do time que venceu" : "Melhor nota do time que perdeu";
+        badge.title = g.mvp ? "Maior Guri Score do time que venceu" : "Maior Guri Score do time que perdeu";
         row.appendChild(badge);
     }
 
@@ -607,7 +612,120 @@ function gameLine(g, extra) {
 
     if (extra) row.appendChild(el("span", "flex-game-tag", extra));
 
-    return row;
+    /* Clique: abre os dois times da partida (só se tiver os 10 salvos) */
+    if (!g.lobby || !g.lobbyResult) return row;
+
+    const wrap = el("div", "flex-game-wrap " + (g.win ? "win" : "loss"));
+    row.classList.add("clickable");
+    row.tabIndex = 0;
+    row.setAttribute("role", "button");
+    row.setAttribute("aria-expanded", "false");
+    row.appendChild(el("span", "flex-game-caret", "▾"));
+
+    /* Painel com animação: cresce de 0 até a altura real (grid 0fr -> 1fr) */
+    let panel = null;
+    const toggle = () => {
+        if (!panel) {
+            panel = el("div", "flex-teams-anim");
+            const inner = el("div", "flex-teams-inner");
+            inner.appendChild(teamsPanel(g));
+            panel.appendChild(inner);
+            wrap.appendChild(panel);
+            void panel.offsetHeight; /* garante a animação na primeira abertura */
+        }
+        const open = !wrap.classList.contains("open");
+        wrap.classList.toggle("open", open);
+        row.setAttribute("aria-expanded", String(open));
+    };
+    row.onclick = toggle;
+    row.onkeydown = e => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); toggle(); } };
+
+    wrap.appendChild(row);
+    return wrap;
+
+}
+
+/* ---------- Os dois times da partida (estilo OP.GG) ---------- */
+
+const fmtK = n => n >= 1000 ? (n / 1000).toFixed(1).replace(".", ",") + "k" : String(n);
+
+function teamsPanel(g) {
+
+    const lobby = g.lobby;
+    const r = g.lobbyResult;
+    const myTeam = lobby[g.slot].t;
+    const laneOrderPos = ["TOP", "JUNGLE", "MIDDLE", "BOTTOM", "UTILITY"];
+    const panel = el("div", "flex-teams");
+
+    const maxDmg = Math.max(...lobby.map(o => o.dmg), 1);
+    const maxTaken = Math.max(...lobby.map(o => o.tk), 1);
+
+    [[myTeam, "Seu time"], [lobby.find(o => o.t !== myTeam).t, "Adversários"]].forEach(([team, label]) => {
+
+        const won = team === myTeam ? g.win : !g.win;
+        const box = el("div", "flex-team " + (won ? "win" : "loss"));
+        box.appendChild(el("div", "flex-team-head", (won ? "Vitória" : "Derrota") + " · " + label));
+
+        const table = el("table", "flex-team-table");
+        const head = el("tr");
+        ["Campeão", "Guri Score", "KDA", "Dano causado", "Dano recebido", "Sentinelas", "CS"].forEach(h => head.appendChild(el("th", null, h)));
+        table.appendChild(el("thead")).appendChild(head);
+        const body = el("tbody");
+
+        lobby.map((o, i) => [o, i])
+            .filter(([o]) => o.t === team)
+            .sort((a, b) => laneOrderPos.indexOf(a[0].p) - laneOrderPos.indexOf(b[0].p))
+            .forEach(([o, i]) => {
+
+                const tr = el("tr", g.groupSlots && g.groupSlots.includes(i) ? "me" : "");
+
+                const champ = el("td");
+                const c = el("span", "flex-champ");
+                c.appendChild(champIcon(o.c));
+                const names = el("span", "flex-team-champ");
+                names.appendChild(el("strong", null, champName(o.c)));
+                names.appendChild(el("small", null, laneName(o.p)));
+                c.appendChild(names);
+                champ.appendChild(c);
+                tr.appendChild(champ);
+
+                const score = el("td");
+                score.appendChild(el("span", "flex-team-score", fmt(r.scores[i], 1)));
+                if (r.mvp === i) score.appendChild(el("span", "flex-game-tag mvp", "MVP"));
+                if (r.ace === i) score.appendChild(el("span", "flex-game-tag ace", "ACE"));
+                tr.appendChild(score);
+
+                const kda = el("td");
+                kda.appendChild(el("strong", null, o.k + " / " + o.d + " / " + o.a));
+                kda.appendChild(el("small", null, fmt(kdaValue(o.k, o.d, o.a), 2) + " KDA"));
+                tr.appendChild(kda);
+
+                const bar = (value, max, cls) => {
+                    const td = el("td");
+                    td.appendChild(el("span", null, fmtK(value)));
+                    const b = el("span", "flex-team-bar " + cls);
+                    b.appendChild(el("i")).style.width = Math.round(value / max * 100) + "%";
+                    td.appendChild(b);
+                    return td;
+                };
+                tr.appendChild(bar(o.dmg, maxDmg, "dealt"));
+                tr.appendChild(bar(o.tk, maxTaken, "taken"));
+
+                tr.appendChild(el("td", null, String(o.w)));
+                tr.appendChild(el("td", null, String(o.cs)));
+
+                body.appendChild(tr);
+            });
+
+        table.appendChild(body);
+        const wrapTable = el("div", "flex-table-wrap");
+        wrapTable.appendChild(table);
+        box.appendChild(wrapTable);
+        panel.appendChild(box);
+
+    });
+
+    return panel;
 
 }
 
@@ -729,7 +847,7 @@ function renderDuo() {
 
     /* Quem foi melhor em cada partida, pela nota */
     const ferBetter = pairs.filter(p => p.fer.score > p.rony.score).length;
-    tiles.appendChild(statTile("Melhor nota na partida", "Fer " + ferBetter + " × " + (pairs.length - ferBetter) + " Rony"));
+    tiles.appendChild(statTile("Maior Guri Score na partida", "Fer " + ferBetter + " × " + (pairs.length - ferBetter) + " Rony"));
 
     box.appendChild(tiles);
     content.appendChild(box);
@@ -1028,7 +1146,7 @@ function picksCard(list) {
         champChip(c.id, laneName(c.lane) + " · " + wrText(c.games) + tabelaText(c.games), "weak")));
 
     box.appendChild(el("p", "flex-note",
-        "Cada partida vale metade pela vitória e metade pela nota. Derrota de tabela (você fez sua parte e o time não) e vitória carregada contam como neutras. Com poucas partidas o resultado é puxado para o meio, então 1 vitória sozinha não vira certeza. Os parecidos saem da classe, dos atributos e do alcance do campeão."));
+        "Cada partida vale metade pela vitória e metade pelo Guri Score. Derrota de tabela (você fez sua parte e o time não) e vitória carregada contam como neutras. Com poucas partidas o resultado é puxado para o meio, então 1 vitória sozinha não vira certeza. Os parecidos saem da classe, dos atributos e do alcance do campeão."));
 
     return box;
 
