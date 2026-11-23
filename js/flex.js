@@ -104,6 +104,8 @@ function gamesOf(key) {
                 together: !!g.players[other],
                 lobby: g.lobby || null,
                 groupSlots: Object.values(g.players).map(p => p.slot),
+                /* Quem é quem na tabela dos times: { slot: "Fer" } */
+                groupNames: Object.fromEntries(Object.entries(g.players).map(([k, p]) => [p.slot, FLEX_NAMES[k] || k])),
                 csMin: s.cs / minutes,
                 goldMin: s.gold / minutes,
                 dmgMin: s.damage / minutes,
@@ -683,7 +685,10 @@ function teamsPanel(g) {
                 const c = el("span", "flex-champ");
                 c.appendChild(champIcon(o.c));
                 const names = el("span", "flex-team-champ");
-                names.appendChild(el("strong", null, champName(o.c)));
+                const title = el("strong", null, champName(o.c));
+                /* Etiqueta com o nome de vocês (só visual) */
+                if (g.groupNames && g.groupNames[i]) title.appendChild(el("span", "flex-team-who", g.groupNames[i]));
+                names.appendChild(title);
                 names.appendChild(el("small", null, laneName(o.p)));
                 c.appendChild(names);
                 champ.appendChild(c);

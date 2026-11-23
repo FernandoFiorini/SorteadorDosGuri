@@ -712,3 +712,17 @@
         transition: none;
     }
 }
+
+/* Etiqueta "Fer" / "Rony" na tabela dos times */
+.flex-team-who {
+    display: inline-block;
+    margin-left: 6px;
+    padding: 0 7px;
+    border-radius: 999px;
+    background: #c8aa6e;
+    color: #0b1420;
+    font-size: 10px;
+    font-weight: bold;
+    vertical-align: middle;
+    letter-spacing: 0.3px;
+}
