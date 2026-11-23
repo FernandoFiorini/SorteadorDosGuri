@@ -22,17 +22,43 @@ const clamp1 = v => Math.max(-1, Math.min(1, v));
 
 const lobbyKda = o => Math.log1p((o.k + o.a) / Math.max(1, o.d));
 
+/* Partida antiga sem o resumo dos 10 (ex.: buscada por um Worker
+   desatualizado): monta um "lobby" só com você e o oponente de lane,
+   que sempre vem salvo. Participação em abates fica neutra. */
+function fallbackLobby(g) {
+
+    if (!g.opp) return null;
+
+    const entry = (s, team, kp) => ({
+        c: s.champion, p: s.position || "", t: team,
+        k: s.kills || 0, d: s.deaths || 0, a: s.assists || 0,
+        g: s.gold || 0, dmg: s.damage || 0, v: s.vision || 0, cs: s.cs || 0,
+        cc: s.ccTime || 0, hs: s.healShield || 0, tk: s.damageTaken || 0, w: s.wardsPlaced || 0,
+        kpFixed: kp
+    });
+
+    const kp = g.killParticipation || 0;
+
+    return [entry(g, 1, kp), entry(Object.assign({ position: g.position }, g.opp), 2, kp)];
+
+}
+
 function matchScore(g) {
 
-    const lobby = g.lobby;
-    const me = lobby && lobby[g.slot];
+    let lobby = g.lobby;
+    let me = lobby && lobby[g.slot];
+
+    if (!me) {
+        lobby = fallbackLobby(g);
+        me = lobby && lobby[0];
+    }
 
     if (!me) return 5;
 
     const teamKills = {};
     lobby.forEach(o => { teamKills[o.t] = (teamKills[o.t] || 0) + o.k; });
 
-    const kp = o => teamKills[o.t] ? (o.k + o.a) / teamKills[o.t] : 0;
+    const kp = o => o.kpFixed !== undefined ? o.kpFixed : teamKills[o.t] ? (o.k + o.a) / teamKills[o.t] : 0;
 
     /* Contra os 10 da partida: desvios da média, de -1 a +1 */
     const vsLobby = fn => {
