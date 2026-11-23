@@ -156,7 +156,7 @@ function scoreGames(list) {
    Olha se a pessoa fez a parte dela, independente do resultado:
    1. lane: não perdeu a lane para o oponente direto (ouro e mortes);
    2. time: KDA melhor que o resto do time e não morreu mais que eles;
-   3. nota: nota da partida boa (5,5 ou mais).
+   3. nota: nota da partida boa (6 ou mais, na escala tipo OP Score).
    Derrota com 2 dos 3 = "de tabela": não pesa contra o campeão.
    Vitória com 0 dos 3 = "carregado": não conta como mérito. */
 
@@ -181,7 +181,7 @@ function markTeamContext(g) {
 
     const laneOk = g.opp ? (g.gold - g.opp.gold >= -500 && g.deaths <= g.opp.deaths + 1) : null;
     const teamOk = myKda >= allyKda && g.deaths <= allyDeaths + 0.5;
-    const scoreOk = g.score >= 5.5;
+    const scoreOk = g.score >= 6;
 
     const checks = [laneOk, teamOk, scoreOk].filter(x => x !== null);
     const passed = checks.filter(Boolean).length;
@@ -417,6 +417,10 @@ function summaryCard(list) {
     const tabela = losses.filter(g => g.tabela).length;
     const carried = list.filter(g => g.carried).length;
 
+    const mvps = list.filter(g => g.mvp).length;
+    const aces = list.filter(g => g.ace).length;
+    tiles.appendChild(statTile("MVP / ACE", mvps + " / " + aces, "melhor nota do time na partida"));
+
     if (losses.length) {
         tiles.appendChild(statTile("Derrotas de tabela", tabela + " de " + losses.length,
             "fez a parte e o time não" + (carried ? " · " + carried + (carried > 1 ? " vitórias carregadas" : " vitória carregada") : "")));
@@ -585,8 +589,15 @@ function gameLine(g, extra) {
     row.appendChild(info);
 
     const score = el("span", "flex-score", fmt(g.score, 1));
-    score.title = "Nota da partida: só o que aconteceu nela, contra o seu oponente de lane (5 = empate)";
+    score.title = "Nota da partida, no estilo do OP Score: comparada com os 10 da partida (10 = o melhor da partida)";
     row.appendChild(score);
+
+    /* Como no OP.GG: MVP = melhor do time que venceu, ACE = do que perdeu */
+    if (g.mvp || g.ace) {
+        const badge = el("span", "flex-game-tag " + (g.mvp ? "mvp" : "ace"), g.mvp ? "MVP" : "ACE");
+        badge.title = g.mvp ? "Melhor nota do time que venceu" : "Melhor nota do time que perdeu";
+        row.appendChild(badge);
+    }
 
     if (g.tabela || g.carried) {
         const tag = el("span", "flex-game-tag " + (g.tabela ? "tabela" : "carried"), g.tabela ? "🧱 de tabela" : "🎒 carregado");
